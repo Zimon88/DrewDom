@@ -46,16 +46,23 @@ public class DrewDom extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         changelogPanel = new javax.swing.JEditorPane();
+        NoweZamowienie = new javax.swing.JFrame();
+        panelNoweZamowienie = new pl.isimon.drewdom.gui.GZamowienieNew(mebel.getData());
+        NowyMebel = new javax.swing.JFrame();
+        gMebelNowy1 = new pl.isimon.drewdom.gui.GMebelNowy();
         tabPanel = new javax.swing.JTabbedPane();
         gZamowienie1 = new pl.isimon.drewdom.gui.GZamowienieList(zamowienie.getData());
         gPracownik1 = new pl.isimon.drewdom.gui.GPracownik(pracownik.getData());
         gMebleLista1 = new pl.isimon.drewdom.gui.GMebleLista(mebel.getData());
         tollBar = new javax.swing.JToolBar();
         buttonChangelog = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         menu = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
+        Changelog.setTitle("ChangeLog");
         Changelog.setMinimumSize(new java.awt.Dimension(640, 480));
 
         jLabel1.setText("Changelog:");
@@ -88,6 +95,48 @@ public class DrewDom extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        NoweZamowienie.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        NoweZamowienie.setTitle("Nowe Zamówienie");
+        NoweZamowienie.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        NoweZamowienie.setForeground(java.awt.Color.white);
+        NoweZamowienie.setMinimumSize(new java.awt.Dimension(680, 580));
+
+        javax.swing.GroupLayout NoweZamowienieLayout = new javax.swing.GroupLayout(NoweZamowienie.getContentPane());
+        NoweZamowienie.getContentPane().setLayout(NoweZamowienieLayout);
+        NoweZamowienieLayout.setHorizontalGroup(
+            NoweZamowienieLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(NoweZamowienieLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panelNoweZamowienie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        NoweZamowienieLayout.setVerticalGroup(
+            NoweZamowienieLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(NoweZamowienieLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panelNoweZamowienie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        NowyMebel.setMinimumSize(new java.awt.Dimension(680, 480));
+
+        javax.swing.GroupLayout NowyMebelLayout = new javax.swing.GroupLayout(NowyMebel.getContentPane());
+        NowyMebel.getContentPane().setLayout(NowyMebelLayout);
+        NowyMebelLayout.setHorizontalGroup(
+            NowyMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NowyMebelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(gMebelNowy1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        NowyMebelLayout.setVerticalGroup(
+            NowyMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(NowyMebelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(gMebelNowy1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DrewDom ver 0.0.0.1");
         setName("DrewDom ver. 0.0.0.1"); // NOI18N
@@ -108,6 +157,28 @@ public class DrewDom extends javax.swing.JFrame {
             }
         });
         tollBar.add(buttonChangelog);
+
+        jButton1.setText("Nowe Zamowienie");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        tollBar.add(jButton1);
+
+        jButton2.setText("Nowy Mebel");
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        tollBar.add(jButton2);
 
         jMenu1.setText("File");
         menu.add(jMenu1);
@@ -144,9 +215,16 @@ public class DrewDom extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonChangelogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonChangelogActionPerformed
-        // TODO add your handling code here:
         Changelog.setVisible(true);
     }//GEN-LAST:event_buttonChangelogActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        NoweZamowienie.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        NowyMebel.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -184,16 +262,22 @@ public class DrewDom extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFrame Changelog;
+    private javax.swing.JFrame NoweZamowienie;
+    private javax.swing.JFrame NowyMebel;
     private javax.swing.JButton buttonChangelog;
     private javax.swing.JEditorPane changelogPanel;
+    private pl.isimon.drewdom.gui.GMebelNowy gMebelNowy1;
     private pl.isimon.drewdom.gui.GMebleLista gMebleLista1;
     private pl.isimon.drewdom.gui.GPracownik gPracownik1;
     private pl.isimon.drewdom.gui.GZamowienieList gZamowienie1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar menu;
+    private pl.isimon.drewdom.gui.GZamowienieNew panelNoweZamowienie;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JToolBar tollBar;
     // End of variables declaration//GEN-END:variables
