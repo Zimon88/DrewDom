@@ -4,8 +4,12 @@
  */
 package pl.isimon.drewdom.gui;
 
+import java.util.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import pl.isimon.drewdom.Mebel;
+import pl.isimon.drewdom.Zamowienie;
+import pl.isimon.drewdom.ZamowieniePozycja;
 
 /**
  *
@@ -16,15 +20,34 @@ public class GZamowienieNew extends javax.swing.JPanel {
     /**
      * Creates new form GZamowienieNew
      */
+    private Zamowienie zamowienie;
     private TableModelMebleLista tmml;
+    private TableModelZamowieniePozycja tmzp;
+    private ArrayList<ZamowieniePozycja> zamowienieLista;
     public GZamowienieNew() {
         initComponents();
     }
     
     public GZamowienieNew(ArrayList<Mebel> lista){
         this();
+        zamowienieLista = new ArrayList();
+        zamowienie = new Zamowienie();
+        tmzp = (TableModelZamowieniePozycja)tableZamowienie.getModel();
         tmml = (TableModelMebleLista)tableMeble.getModel();
         tmml.setModelData(lista);
+        tmzp.setModelData(zamowienieLista);
+    }
+    
+    public void save(){
+        zamowienie.zapiszZamowienie(textNumer.getText(), zamowienieLista, dcDataZamowienia.getDate(), dcDataRealizaji.getDate());
+    }
+    
+    public void clear(){
+        zamowienieLista = new ArrayList();
+        tmzp.setModelData(zamowienieLista);
+        textNumer.setText("");
+        dcDataZamowienia.setDate(null);
+        dcDataRealizaji.setDate(null);
     }
 
     /**
@@ -40,20 +63,23 @@ public class GZamowienieNew extends javax.swing.JPanel {
         tableZamowienie = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableMeble = new javax.swing.JTable();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        jDateChooser2 = new com.toedter.calendar.JDateChooser();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
+        buttonDodaj = new javax.swing.JButton();
+        labelSztuk = new javax.swing.JLabel();
+        textKod = new javax.swing.JTextField();
+        textNazwa = new javax.swing.JTextField();
+        textNumer = new javax.swing.JTextField();
+        labelNumer = new javax.swing.JLabel();
+        dcDataZamowienia = new com.toedter.calendar.JDateChooser();
+        dcDataRealizaji = new com.toedter.calendar.JDateChooser();
+        labelDataZamowienia = new javax.swing.JLabel();
+        labelDataRealizacji = new javax.swing.JLabel();
+        buttonSzukaj = new javax.swing.JButton();
+        labelKod = new javax.swing.JLabel();
+        labelNazwa = new javax.swing.JLabel();
+        buttonUsun = new javax.swing.JButton();
+        spinnerSztuk = new javax.swing.JSpinner();
+
+        setPreferredSize(new java.awt.Dimension(575, 515));
 
         tableZamowienie.setModel(new TableModelZamowieniePozycja());
         jScrollPane1.setViewportView(tableZamowienie);
@@ -61,27 +87,41 @@ public class GZamowienieNew extends javax.swing.JPanel {
         tableMeble.setModel(new TableModelMebleLista());
         jScrollPane2.setViewportView(tableMeble);
 
-        jButton1.setText("Dodaj");
+        buttonDodaj.setText("Dodaj");
+        buttonDodaj.setFocusPainted(false);
+        buttonDodaj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDodajActionPerformed(evt);
+            }
+        });
 
-        jLabel1.setText("Sztuk");
+        labelSztuk.setText("Sztuk");
 
-        jTextField2.setText("jTextField2");
+        textKod.setEnabled(false);
 
-        jTextField3.setText("jTextField3");
+        textNazwa.setEnabled(false);
 
-        jTextField4.setText("jTextField4");
+        labelNumer.setText("Numer zamówienia");
 
-        jLabel2.setText("Numer zamówienia");
+        labelDataZamowienia.setText("Data złożenia zamówienia");
 
-        jButton2.setText("Zapisz");
+        labelDataRealizacji.setText("Data realizacji");
 
-        jButton3.setText("Anuluj");
+        buttonSzukaj.setText("Szukaj");
+        buttonSzukaj.setEnabled(false);
 
-        jLabel3.setText("Data złożenia zamówienia");
+        labelKod.setText("Kod");
 
-        jLabel4.setText("Data realizacji");
+        labelNazwa.setText("Nazwa");
 
-        jButton4.setText("jButton4");
+        buttonUsun.setText("Usuń");
+        buttonUsun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonUsunActionPerformed(evt);
+            }
+        });
+
+        spinnerSztuk.setModel(new javax.swing.SpinnerNumberModel(0, 0, 9999, 1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -90,40 +130,40 @@ public class GZamowienieNew extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addComponent(labelKod)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(textKod, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelNazwa)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(textNazwa, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonSzukaj)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addComponent(buttonUsun))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(labelDataRealizacji)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelNumer)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(textNumer, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(labelDataZamowienia)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(dcDataZamowienia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(dcDataRealizaji, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jButton3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelSztuk)
+                        .addGap(18, 18, 18)
+                        .addComponent(spinnerSztuk, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4)))
+                        .addComponent(buttonDodaj)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -132,53 +172,75 @@ public class GZamowienieNew extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2)
-                        .addComponent(jLabel3))
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(textNumer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelNumer)
+                        .addComponent(labelDataZamowienia))
+                    .addComponent(dcDataZamowienia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                    .addComponent(dcDataRealizaji, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelDataRealizacji))
+                .addGap(11, 11, 11)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(labelKod)
+                    .addComponent(textKod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelNazwa)
+                    .addComponent(textNazwa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonSzukaj)
+                    .addComponent(buttonUsun))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
-                .addContainerGap(16, Short.MAX_VALUE))
+                    .addComponent(buttonDodaj)
+                    .addComponent(labelSztuk)
+                    .addComponent(spinnerSztuk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void buttonDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDodajActionPerformed
+        int selection = tableMeble.getSelectedRow();
+        int sztuk = (int)spinnerSztuk.getModel().getValue();
+        
+        if(sztuk!=0 & selection!=-1){
+            ZamowieniePozycja poz = new ZamowieniePozycja();
+            poz.ilosc = sztuk;
+            poz.mebel = tmml.getMebel(selection);
+            zamowienieLista.add(poz);
+            tmzp.addZamowieniePozycja(poz);
+            spinnerSztuk.getModel().setValue(new Integer(0));
+        }
+    }//GEN-LAST:event_buttonDodajActionPerformed
+
+    private void buttonUsunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUsunActionPerformed
+        ZamowieniePozycja zamp;
+        zamp = tmzp.getZamowieniePozycja(tableZamowienie.getSelectedRow());
+        zamowienieLista.remove(zamp);
+        tmzp.removeZamowieniePozycja(zamp);
+    }//GEN-LAST:event_buttonUsunActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JButton buttonDodaj;
+    private javax.swing.JButton buttonSzukaj;
+    private javax.swing.JButton buttonUsun;
+    private com.toedter.calendar.JDateChooser dcDataRealizaji;
+    private com.toedter.calendar.JDateChooser dcDataZamowienia;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JLabel labelDataRealizacji;
+    private javax.swing.JLabel labelDataZamowienia;
+    private javax.swing.JLabel labelKod;
+    private javax.swing.JLabel labelNazwa;
+    private javax.swing.JLabel labelNumer;
+    private javax.swing.JLabel labelSztuk;
+    private javax.swing.JSpinner spinnerSztuk;
     private javax.swing.JTable tableMeble;
     private javax.swing.JTable tableZamowienie;
+    private javax.swing.JTextField textKod;
+    private javax.swing.JTextField textNazwa;
+    private javax.swing.JTextField textNumer;
     // End of variables declaration//GEN-END:variables
 }

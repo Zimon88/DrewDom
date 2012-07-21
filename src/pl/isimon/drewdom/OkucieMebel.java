@@ -8,10 +8,7 @@ package pl.isimon.drewdom;
  *
  * @author Simon
  */
-public class Opakowanie {
-    public float wymiar_x;
-    public float wymiar_y;
-    public float wymiar_z;
-    public String nrMebla;
-    public int id;
+public class OkucieMebel {
+    public Okucie okucie;
+    public float ilosc;
 }

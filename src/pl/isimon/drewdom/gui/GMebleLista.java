@@ -57,13 +57,9 @@ public class GMebleLista extends javax.swing.JPanel {
 
         buttonUsun.setText("Usuń");
 
-        textSzukajKod.setText("jTextField1");
+        labelSzukajKod.setText("Kod");
 
-        textSzukajNazwa.setText("jTextField2");
-
-        labelSzukajKod.setText("jLabel1");
-
-        labelSzukajNazwa.setText("jLabel2");
+        labelSzukajNazwa.setText("Nazwa");
 
         buttonSzukaj.setText("szukaj");
 

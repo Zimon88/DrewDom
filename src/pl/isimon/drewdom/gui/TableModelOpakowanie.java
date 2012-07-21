@@ -5,25 +5,25 @@
 package pl.isimon.drewdom.gui;
 
 import java.util.ArrayList;
-import pl.isimon.drewdom.Zamowienie;
+import pl.isimon.drewdom.Opakowanie;
 
 /**
  *
  * @author Swiercz
  */
-public class TableModelZamowienie extends javax.swing.table.AbstractTableModel{
-        private ArrayList<Zamowienie> lista = null;
-        private final static Object[] columnNames = {"","Numer","Data wpływu","Data Realizacji"};
+public class TableModelOpakowanie extends javax.swing.table.AbstractTableModel{
+        private ArrayList<Opakowanie> lista = null;
+        private final static Object[] columnNames = {"L.p.","Wymiar 1","Wymiar 2", "Wymiar 3"};
         
-        private final static int LP_IDX = 0;
-        private final static int IDX_NUMER = 1;
-        private final static int IDX_DATA = 2;
-        private final static int IDX_DATA_REALIZACJI = 3;
+        private final static int IDX_ID = 0;
+        private final static int IDX_WYMIAR = 1;
+        private final static int IDX_WYMIAR2 = 2;
+        private final static int IDX_WYMIAR3 = 3;
        
         /**
          * 
          */
-        public TableModelZamowienie() {
+        public TableModelOpakowanie() {
         }
         
         @Override
@@ -40,12 +40,13 @@ public class TableModelZamowienie extends javax.swing.table.AbstractTableModel{
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             if(lista == null) return null;
-            Zamowienie o = lista.get(rowIndex);
+            Opakowanie o = lista.get(rowIndex);
             switch (columnIndex){
-                case LP_IDX: return rowIndex+1;
-                case IDX_NUMER: return o.numer;
-                case IDX_DATA: return o.data;
-                case IDX_DATA_REALIZACJI: return o.dataRealizacji;
+                case IDX_ID: return rowIndex+1;
+//                case IDX_WYMIAR: return o.wymiar_x+"x"+o.wymiar_y+"x"+o.wymiar_z;
+                case IDX_WYMIAR: return o.wymiar_x;
+                case IDX_WYMIAR2: return o.wymiar_y;
+                case IDX_WYMIAR3:return o.wymiar_z;
                 default:
                     return o;
             }
@@ -61,18 +62,12 @@ public class TableModelZamowienie extends javax.swing.table.AbstractTableModel{
             return false;
         }
         
-        public void setModelData(ArrayList<Zamowienie> pozycje){
+        public void setModelData(ArrayList<Opakowanie> pozycje){
             this.lista = pozycje;
-            fireTableDataChanged();
         }
         
-        public Zamowienie getZamowienie(int position){
+        public Opakowanie getOpakowanie(int position){
             return lista.get(position);
-        }
-        
-        public void removeZamowienie(Zamowienie o){
-            lista.remove(o);
-            fireTableDataChanged();
         }
 
 }

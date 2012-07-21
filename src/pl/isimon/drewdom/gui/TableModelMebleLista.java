@@ -61,8 +61,13 @@ public class TableModelMebleLista extends javax.swing.table.AbstractTableModel{
             this.lista = pozycje;
         }
         
-        public Mebel getZamowienie(int position){
+        public Mebel getMebel(int position){
             return lista.get(position);
+        }
+        
+        public void addMebel(Mebel o){
+            this.lista.add(o);
+            fireTableDataChanged();
         }
 
 }

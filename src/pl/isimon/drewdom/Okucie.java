@@ -12,27 +12,24 @@ import java.util.ArrayList;
  *
  * @author Simon
  */
-public class Pracownik extends SQLiteConnection{
+public class Okucie extends SQLiteConnection{
     public int id;
-    public String imie;
-    public String nazwisko;
+    public String nazwa;
     
-    private final static String COL_ID          = "id";
-    private final static String COL_IMIE        = "imie";
-    private final static String COL_NAZWISKO    = "nazwisko";
+    private final static String COL_ID = "id";
+    private final static String COL_NAZWA = "nazwa";
     
-    public ArrayList<Pracownik> getData(){
-        ArrayList<Pracownik> lista = new ArrayList();
-        String sql = "SELECT * FROM pracownik";
+    public ArrayList<Okucie> getData(){
+        ArrayList<Okucie> lista = new ArrayList();
+        String sql = "SELECT * FROM okucia";
         connect();
         try {
             ResultSet w = stmt.executeQuery(sql);
             int wynik =0;
             while(w.next()){
-                Pracownik o = new Pracownik();
+                Okucie o = new Okucie();
                 o.id = w.getInt(COL_ID);
-                o.imie = w.getString(COL_IMIE);
-                o.nazwisko = w.getString(COL_NAZWISKO);
+                o.nazwa = w.getString(COL_NAZWA);
                 lista.add(o);
             }
             printSucces(sql, wynik);
@@ -44,10 +41,24 @@ public class Pracownik extends SQLiteConnection{
         return lista;
     }
     
-    public void dodaj(Pracownik p){
+    public void dodaj(Okucie o){
         connect();
-        String sql = "INSERT INTO pracownik VALUES (null,'"+p.imie+"','"+p.nazwisko+"');";
+        String sql = "INSERT INTO okucia VALUES (null,'"+o.nazwa+"');";
         int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql,ex);
+        } finally {
+            disconnect();
+        }
+    }
+    
+    public void usun(Okucie o){
+        String sql = "DELETE FROM okucia WHERE id = " + o.id + ";";
+        int wynik;
+        connect();
         try {
             wynik = stmt.executeUpdate(sql);
             printSucces(sql, wynik);
@@ -58,24 +69,10 @@ public class Pracownik extends SQLiteConnection{
         }
     }
     
-    public void edytuj(Pracownik p){
+    public void edytuj(Okucie o){
         connect();
-        String sql = "UPDATE pracownik SET imie = '"+p.imie+"', nazwisko = '"+p.nazwisko+"' WHERE id = "+p.id+";";
+        String sql = "UPDATE okucia SET nazwa= '"+o.nazwa+"' WHERE id = "+o.id+";";
         int wynik;
-        try {
-            wynik = stmt.executeUpdate(sql);
-            printSucces(sql, wynik);
-        } catch (SQLException ex) {
-            printSqlErr(sql);
-        } finally {
-            disconnect();
-        }
-    }
-    
-    public void usun(Pracownik p) {
-        String sql = "delete from pracownik where id = " + p.id + ";";
-        int wynik;
-        connect();
         try {
             wynik = stmt.executeUpdate(sql);
             printSucces(sql, wynik);

@@ -45,4 +45,24 @@ public class Mebel extends SQLiteConnection{
         }
         return lista;
    }
+   
+   public Mebel getMebel(String nr){
+       Mebel m = new Mebel();
+        String sql = "SELECT * FROM mebel WHERE "+COL_NR+" = '"+nr+"';";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                m.numerKatalogowy = w.getString(COL_NR);
+                m.nazwa = w.getString(COL_NAZWA);
+            }
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return m;
+   }
 }

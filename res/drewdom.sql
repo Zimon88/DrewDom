@@ -39,8 +39,14 @@ CREATE TABLE mebel_elementy (
 );
 
 CREATE TABLE opakowanie (
-  mebel_nr  integer,
+  id        integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+  mebel_nr  varchar(50),
   wymiar_x  real,
   wymiar_y  real,
   wymiar_z  real
+);
+
+CREATE TABLE okucia (
+  id     integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+  nazwa  varchar(50)
 );

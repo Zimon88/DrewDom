@@ -64,10 +64,21 @@ public class TableModelZamowieniePozycja extends javax.swing.table.AbstractTable
         
         public void setModelData(ArrayList<ZamowieniePozycja> pozycje){
             this.lista = pozycje;
+            fireTableDataChanged();
         }
         
-        public ZamowieniePozycja getZamowienie(int position){
+        public ZamowieniePozycja getZamowieniePozycja(int position){
             return lista.get(position);
+        }
+        
+        public void addZamowieniePozycja(ZamowieniePozycja o){
+            this.lista.add(o);
+            fireTableDataChanged();
+        }
+        
+        public void removeZamowieniePozycja(ZamowieniePozycja o){
+            this.lista.remove(o);
+            fireTableDataChanged();
         }
 
 }

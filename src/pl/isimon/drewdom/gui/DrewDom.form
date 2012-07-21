@@ -82,10 +82,20 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="panelNoweZamowienie" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="panelNoweZamowienie" alignment="0" pref="680" max="32767" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="buttonNZAnuluj" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="butonNZWyczysc" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="buttonNZZapisz" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -93,17 +103,52 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="panelNoweZamowienie" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="panelNoweZamowienie" pref="564" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="buttonNZZapisz" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="butonNZWyczysc" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="buttonNZAnuluj" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
         <Component class="pl.isimon.drewdom.gui.GZamowienieNew" name="panelNoweZamowienie">
+          <Properties>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[580, 580]"/>
+            </Property>
+          </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new pl.isimon.drewdom.gui.GZamowienieNew(mebel.getData())"/>
           </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="buttonNZZapisz">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Zapisz"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonNZZapiszActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="butonNZWyczysc">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Wyczy&#x15b;&#x107;"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="butonNZWyczyscActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="buttonNZAnuluj">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Anuluj"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonNZAnulujActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -139,20 +184,6 @@
         </Component>
       </SubComponents>
     </Container>
-    <Menu class="javax.swing.JMenuBar" name="menu">
-      <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="File"/>
-          </Properties>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Edit"/>
-          </Properties>
-        </Menu>
-      </SubComponents>
-    </Menu>
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
@@ -160,7 +191,6 @@
     <Property name="name" type="java.lang.String" value="DrewDom ver. 0.0.0.1" noResource="true"/>
   </Properties>
   <SyntheticProperties>
-    <SyntheticProperty name="menuBar" type="java.lang.String" value="menu"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
   <AuxValues>
@@ -178,22 +208,21 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="tollBar" alignment="1" pref="643" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="tabPanel" pref="656" max="32767" attributes="0"/>
+              <Component id="tabPanel" pref="0" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
-          <Component id="tollBar" alignment="1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="32767" attributes="0"/>
               <Component id="tollBar" min="-2" pref="25" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="tabPanel" min="-2" pref="452" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -207,7 +236,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
-        <Component class="pl.isimon.drewdom.gui.GZamowienieList" name="gZamowienie1">
+        <Component class="pl.isimon.drewdom.gui.GZamowienieList" name="panelTabZamowienia">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new pl.isimon.drewdom.gui.GZamowienieList(zamowienie.getData())"/>
           </AuxValues>
@@ -219,7 +248,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="pl.isimon.drewdom.gui.GPracownik" name="gPracownik1">
+        <Component class="pl.isimon.drewdom.gui.GPracownik" name="panelTabPracownicy">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new pl.isimon.drewdom.gui.GPracownik(pracownik.getData())"/>
           </AuxValues>
@@ -231,14 +260,26 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="pl.isimon.drewdom.gui.GMebleLista" name="gMebleLista1">
+        <Component class="pl.isimon.drewdom.gui.GMebleLista" name="panelTabMeble">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new pl.isimon.drewdom.gui.GMebleLista(mebel.getData())"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new pl.isimon.drewdom.gui.GMebleLista(listaMebli)"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
               <JTabbedPaneConstraints tabName="Meble">
                 <Property name="tabTitle" type="java.lang.String" value="Meble"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+        </Component>
+        <Component class="pl.isimon.drewdom.gui.GOkucia" name="panelTabOkucia">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new pl.isimon.drewdom.gui.GOkucia(okucie.getData())"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Okucia">
+                <Property name="tabTitle" type="java.lang.String" value="Okucia"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -263,7 +304,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonChangelogActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="buttonNoweZamowienie">
           <Properties>
             <Property name="text" type="java.lang.String" value="Nowe Zamowienie"/>
             <Property name="focusable" type="boolean" value="false"/>
@@ -271,10 +312,10 @@
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonNoweZamowienieActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton2">
+        <Component class="javax.swing.JButton" name="buttonNowyMebel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Nowy Mebel"/>
             <Property name="focusable" type="boolean" value="false"/>
@@ -282,7 +323,7 @@
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonNowyMebelActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

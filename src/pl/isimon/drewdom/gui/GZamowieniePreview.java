@@ -4,6 +4,12 @@
  */
 package pl.isimon.drewdom.gui;
 
+import java.awt.print.PrinterException;
+import java.text.MessageFormat;
+import javax.swing.JTable;
+import pl.isimon.drewdom.Zamowienie;
+import pl.isimon.drewdom.ZamowieniePozycja;
+
 /**
  *
  * @author Simon
@@ -13,8 +19,28 @@ public class GZamowieniePreview extends javax.swing.JPanel {
     /**
      * Creates new form GZamowieniePreview
      */
+    private Zamowienie zamowienie;
+    private ZamowieniePozycja pozycje;
+    private TableModelZamowieniePozycja tmzp;
+    
     public GZamowieniePreview() {
         initComponents();
+        zamowienie = new Zamowienie();
+        pozycje = new ZamowieniePozycja();
+        tmzp = (TableModelZamowieniePozycja)tableMeble.getModel();
+    }
+    
+    public GZamowieniePreview(Zamowienie z){
+        this();
+        zamowienie = z;
+    }
+    
+    public void loadData(Zamowienie z){
+        zamowienie = z;
+        tmzp.setModelData(pozycje.getpozycjeZamowienia(z.numer));
+        labelNumer.setText(z.numer);
+        labelData.setText(z.data);
+        labelDataRealizacji.setText(z.dataRealizacji);
     }
 
     /**
@@ -27,10 +53,37 @@ public class GZamowieniePreview extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tableMeble = new javax.swing.JTable();
+        buttonDrukuj = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        labelNumer = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        labelData = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        labelDataRealizacji = new javax.swing.JLabel();
+        buttonZrealizowane = new javax.swing.JButton();
 
-        jTable1.setModel(new TableModelZamowieniePozycja());
-        jScrollPane1.setViewportView(jTable1);
+        tableMeble.setModel(new TableModelZamowieniePozycja());
+        jScrollPane1.setViewportView(tableMeble);
+
+        buttonDrukuj.setText("Drukuj");
+        buttonDrukuj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDrukujActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Zamówienie nr: ");
+
+        labelNumer.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        labelNumer.setText("XXXXXXXXXX");
+
+        jLabel3.setText("z dnia: ");
+
+        jLabel2.setText("Zrealizowane:");
+
+        buttonZrealizowane.setText("Zrealizowane");
+        buttonZrealizowane.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -38,19 +91,74 @@ public class GZamowieniePreview extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(buttonZrealizowane)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonDrukuj))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel2))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelNumer)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel3)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(labelData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(labelDataRealizacji, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(labelNumer)
+                    .addComponent(jLabel3)
+                    .addComponent(labelData))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(labelDataRealizacji))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buttonDrukuj)
+                    .addComponent(buttonZrealizowane))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void buttonDrukujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDrukujActionPerformed
+         // TODO add your handling code here:
+        try {
+              MessageFormat headerFormat = new MessageFormat("Zamowienie nr: "+ zamowienie.numer+" z dnia: "+zamowienie.data);
+              MessageFormat footerFormat = new MessageFormat("Strona {0} ");
+              tableMeble.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+            } catch (PrinterException pe) {
+              System.err.println("Error printing: " + pe.getMessage());
+            }
+    }//GEN-LAST:event_buttonDrukujActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonDrukuj;
+    private javax.swing.JButton buttonZrealizowane;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel labelData;
+    private javax.swing.JLabel labelDataRealizacji;
+    private javax.swing.JLabel labelNumer;
+    private javax.swing.JTable tableMeble;
     // End of variables declaration//GEN-END:variables
 }
