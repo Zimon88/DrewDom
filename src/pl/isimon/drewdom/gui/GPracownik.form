@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <Properties>
+    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[620, 0]"/>
+    </Property>
+  </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -17,34 +22,37 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" alignment="0" pref="646" max="32767" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="labelImie" min="-2" pref="38" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="textImie" pref="128" max="32767" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="labelNazwisko" pref="95" max="32767" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="textNazwisko" pref="134" max="32767" attributes="0"/>
-                      <EmptySpace min="-2" pref="89" max="-2" attributes="0"/>
-                      <Component id="buttonAnuluj" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="buttonZapisz" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="jScrollPane1" alignment="0" pref="616" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="labelForm" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="buttonEdytuj" min="-2" max="-2" attributes="0"/>
+                      <Component id="labelImie" min="-2" pref="38" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="buttonUsun" min="-2" max="-2" attributes="0"/>
+                      <Component id="textImie" pref="106" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="labelNazwisko" pref="73" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="textNazwisko" pref="108" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="101" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="buttonEdytuj" linkSize="3" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="buttonUsun" linkSize="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="buttonZapisz" linkSize="3" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="buttonAnuluj" linkSize="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -52,24 +60,24 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="284" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="353" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="buttonUsun" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="buttonEdytuj" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonUsun" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="59" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
               <Component id="labelForm" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="textImie" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonAnuluj" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonZapisz" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="labelImie" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="textImie" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="labelNazwisko" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="textNazwisko" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="buttonZapisz" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="buttonAnuluj" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -106,6 +114,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="labelNazwisko">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="text" type="java.lang.String" value="Nazwisko"/>
       </Properties>
     </Component>
@@ -113,6 +122,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="buttonZapisz">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/pl/isimon/drewdom/gui/images/x16/filesave.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Zapisz"/>
       </Properties>
       <Events>
@@ -126,6 +138,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="buttonUsun">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/pl/isimon/drewdom/gui/images/x16/edittrash.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Usu&#x144;"/>
       </Properties>
       <Events>
@@ -134,6 +149,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="buttonEdytuj">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/pl/isimon/drewdom/gui/images/x16/editpaste.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Edytuj"/>
       </Properties>
       <Events>
@@ -142,6 +160,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="buttonAnuluj">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/pl/isimon/drewdom/gui/images/x16/button_cancel.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Anuluj"/>
       </Properties>
       <Events>

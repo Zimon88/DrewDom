@@ -4,10 +4,106 @@
  */
 package pl.isimon.drewdom;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 /**
  *
  * @author Simon
  */
-public class Element {
+public class Element extends SQLiteConnection{
+    public int id;
+    public String nazwa;
+    public int wym1;
+    public int wym2;
+    public int wym3;
+    public int zadanie;
+    public Mebel mebel = null;
     
+    private final static String TABLE_NAME = "element";
+    
+    private final static String COL_ID = "id";
+    private final static String COL_NAZWA = "nazwa";
+    private final static String COL_WYM1 = "wymiar_x";
+    private final static String COL_WYM2 = "wymiar_y";
+    private final static String COL_WYM3 = "wymiar_z";
+    private final static String COL_ZADANIE = "zadanie";
+    
+    private final static String COL_MEBEL_KOD = "mebel_numer";
+    private final static String COL_MEBEL_NAZWA = "mebel_nazwa";
+    
+    public Element(){
+//        if(mebel == null) mebel = new Mebel();
+    }
+    public Element(Mebel mebel){
+        this.mebel = mebel;
+    }
+    
+    public ArrayList<Element> getData(){
+        ArrayList<Element> lista = new ArrayList();
+        String sql = "SELECT element.id,element.nazwa,element.wymiar_x,element.wymiar_y,element.wymiar_z,element.zadanie,mebel.nr_katalogowy as mebel_numer,mebel.nazwa as mebel_nazwa "
+                + " FROM element,mebel,mebel_elementy WHERE mebel_elementy.mebel_nr = mebel.nr_katalogowy AND mebel_elementy.element_id = element.id;";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                Element e = new Element(new Mebel());
+                wynik++;
+                e.id = w.getInt(COL_ID);
+                e.nazwa = w.getString(COL_NAZWA);
+                e.wym1 = w.getInt(COL_WYM1);
+                e.wym2 = w.getInt(COL_WYM2);
+                e.wym3 = w.getInt(COL_WYM3);
+                e.zadanie = w.getInt(COL_ZADANIE);
+                e.mebel.numerKatalogowy = w.getString(COL_MEBEL_KOD);
+                e.mebel.nazwa = w.getString(COL_MEBEL_NAZWA);
+                lista.add(e);
+            }
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return lista;
+    }
+    
+    public int dodaj(Element e){
+        int last_id = 0;
+        connect();
+        String sql = "INSERT INTO "+TABLE_NAME+" VALUES (null,'"+e.nazwa+"',"+e.wym1+","+e.wym2+","+e.wym3+",'',"+e.zadanie+");";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+        sql = "SELECT id AS last_id FROM "+TABLE_NAME+" ORDER BY id DESC limit 1;";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            wynik =0;
+            while(w.next()){
+                last_id = w.getInt("last_id");
+            }
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        
+        return last_id;
+    }
+    
+    private final static int ZADANIE_KLEJENIE = 1;
+    private final static int ZADANIE_PILA = 2;
+    private final static int ZADANIE_CNC = 4;
+    
+    private final static int ZADANIE = 4;
 }

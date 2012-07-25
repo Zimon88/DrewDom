@@ -62,7 +62,7 @@ public class ZamowieniePozycja extends SQLiteConnection{
         }
     }
     
-    public ArrayList<ZamowieniePozycja> getpozycjeZamowienia(String numer){
+    public ArrayList<ZamowieniePozycja> getPozycjeZamowienia(String numer){
         ArrayList<ZamowieniePozycja> lista = new ArrayList();
         String sql = "SELECT * FROM "+ TABLE_NAME +" WHERE "+COL_NRZAMOWIENIA+" = '"+numer+"';";
         connect();
@@ -98,4 +98,10 @@ public class ZamowieniePozycja extends SQLiteConnection{
             disconnect();
         }
     }
+
+    @Override
+    public String toString() {
+        return mebel + " \nSztuk:" + ilosc;
+    }
+    
 }

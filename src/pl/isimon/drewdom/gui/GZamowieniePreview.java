@@ -4,6 +4,7 @@
  */
 package pl.isimon.drewdom.gui;
 
+import pl.isimon.drewdom.gui.models.TableModelZamowieniePozycja;
 import java.awt.print.PrinterException;
 import java.text.MessageFormat;
 import javax.swing.JTable;
@@ -37,7 +38,7 @@ public class GZamowieniePreview extends javax.swing.JPanel {
     
     public void loadData(Zamowienie z){
         zamowienie = z;
-        tmzp.setModelData(pozycje.getpozycjeZamowienia(z.numer));
+        tmzp.setModelData(pozycje.getPozycjeZamowienia(z.numer));
         labelNumer.setText(z.numer);
         labelData.setText(z.data);
         labelDataRealizacji.setText(z.dataRealizacji);
@@ -63,9 +64,12 @@ public class GZamowieniePreview extends javax.swing.JPanel {
         labelDataRealizacji = new javax.swing.JLabel();
         buttonZrealizowane = new javax.swing.JButton();
 
+        tableMeble.setAutoCreateRowSorter(true);
         tableMeble.setModel(new TableModelZamowieniePozycja());
+        tableMeble.setGridColor(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(tableMeble);
 
+        buttonDrukuj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/fileprint.png"))); // NOI18N
         buttonDrukuj.setText("Drukuj");
         buttonDrukuj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -82,6 +86,7 @@ public class GZamowieniePreview extends javax.swing.JPanel {
 
         jLabel2.setText("Zrealizowane:");
 
+        buttonZrealizowane.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/lock.png"))); // NOI18N
         buttonZrealizowane.setText("Zrealizowane");
         buttonZrealizowane.setEnabled(false);
 
@@ -115,6 +120,9 @@ public class GZamowieniePreview extends javax.swing.JPanel {
                             .addComponent(labelDataRealizacji, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {buttonDrukuj, buttonZrealizowane});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -129,7 +137,7 @@ public class GZamowieniePreview extends javax.swing.JPanel {
                     .addComponent(jLabel2)
                     .addComponent(labelDataRealizacji))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonDrukuj)

@@ -4,6 +4,7 @@
  */
 package pl.isimon.drewdom.gui;
 
+import pl.isimon.drewdom.gui.models.TableModelZamowienie;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -74,10 +75,13 @@ public class GZamowienieList extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        TableZamowienie.setModel(new pl.isimon.drewdom.gui.TableModelZamowienie());
+        setPreferredSize(new java.awt.Dimension(620, 400));
+
+        TableZamowienie.setModel(new pl.isimon.drewdom.gui.models.TableModelZamowienie());
         TableZamowienie.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         jScrollPane1.setViewportView(TableZamowienie);
 
+        buttonPodglad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/filefind.png"))); // NOI18N
         buttonPodglad.setText("Podgląd");
         buttonPodglad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -85,11 +89,15 @@ public class GZamowienieList extends javax.swing.JPanel {
             }
         });
 
+        buttonRealizacja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/lock.png"))); // NOI18N
         buttonRealizacja.setText("Zrealizowane");
+        buttonRealizacja.setEnabled(false);
 
+        buttonNowe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/filenew.png"))); // NOI18N
         buttonNowe.setText("Nowe");
         buttonNowe.setEnabled(false);
 
+        buttonDrukuj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/fileprint.png"))); // NOI18N
         buttonDrukuj.setText("Drukuj");
         buttonDrukuj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -97,6 +105,7 @@ public class GZamowienieList extends javax.swing.JPanel {
             }
         });
 
+        buttonUsun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/edittrash.png"))); // NOI18N
         buttonUsun.setText("Usun");
         buttonUsun.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,34 +119,36 @@ public class GZamowienieList extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(buttonNowe)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonUsun)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonDrukuj)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buttonRealizacja)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonPodglad))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(buttonPodglad)))
+                .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {buttonDrukuj, buttonNowe, buttonPodglad, buttonRealizacja, buttonUsun});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(buttonPodglad)
-                        .addComponent(buttonRealizacja)
-                        .addComponent(buttonNowe)
-                        .addComponent(buttonUsun))
-                    .addComponent(buttonDrukuj))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buttonNowe)
+                    .addComponent(buttonUsun)
+                    .addComponent(buttonDrukuj)
+                    .addComponent(buttonPodglad)
+                    .addComponent(buttonRealizacja))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -4,14 +4,31 @@
  */
 package pl.isimon.drewdom.gui;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import pl.isimon.drewdom.Element;
 import pl.isimon.drewdom.Mebel;
 import pl.isimon.drewdom.Okucie;
 import pl.isimon.drewdom.Pracownik;
 import pl.isimon.drewdom.Zamowienie;
+import pl.isimon.drewdom.gui.utils.RotatedLabel;
 
 /**
  *
@@ -29,14 +46,32 @@ public class DrewDom extends javax.swing.JFrame {
     public Mebel mebel;
     public ArrayList<Mebel> listaMebli;
     public Okucie okucie;
+    public Element element;
+    public ArrayList<Okucie> listaOkuc;
+    public ArrayList<Zamowienie> listaZamowien;
     
     public DrewDom() {
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DrewDom.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(DrewDom.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DrewDom.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(DrewDom.class.getName()).log(Level.SEVERE, null, ex);
+        }
         zamowienie = new Zamowienie();
         pracownik = new Pracownik();
+        element = new Element();
         mebel = new Mebel();
         okucie = new Okucie();
         listaMebli = mebel.getData();
+        listaOkuc = okucie.getData();
+        listaZamowien = zamowienie.getData();
         initComponents();
+        rotatedLabel1.setDirection(RotatedLabel.Direction.VERTICAL_UP);
     }
 
     /**
@@ -52,18 +87,22 @@ public class DrewDom extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         changelogPanel = new javax.swing.JEditorPane();
+        rotatedLabel1 = new pl.isimon.drewdom.gui.utils.RotatedLabel();
         NoweZamowienie = new javax.swing.JFrame();
-        panelNoweZamowienie = new pl.isimon.drewdom.gui.GZamowienieNew(mebel.getData());
+        panelNoweZamowienie = new pl.isimon.drewdom.gui.GZamowienieNew(listaMebli);
         buttonNZZapisz = new javax.swing.JButton();
         butonNZWyczysc = new javax.swing.JButton();
         buttonNZAnuluj = new javax.swing.JButton();
         NowyMebel = new javax.swing.JFrame();
-        gMebelNowy1 = new pl.isimon.drewdom.gui.GMebelNowy();
+        buttonNMZapisz = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        panelNowyMebel = new pl.isimon.drewdom.gui.GMebelNowy(element.getData(),listaOkuc);
         tabPanel = new javax.swing.JTabbedPane();
-        panelTabZamowienia = new pl.isimon.drewdom.gui.GZamowienieList(zamowienie.getData());
-        panelTabPracownicy = new pl.isimon.drewdom.gui.GPracownik(pracownik.getData());
+        panelTabZamowienia = new pl.isimon.drewdom.gui.GZamowienieList(listaZamowien);
         panelTabMeble = new pl.isimon.drewdom.gui.GMebleLista(listaMebli);
-        panelTabOkucia = new pl.isimon.drewdom.gui.GOkucia(okucie.getData());
+        panelTabOkucia = new pl.isimon.drewdom.gui.GOkucia(listaOkuc);
+        gRpaorty1 = new pl.isimon.drewdom.gui.GRaporty(listaZamowien);
         tollBar = new javax.swing.JToolBar();
         buttonChangelog = new javax.swing.JButton();
         buttonNoweZamowienie = new javax.swing.JButton();
@@ -79,6 +118,8 @@ public class DrewDom extends javax.swing.JFrame {
         jScrollPane2.setViewportView(changelogPanel);
         changelogPanel.getAccessibleContext().setAccessibleDescription("");
 
+        rotatedLabel1.setText("rotatedLabel1");
+
         javax.swing.GroupLayout ChangelogLayout = new javax.swing.GroupLayout(Changelog.getContentPane());
         Changelog.getContentPane().setLayout(ChangelogLayout);
         ChangelogLayout.setHorizontalGroup(
@@ -91,6 +132,10 @@ public class DrewDom extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(ChangelogLayout.createSequentialGroup()
+                .addGap(79, 79, 79)
+                .addComponent(rotatedLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ChangelogLayout.setVerticalGroup(
             ChangelogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,18 +143,23 @@ public class DrewDom extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                .addComponent(rotatedLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(72, 72, 72))
         );
 
         NoweZamowienie.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         NoweZamowienie.setTitle("Nowe Zamówienie");
         NoweZamowienie.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         NoweZamowienie.setForeground(java.awt.Color.white);
-        NoweZamowienie.setMinimumSize(new java.awt.Dimension(680, 580));
+        NoweZamowienie.setMinimumSize(new java.awt.Dimension(660, 720));
 
-        panelNoweZamowienie.setMinimumSize(new java.awt.Dimension(580, 580));
+        panelNoweZamowienie.setEnabled(false);
+        panelNoweZamowienie.setMinimumSize(new java.awt.Dimension(620, 580));
+        panelNoweZamowienie.setPreferredSize(new java.awt.Dimension(620, 580));
 
+        buttonNZZapisz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/filesave.png"))); // NOI18N
         buttonNZZapisz.setText("Zapisz");
         buttonNZZapisz.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -117,6 +167,7 @@ public class DrewDom extends javax.swing.JFrame {
             }
         });
 
+        butonNZWyczysc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/editdelete.png"))); // NOI18N
         butonNZWyczysc.setText("Wyczyść");
         butonNZWyczysc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -124,6 +175,7 @@ public class DrewDom extends javax.swing.JFrame {
             }
         });
 
+        buttonNZAnuluj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/button_cancel.png"))); // NOI18N
         buttonNZAnuluj.setText("Anuluj");
         buttonNZAnuluj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -136,23 +188,23 @@ public class DrewDom extends javax.swing.JFrame {
         NoweZamowienieLayout.setHorizontalGroup(
             NoweZamowienieLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NoweZamowienieLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(NoweZamowienieLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelNoweZamowienie, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NoweZamowienieLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(buttonNZAnuluj)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(butonNZWyczysc)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonNZZapisz)))
+                .addContainerGap(5493, Short.MAX_VALUE)
+                .addComponent(buttonNZAnuluj)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(butonNZWyczysc)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonNZZapisz)
                 .addContainerGap())
+            .addComponent(panelNoweZamowienie, javax.swing.GroupLayout.DEFAULT_SIZE, 5800, Short.MAX_VALUE)
         );
+
+        NoweZamowienieLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {butonNZWyczysc, buttonNZAnuluj, buttonNZZapisz});
+
         NoweZamowienieLayout.setVerticalGroup(
             NoweZamowienieLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NoweZamowienieLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelNoweZamowienie, javax.swing.GroupLayout.PREFERRED_SIZE, 564, Short.MAX_VALUE)
+                .addComponent(panelNoweZamowienie, javax.swing.GroupLayout.PREFERRED_SIZE, 573, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(NoweZamowienieLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonNZZapisz)
@@ -161,37 +213,75 @@ public class DrewDom extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        NowyMebel.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         NowyMebel.setMinimumSize(new java.awt.Dimension(680, 480));
+
+        buttonNMZapisz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/filesave.png"))); // NOI18N
+        buttonNMZapisz.setText("Zapisz");
+        buttonNMZapisz.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonNMZapiszActionPerformed(evt);
+            }
+        });
+
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/cancel.png"))); // NOI18N
+        jButton2.setText("Anuluj");
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/editdelete.png"))); // NOI18N
+        jButton3.setText("Wyczyść");
 
         javax.swing.GroupLayout NowyMebelLayout = new javax.swing.GroupLayout(NowyMebel.getContentPane());
         NowyMebel.getContentPane().setLayout(NowyMebelLayout);
         NowyMebelLayout.setHorizontalGroup(
             NowyMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NowyMebelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(gMebelNowy1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(NowyMebelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(NowyMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(NowyMebelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(buttonNMZapisz)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2))
+                    .addComponent(panelNowyMebel, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE))
                 .addContainerGap())
         );
         NowyMebelLayout.setVerticalGroup(
             NowyMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NowyMebelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(gMebelNowy1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panelNowyMebel, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(NowyMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
+                    .addComponent(jButton2)
+                    .addComponent(buttonNMZapisz))
+                .addContainerGap())
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DrewDom ver 0.0.0.1");
+        setMinimumSize(new java.awt.Dimension(680, 700));
         setName("DrewDom ver. 0.0.0.1"); // NOI18N
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
-        tabPanel.addTab("Zamowienia", panelTabZamowienia);
-        tabPanel.addTab("Pracownicy", panelTabPracownicy);
-        tabPanel.addTab("Meble", panelTabMeble);
-        tabPanel.addTab("Okucia", panelTabOkucia);
+        tabPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tabPanel.addTab("Zamowienia", new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x22/spreadsheet.png")), panelTabZamowienia); // NOI18N
+        tabPanel.addTab("Meble", new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x22/furniture.png")), panelTabMeble); // NOI18N
+        tabPanel.addTab("Okucia", new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x22/exec.png")), panelTabOkucia); // NOI18N
+        tabPanel.addTab("Raporty", gRpaorty1);
 
+        tollBar.setFloatable(false);
         tollBar.setRollover(true);
 
+        buttonChangelog.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x48/make.png"))); // NOI18N
         buttonChangelog.setText("Changelog");
+        buttonChangelog.setEnabled(false);
         buttonChangelog.setFocusable(false);
         buttonChangelog.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         buttonChangelog.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -202,6 +292,7 @@ public class DrewDom extends javax.swing.JFrame {
         });
         tollBar.add(buttonChangelog);
 
+        buttonNoweZamowienie.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x48/spreadsheet.png"))); // NOI18N
         buttonNoweZamowienie.setText("Nowe Zamowienie");
         buttonNoweZamowienie.setFocusable(false);
         buttonNoweZamowienie.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -213,6 +304,7 @@ public class DrewDom extends javax.swing.JFrame {
         });
         tollBar.add(buttonNoweZamowienie);
 
+        buttonNowyMebel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x48/furniture.png"))); // NOI18N
         buttonNowyMebel.setText("Nowy Mebel");
         buttonNowyMebel.setFocusable(false);
         buttonNowyMebel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -228,7 +320,7 @@ public class DrewDom extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tollBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 643, Short.MAX_VALUE)
+            .addComponent(tollBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(tabPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -237,10 +329,10 @@ public class DrewDom extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(tollBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tollBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(tabPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(tabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         tabPanel.getAccessibleContext().setAccessibleName("Zamowienia");
@@ -259,6 +351,7 @@ public class DrewDom extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonNoweZamowienieActionPerformed
 
     private void buttonNowyMebelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNowyMebelActionPerformed
+        panelNowyMebel.reset();
         NowyMebel.setVisible(true);
     }//GEN-LAST:event_buttonNowyMebelActionPerformed
 
@@ -277,6 +370,46 @@ public class DrewDom extends javax.swing.JFrame {
     private void butonNZWyczyscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butonNZWyczyscActionPerformed
         panelNoweZamowienie.clear();
     }//GEN-LAST:event_butonNZWyczyscActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+         // TODO add your handling code here:
+        try{
+            String source = "res\\drewdom.db";
+            String dest ="backup\\drewdom.db.";
+            
+            DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
+	    Date date = new Date();
+            dest += dateFormat.format(date);
+            dest += ".backup";
+            File f1 = new File(source);
+            File f2 = new File(dest);
+            InputStream in = new FileInputStream(f1);
+            OutputStream out = new FileOutputStream(f2);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0){
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+            System.out.println("File copied. "+ dest);
+         } catch(FileNotFoundException ex){
+            System.out.println(ex.getMessage() + " in the specified directory.");
+            System.exit(0);
+         } catch(IOException e){
+            System.out.println(e.getMessage());  
+         }
+  
+        
+        System.out.println("UTWORZONO BACKUP");
+    }//GEN-LAST:event_formWindowClosing
+
+    private void buttonNMZapiszActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNMZapiszActionPerformed
+        Mebel m = new Mebel();
+        m.nazwa = panelNowyMebel.getNazwa();
+        m.numerKatalogowy = panelNowyMebel.getNumer();
+        mebel.dodaj(m, panelNowyMebel.getElementLista(),panelNowyMebel.getOkucieLista(),panelNowyMebel.getOpakowanieLista());
+    }//GEN-LAST:event_buttonNMZapiszActionPerformed
 
     /**
      * @param args the command line arguments
@@ -318,19 +451,23 @@ public class DrewDom extends javax.swing.JFrame {
     private javax.swing.JFrame NowyMebel;
     private javax.swing.JButton butonNZWyczysc;
     private javax.swing.JButton buttonChangelog;
+    private javax.swing.JButton buttonNMZapisz;
     private javax.swing.JButton buttonNZAnuluj;
     private javax.swing.JButton buttonNZZapisz;
     private javax.swing.JButton buttonNoweZamowienie;
     private javax.swing.JButton buttonNowyMebel;
     private javax.swing.JEditorPane changelogPanel;
-    private pl.isimon.drewdom.gui.GMebelNowy gMebelNowy1;
+    private pl.isimon.drewdom.gui.GRaporty gRpaorty1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private pl.isimon.drewdom.gui.GZamowienieNew panelNoweZamowienie;
+    private pl.isimon.drewdom.gui.GMebelNowy panelNowyMebel;
     private pl.isimon.drewdom.gui.GMebleLista panelTabMeble;
     private pl.isimon.drewdom.gui.GOkucia panelTabOkucia;
-    private pl.isimon.drewdom.gui.GPracownik panelTabPracownicy;
     private pl.isimon.drewdom.gui.GZamowienieList panelTabZamowienia;
+    private pl.isimon.drewdom.gui.utils.RotatedLabel rotatedLabel1;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JToolBar tollBar;
     // End of variables declaration//GEN-END:variables

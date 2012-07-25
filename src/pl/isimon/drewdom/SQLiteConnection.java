@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import pl.isimon.utils.PropertiesU;
 
 
 /**
@@ -19,7 +20,10 @@ import java.util.logging.Logger;
 
 public class SQLiteConnection {
     
-    private String filename= "drewdom.db";
+    private String databaseFilename;
+    private String databaseDirectory;
+    private PropertiesU p;
+    private boolean console = false;
     public Connection polaczenie;
     public Statement stmt;
     public static final String ANSI_RESET = "\u001B[0m";
@@ -33,6 +37,11 @@ public class SQLiteConnection {
     public static final String ANSI_WHITE = "\u001B[37m";
 
     public SQLiteConnection() {
+        p = new PropertiesU();
+        p.loadProperties();
+        databaseFilename = p.getProperties().getProperty("database_filename");
+        databaseDirectory = p.getProperties().getProperty("database_directory");
+        console = Boolean.getBoolean(p.getProperties().getProperty("console"));
        /* 
         try {
             Class.forName("org.sqlite.JDBC");
@@ -59,7 +68,7 @@ public class SQLiteConnection {
     public void connect(){
         try {
             Class.forName("org.sqlite.JDBC");
-            polaczenie = DriverManager.getConnection("jdbc:sqlite:res\\"+filename);
+            polaczenie = DriverManager.getConnection("jdbc:sqlite:"+databaseDirectory+databaseFilename);
             stmt = polaczenie.createStatement();
             polaczenie.setAutoCommit(true);
         } catch (ClassNotFoundException ex) {
@@ -86,21 +95,34 @@ public class SQLiteConnection {
     }
 
     public void printSqlErr(String sql){
-        System.err.println("Błąd przy wykonywaniu zapytania "+ANSI_PURPLE+sql+ANSI_RESET);
+        String msg;
+        if(console) {
+            msg = "Błąd przy wykonywaniu zapytania "+sql;
+        } else {
+            msg = "Błąd przy wykonywaniu zapytania "+ANSI_PURPLE+sql+ANSI_RESET;
+        }
+        System.err.println(msg);
     }
     
     public void printSqlErr(String sql, SQLException ex){
-        System.err.println("Błąd przy wykonywaniu zapytania "+ANSI_PURPLE+sql+ANSI_RESET);
+        String msg;
+        if(console) {
+            msg = "Błąd przy wykonywaniu zapytania "+sql;
+        } else {
+            msg = "Błąd przy wykonywaniu zapytania "+ANSI_PURPLE+sql+ANSI_RESET;
+        }
+        System.err.println(msg);
         System.err.println(ex);
     }
     
     public void printSucces(String sql, int wynik){
-        System.out.println(ANSI_GREEN+"Wykonano zapytanie "+ANSI_PURPLE+sql+ANSI_GREEN+" Liczba Dodanych/Zaktualizowanych/Usuniętych rekordów: " + wynik +ANSI_RESET);
-        try {
-            polaczenie.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(SQLiteConnection.class.getName()).log(Level.SEVERE, null, ex);
+         String msg;
+        if(console) {
+            msg = "Wykonano zapytanie "+sql+" Liczba Dodanych/Zaktualizowanych/Usuniętych rekordów: " + wynik;
+        } else {
+            msg = ANSI_GREEN+"Wykonano zapytanie "+ANSI_PURPLE+sql+ANSI_GREEN+" Liczba Dodanych/Zaktualizowanych/Usuniętych rekordów: " + wynik +ANSI_RESET;
         }
+        System.out.println(msg);
     }
     
     public void printSelect(String sql, int wynik){

@@ -82,4 +82,9 @@ public class Okucie extends SQLiteConnection{
             disconnect();
         }
     }
+
+    @Override
+    public String toString() {
+        return nazwa;
+    }
 }

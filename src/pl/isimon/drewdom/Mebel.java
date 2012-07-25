@@ -15,17 +15,28 @@ import java.util.ArrayList;
 public class Mebel extends SQLiteConnection{
    public String numerKatalogowy;
    public String nazwa;
-   public ArrayList<Element> elementy;
-   public Karton karton;
-   public Pracownik pracownik;
+   public ArrayList<ElementPozycja> lista = null;
+//   public Pracownik pracownik;
+   
+   private ElementPozycja elementPozycja;
+   private OkuciePozycja okuciePozycja;
+   private Opakowanie opakowanie;
    
    private final static String COL_NR = "nr_katalogowy";
    private final static String COL_NAZWA = "nazwa";
    private final static String COL_PRACOWNIK =  "pracownik";
    
+   private final static String TABLE_NAME = "mebel";
+   
+   public Mebel(){
+       elementPozycja = new ElementPozycja();
+       okuciePozycja = new OkuciePozycja();
+       opakowanie = new Opakowanie();
+   }
+   
    public ArrayList<Mebel> getData(){
         ArrayList<Mebel> lista = new ArrayList();
-        String sql = "SELECT * FROM mebel";
+        String sql = "SELECT * FROM "+TABLE_NAME;
         connect();
         try {
             ResultSet w = stmt.executeQuery(sql);
@@ -48,7 +59,7 @@ public class Mebel extends SQLiteConnection{
    
    public Mebel getMebel(String nr){
        Mebel m = new Mebel();
-        String sql = "SELECT * FROM mebel WHERE "+COL_NR+" = '"+nr+"';";
+        String sql = "SELECT * FROM "+TABLE_NAME+" WHERE "+COL_NR+" = '"+nr+"';";
         connect();
         try {
             ResultSet w = stmt.executeQuery(sql);
@@ -65,4 +76,27 @@ public class Mebel extends SQLiteConnection{
         }
         return m;
    }
+   
+   public void dodaj(Mebel mebel, ArrayList<ElementPozycja> elementyLista,ArrayList<OkuciePozycja> okucieLista, ArrayList<Opakowanie> opakowanieLista){
+        connect();
+        String sql = "INSERT INTO "+TABLE_NAME+" VALUES ('"+mebel.numerKatalogowy+"','"+mebel.nazwa+"');";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+            this.elementPozycja.dodaj(mebel.numerKatalogowy,elementyLista);
+            this.okuciePozycja.dodaj(mebel.numerKatalogowy,okucieLista);
+            this.opakowanie.dodaj(mebel.numerKatalogowy,opakowanieLista);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+   }
+
+    @Override
+    public String toString() {
+        return  nazwa +"\n" + numerKatalogowy;
+    }
+   
 }

@@ -4,9 +4,9 @@
  */
 package pl.isimon.drewdom.gui;
 
-import java.util.Date;
+import pl.isimon.drewdom.gui.models.TableModelZamowieniePozycja;
+import pl.isimon.drewdom.gui.models.TableModelMebleLista;
 import java.util.ArrayList;
-import java.util.Calendar;
 import pl.isimon.drewdom.Mebel;
 import pl.isimon.drewdom.Zamowienie;
 import pl.isimon.drewdom.ZamowieniePozycja;
@@ -79,7 +79,8 @@ public class GZamowienieNew extends javax.swing.JPanel {
         buttonUsun = new javax.swing.JButton();
         spinnerSztuk = new javax.swing.JSpinner();
 
-        setPreferredSize(new java.awt.Dimension(575, 515));
+        setMinimumSize(new java.awt.Dimension(620, 515));
+        setPreferredSize(new java.awt.Dimension(620, 515));
 
         tableZamowienie.setModel(new TableModelZamowieniePozycja());
         jScrollPane1.setViewportView(tableZamowienie);
@@ -87,6 +88,7 @@ public class GZamowienieNew extends javax.swing.JPanel {
         tableMeble.setModel(new TableModelMebleLista());
         jScrollPane2.setViewportView(tableMeble);
 
+        buttonDodaj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/button_ok.png"))); // NOI18N
         buttonDodaj.setText("Dodaj");
         buttonDodaj.setFocusPainted(false);
         buttonDodaj.addActionListener(new java.awt.event.ActionListener() {
@@ -107,6 +109,7 @@ public class GZamowienieNew extends javax.swing.JPanel {
 
         labelDataRealizacji.setText("Data realizacji");
 
+        buttonSzukaj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
         buttonSzukaj.setText("Szukaj");
         buttonSzukaj.setEnabled(false);
 
@@ -114,6 +117,7 @@ public class GZamowienieNew extends javax.swing.JPanel {
 
         labelNazwa.setText("Nazwa");
 
+        buttonUsun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/edittrash.png"))); // NOI18N
         buttonUsun.setText("Usuń");
         buttonUsun.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -142,21 +146,23 @@ public class GZamowienieNew extends javax.swing.JPanel {
                         .addComponent(textNazwa, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonSzukaj)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                         .addComponent(buttonUsun))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(labelDataRealizacji)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(labelNumer)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(textNumer, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(labelDataZamowienia)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(textNumer, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(labelDataZamowienia))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(labelDataRealizacji)))
+                        .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(dcDataZamowienia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(dcDataRealizaji, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(dcDataRealizaji, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dcDataZamowienia, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(labelSztuk)
@@ -166,6 +172,9 @@ public class GZamowienieNew extends javax.swing.JPanel {
                         .addComponent(buttonDodaj)))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {buttonDodaj, buttonSzukaj, buttonUsun});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -181,7 +190,7 @@ public class GZamowienieNew extends javax.swing.JPanel {
                     .addComponent(dcDataRealizaji, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelDataRealizacji))
                 .addGap(11, 11, 11)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelKod)
@@ -209,7 +218,7 @@ public class GZamowienieNew extends javax.swing.JPanel {
             ZamowieniePozycja poz = new ZamowieniePozycja();
             poz.ilosc = sztuk;
             poz.mebel = tmml.getMebel(selection);
-            zamowienieLista.add(poz);
+            //zamowienieLista.add(poz);
             tmzp.addZamowieniePozycja(poz);
             spinnerSztuk.getModel().setValue(new Integer(0));
         }

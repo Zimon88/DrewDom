@@ -4,9 +4,11 @@
  */
 package pl.isimon.drewdom.gui;
 
+import pl.isimon.drewdom.gui.models.TableModelOkucie;
 import java.util.ArrayList;
 import javax.swing.table.TableColumn;
 import pl.isimon.drewdom.Okucie;
+import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
 
 /**
  *
@@ -20,6 +22,7 @@ public class GOkucia extends javax.swing.JPanel {
     private boolean edycja = false;
     private TableModelOkucie tmo;
     private Okucie okucie;
+    private TableColumnAdjuster tca;
     public GOkucia() {
         initComponents();
     }
@@ -30,8 +33,8 @@ public class GOkucia extends javax.swing.JPanel {
         tmo = (TableModelOkucie) tableOkucia.getModel();
         tmo.setModelData(lista);
         TableColumn col;
-        col = tableOkucia.getColumnModel().getColumn(0);
-        col.setPreferredWidth(75);
+        tca = new TableColumnAdjuster(tableOkucia);
+        tca.adjustColumns();
 
     }
 
@@ -59,13 +62,15 @@ public class GOkucia extends javax.swing.JPanel {
 
         labelNazwa.setText("Nazwa");
 
-        buttonZapisz.setText("Zapisz");
+        buttonZapisz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/button_ok.png"))); // NOI18N
+        buttonZapisz.setText("Dodaj");
         buttonZapisz.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonZapiszActionPerformed(evt);
             }
         });
 
+        buttonUsun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/edittrash.png"))); // NOI18N
         buttonUsun.setText("Usuń");
         buttonUsun.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -73,6 +78,7 @@ public class GOkucia extends javax.swing.JPanel {
             }
         });
 
+        buttonEdytuj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/editpaste.png"))); // NOI18N
         buttonEdytuj.setText("Edytuj");
         buttonEdytuj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -80,7 +86,9 @@ public class GOkucia extends javax.swing.JPanel {
             }
         });
 
+        buttonAnuluj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/button_cancel.png"))); // NOI18N
         buttonAnuluj.setText("Anuluj");
+        buttonAnuluj.setEnabled(false);
         buttonAnuluj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonAnulujActionPerformed(evt);
@@ -94,18 +102,18 @@ public class GOkucia extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelNazwa)
-                        .addGap(18, 18, 18)
+                        .addComponent(labelNazwa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textNazwa, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonZapisz)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonEdytuj)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonAnuluj)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonUsun)))
                 .addContainerGap())
         );
@@ -113,16 +121,16 @@ public class GOkucia extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textNazwa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelNazwa)
-                    .addComponent(buttonZapisz)
                     .addComponent(buttonUsun)
+                    .addComponent(buttonAnuluj)
                     .addComponent(buttonEdytuj)
-                    .addComponent(buttonAnuluj))
-                .addGap(65, 65, 65))
+                    .addComponent(buttonZapisz)
+                    .addComponent(textNazwa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelNazwa))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -131,6 +139,9 @@ public class GOkucia extends javax.swing.JPanel {
         if(edycja){
             okucie.edytuj(okucie);
             edycja = false;
+            buttonZapisz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/button_ok.png")));
+            buttonZapisz.setText("Dodaj");
+            buttonAnuluj.setEnabled(false);
         } else {
             okucie.dodaj(okucie);
         }
@@ -142,11 +153,17 @@ public class GOkucia extends javax.swing.JPanel {
         edycja = true;
         okucie = tmo.getOkucie(tableOkucia.getSelectedRow());
         textNazwa.setText(okucie.nazwa);
+        buttonAnuluj.setEnabled(true);
+        buttonZapisz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/filesave.png")));
+        buttonZapisz.setText("Zapisz");
     }//GEN-LAST:event_buttonEdytujActionPerformed
 
     private void buttonAnulujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAnulujActionPerformed
         textNazwa.setText("");
         edycja = false;
+        buttonZapisz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/button_ok.png")));
+        buttonZapisz.setText("Dodaj");
+        buttonAnuluj.setEnabled(false);
     }//GEN-LAST:event_buttonAnulujActionPerformed
 
     private void buttonUsunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUsunActionPerformed

@@ -35,6 +35,11 @@
       </SubComponents>
     </Container>
   </NonVisualComponents>
+  <Properties>
+    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[620, 400]"/>
+    </Property>
+  </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -50,23 +55,23 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="buttonNowe" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jScrollPane1" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="buttonNowe" linkSize="1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="buttonUsun" min="-2" max="-2" attributes="0"/>
+                      <Component id="buttonUsun" linkSize="1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="buttonDrukuj" linkSize="1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="buttonDrukuj" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="buttonRealizacja" min="-2" max="-2" attributes="0"/>
+                      <Component id="buttonRealizacja" linkSize="1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="buttonPodglad" min="-2" max="-2" attributes="0"/>
+                      <Component id="buttonPodglad" linkSize="1" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jScrollPane1" min="-2" pref="596" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -74,18 +79,16 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="353" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="buttonPodglad" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="buttonRealizacja" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="buttonNowe" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="buttonUsun" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="buttonDrukuj" alignment="0" min="-2" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="342" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="buttonNowe" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonUsun" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonDrukuj" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonPodglad" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonRealizacja" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="34" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -101,7 +104,7 @@
         <Component class="javax.swing.JTable" name="TableZamowienie">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new pl.isimon.drewdom.gui.TableModelZamowienie()" type="code"/>
+              <Connection code="new pl.isimon.drewdom.gui.models.TableModelZamowienie()" type="code"/>
             </Property>
             <Property name="autoResizeMode" type="int" value="4"/>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -116,6 +119,9 @@
     </Container>
     <Component class="javax.swing.JButton" name="buttonPodglad">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/pl/isimon/drewdom/gui/images/x16/filefind.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Podgl&#x105;d"/>
       </Properties>
       <Events>
@@ -124,17 +130,27 @@
     </Component>
     <Component class="javax.swing.JButton" name="buttonRealizacja">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/pl/isimon/drewdom/gui/images/x16/lock.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Zrealizowane"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="buttonNowe">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/pl/isimon/drewdom/gui/images/x16/filenew.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Nowe"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="buttonDrukuj">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/pl/isimon/drewdom/gui/images/x16/fileprint.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Drukuj"/>
       </Properties>
       <Events>
@@ -143,6 +159,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="buttonUsun">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/pl/isimon/drewdom/gui/images/x16/edittrash.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Usun"/>
       </Properties>
       <Events>

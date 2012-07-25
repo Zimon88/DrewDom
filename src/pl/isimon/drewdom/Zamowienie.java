@@ -7,14 +7,8 @@ package pl.isimon.drewdom;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 /**
  *
@@ -47,6 +41,7 @@ public class Zamowienie extends SQLiteConnection{
                 Zamowienie z = new Zamowienie();
                 z.numer = w.getString(COL_NUMER);
                 z.data  = w.getString(COL_DATA);
+                System.err.println(w.getString(COL_DATA));
                 z.dataRealizacji = w.getString(COL_DATA_REALIZACJI);
                 lista.add(z);
             }
@@ -72,7 +67,7 @@ public class Zamowienie extends SQLiteConnection{
             s2 = sqlDate.toString();
         }
         
-        String sql = "INSERT INTO zamowienie VALUES('"+numer+"',"+s1+","+s2+");";
+        String sql = "INSERT INTO zamowienie VALUES('"+numer+"','"+s1+"','"+s2+"');";
         
         connect();
         int wynik;
@@ -107,6 +102,11 @@ public class Zamowienie extends SQLiteConnection{
         } finally {
             disconnect();
         }
+    }
+
+    @Override
+    public String toString() {
+        return  numer + " - " + data;
     }
     
     
