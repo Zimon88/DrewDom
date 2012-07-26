@@ -32,7 +32,7 @@ public class Okucie extends SQLiteConnection{
                 o.nazwa = w.getString(COL_NAZWA);
                 lista.add(o);
             }
-            printSucces(sql, wynik);
+            printSelect(sql, wynik);
         } catch (SQLException ex) {
             printSqlErr(sql, ex);
         } finally {
@@ -86,5 +86,9 @@ public class Okucie extends SQLiteConnection{
     @Override
     public String toString() {
         return nazwa;
+    }
+
+    public ArrayList<OkuciePozycja> getData(String numerKatalogowy) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

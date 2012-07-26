@@ -7,6 +7,7 @@ package pl.isimon.drewdom;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JTextField;
 
 /**
  *
@@ -20,6 +21,7 @@ public class ElementPozycja extends SQLiteConnection{
     private final static String TABLE_NAME = "mebel_elementy";
     
     private final static String TABLE_NAME_ELEMENT = "element";
+    private final static String COL_MEBELNR = "mebel_nr";
     
     private final static String COL_ID = "id";
     private final static String COL_NAZWA = "nazwa";
@@ -93,7 +95,7 @@ public class ElementPozycja extends SQLiteConnection{
                 e.ilosc  = w.getInt(COL_ILOSC)*ilosc;
                 lista.add(e);
             }
-            printSucces(sql, wynik);
+            printSelect(sql, wynik);
         } catch (SQLException ex) {
             printSqlErr(sql, ex);
         } finally {
@@ -101,6 +103,36 @@ public class ElementPozycja extends SQLiteConnection{
         }
         return lista;
     }
-    
-    
+
+    void usun(String numerKatalogowy) {
+        connect();
+        String sql = "DELETE FROM "+TABLE_NAME+" WHERE "+COL_MEBELNR+" = '"+numerKatalogowy+"';";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+    }
+
+    public void edytuj(String textKod, ElementPozycja ep) {
+        connect();
+        String sql = "UPDATE "+TABLE_NAME+" "
+                + "SET "+COL_ILOSC+" = "+ep.ilosc+" "
+                + "WHERE "+COL_MEBELNR+" = '"+textKod+"' AND element_id="+ep.element.id+";";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+            element.edytuj(ep.element);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+    }
+
 }

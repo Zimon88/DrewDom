@@ -13,11 +13,11 @@ import pl.isimon.drewdom.Mebel;
  */
 public class TableModelMebleLista extends javax.swing.table.AbstractTableModel{
         private ArrayList<Mebel> lista = null;
-        private final static Object[] columnNames = {"Numer","Nazwa"};
+        private final static Object[] columnNames = {"Numer","Nazwa","Kod"};
         
         private final static int IDX_NUMER = 0;
         private final static int IDX_NAZWA = 1;
-       
+        private final static int IDX_KOD = 2;
         /**
          * 
          */
@@ -42,6 +42,7 @@ public class TableModelMebleLista extends javax.swing.table.AbstractTableModel{
             switch (columnIndex){
                 case IDX_NUMER: return o.numerKatalogowy;
                 case IDX_NAZWA: return o.nazwa;
+                case IDX_KOD: return o.kod;
                 default:
                     return o;
             }
@@ -59,6 +60,7 @@ public class TableModelMebleLista extends javax.swing.table.AbstractTableModel{
         
         public void setModelData(ArrayList<Mebel> pozycje){
             this.lista = pozycje;
+            fireTableDataChanged();
         }
         
         public Mebel getMebel(int position){

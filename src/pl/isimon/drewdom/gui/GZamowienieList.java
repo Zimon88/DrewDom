@@ -22,18 +22,20 @@ public class GZamowienieList extends javax.swing.JPanel {
      */
     private Zamowienie zamowienie;
     private TableModelZamowienie tmz;
+    private ArrayList<Zamowienie> lista = null;
     public GZamowienieList() {
-        initComponents();
-    }
-    
-    public GZamowienieList(ArrayList<Zamowienie> lista){
         initComponents();
         zamowienie = new Zamowienie();
         tmz = (TableModelZamowienie)TableZamowienie.getModel();
-        tmz.setModelData(lista);
     }
     
-    public void setData(ArrayList<Zamowienie> lista){
+//    public void setData(ArrayList<Zamowienie> lista){
+//        tmz.setModelData(lista);
+//    }
+    
+    public void loadData() {
+        if (lista == null) lista = new ArrayList();
+        lista = zamowienie.getData();
         tmz.setModelData(lista);
     }
 
@@ -186,4 +188,6 @@ public class GZamowienieList extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private pl.isimon.drewdom.gui.GZamowieniePreview panelZamowieniePreview;
     // End of variables declaration//GEN-END:variables
+
+    
 }

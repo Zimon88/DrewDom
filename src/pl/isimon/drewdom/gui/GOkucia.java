@@ -23,19 +23,19 @@ public class GOkucia extends javax.swing.JPanel {
     private TableModelOkucie tmo;
     private Okucie okucie;
     private TableColumnAdjuster tca;
+    private ArrayList<Okucie> lista = null;
     public GOkucia() {
         initComponents();
-    }
-    
-    public GOkucia(ArrayList<Okucie> lista){
-        this();
         okucie = new Okucie();
         tmo = (TableModelOkucie) tableOkucia.getModel();
-        tmo.setModelData(lista);
-        TableColumn col;
         tca = new TableColumnAdjuster(tableOkucia);
-        tca.adjustColumns();
-
+    }
+    
+     void loadData() {
+         if(lista == null) lista = new ArrayList();
+         lista = okucie.getData();
+         tmo.setModelData(lista);
+         tca.adjustColumns();
     }
 
     /**
@@ -145,7 +145,7 @@ public class GOkucia extends javax.swing.JPanel {
         } else {
             okucie.dodaj(okucie);
         }
-        tmo.setModelData(okucie.getData());
+        loadData();
         textNazwa.setText("");
     }//GEN-LAST:event_buttonZapiszActionPerformed
 
@@ -182,4 +182,6 @@ public class GOkucia extends javax.swing.JPanel {
     private javax.swing.JTable tableOkucia;
     private javax.swing.JTextField textNazwa;
     // End of variables declaration//GEN-END:variables
+
+   
 }

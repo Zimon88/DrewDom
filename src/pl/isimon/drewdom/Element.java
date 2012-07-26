@@ -61,7 +61,7 @@ public class Element extends SQLiteConnection{
                 e.mebel.nazwa = w.getString(COL_MEBEL_NAZWA);
                 lista.add(e);
             }
-            printSucces(sql, wynik);
+            printSelect(sql, wynik);
         } catch (SQLException ex) {
             printSqlErr(sql, ex);
         } finally {
@@ -89,9 +89,10 @@ public class Element extends SQLiteConnection{
             ResultSet w = stmt.executeQuery(sql);
             wynik =0;
             while(w.next()){
+                wynik++;
                 last_id = w.getInt("last_id");
             }
-            printSucces(sql, wynik);
+            printSelect(sql, wynik);
         } catch (SQLException ex) {
             printSqlErr(sql, ex);
         } finally {
@@ -101,9 +102,23 @@ public class Element extends SQLiteConnection{
         return last_id;
     }
     
-    private final static int ZADANIE_KLEJENIE = 1;
-    private final static int ZADANIE_PILA = 2;
-    private final static int ZADANIE_CNC = 4;
-    
-    private final static int ZADANIE = 4;
+    void edytuj(Element e) {
+        connect();
+        String sql = "UPDATE "+TABLE_NAME+" SET "
+                + COL_NAZWA + " = '" + e.nazwa + "' "
+                + COL_WYM1 + " = " + e.wym1 + " "
+                + COL_WYM2 + " = " + e.wym2 + " "
+                + COL_WYM3 + " = " + e.wym3 + " "
+                + COL_ZADANIE + " = " + e.zadanie + " "
+                + "WHERE " + COL_ID + "=" + e.id+";";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+    }
 }

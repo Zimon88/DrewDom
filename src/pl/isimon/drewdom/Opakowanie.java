@@ -4,6 +4,7 @@
  */
 package pl.isimon.drewdom;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -19,7 +20,37 @@ public class Opakowanie extends SQLiteConnection{
     public int id;
     
     private final static String TABLE_NAME = "opakowanie";
+    private final static String COL_MEBELNR = "mebel_nr";
+    private final static String COL_WYM1 = "wymiar_x";
+    private final static String COL_WYM2 = "wymiar_y";
+    private final static String COL_WYM3 = "wymiar_z";
+    private final static String COL_ID = "id";
 
+    public ArrayList<Opakowanie> getData(String numer){
+        ArrayList<Opakowanie> lista = new ArrayList();
+        String sql = "SELECT * FROM "+TABLE_NAME + " WHERE "+COL_MEBELNR+"='" + numer + "';";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                Opakowanie o = new Opakowanie();
+                o.id = w.getInt(COL_ID);
+                o.nrMebla = numer;
+                o.wymiar_x = w.getInt(COL_WYM1);
+                o.wymiar_y = w.getInt(COL_WYM2);
+                o.wymiar_z = w.getInt(COL_WYM3);
+                lista.add(o);
+            }
+            printSelect(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return lista;
+    }
+    
     void dodaj(String numer, ArrayList<Opakowanie> opakowanieLista) {
         for(int i = 0; i<opakowanieLista.size();i++){
             connect();
@@ -34,6 +65,20 @@ public class Opakowanie extends SQLiteConnection{
             } finally {
                 disconnect();
             }
+        }
+    }
+
+    void usun(String numerKatalogowy) {
+        connect();
+        String sql = "DELETE FROM "+TABLE_NAME+" WHERE "+COL_MEBELNR+" = '"+numerKatalogowy+"';";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
         }
     }
 }

@@ -27,6 +27,7 @@ public class GRaporty extends javax.swing.JPanel {
     
     private ComboBoxModelZamowienie cbmz;
     ArrayList<ZamowieniePozycja> pozycjeLista;
+    ArrayList<Zamowienie> zamowienieLista = null;
     ZamowieniePozycja pozycja;
     TableModelRaportSzczegolwy tmrs;
     RaportSzczegolowy raportS;
@@ -37,14 +38,9 @@ public class GRaporty extends javax.swing.JPanel {
      */
     public GRaporty() {
         initComponents();
-    }
-    
-    public GRaporty(ArrayList<Zamowienie> lista){
-        this();
         zamowienie = new Zamowienie();
         raportS = new RaportSzczegolowy();
         cbmz = (ComboBoxModelZamowienie) cbListaZamowien.getModel();
-        cbmz.setModelData(lista);
         pozycja= new ZamowieniePozycja();
         tmrs = (TableModelRaportSzczegolwy) tableRaportSzczegolwy.getModel();
         int rowHeight = tableRaportSzczegolwy.getRowHeight();
@@ -52,8 +48,12 @@ public class GRaporty extends javax.swing.JPanel {
         tableRaportSzczegolwy.getColumnModel().getColumn(1).setCellRenderer(new ElementyRaportSzczegolowyCellRenderer());
         tableRaportSzczegolwy.getColumnModel().getColumn(0).setCellRenderer(new MultiLineCellRenderer());
         tca = new TableColumnAdjuster(tableRaportSzczegolwy);
-        
-        
+    }
+    
+    public void loadData(){
+        if(zamowienieLista == null) zamowienieLista = new ArrayList();
+        zamowienieLista = zamowienie.getData();
+        cbmz.setModelData(zamowienieLista);
     }
     
     public void loadDataRaportSzczegolwy(Zamowienie z){

@@ -7,6 +7,7 @@ package pl.isimon.drewdom.gui;
 import pl.isimon.drewdom.gui.models.TableModelMebleLista;
 import java.util.ArrayList;
 import pl.isimon.drewdom.Mebel;
+import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
 
 /**
  *
@@ -14,16 +15,30 @@ import pl.isimon.drewdom.Mebel;
  */
 public class GMebleLista extends javax.swing.JPanel {
 
+    private TableModelMebleLista tableModelMebleLista;
+    private Mebel mebel;
+    private ArrayList<Mebel> lista = null;
+    private TableColumnAdjuster tca;
     /**
      * Creates new form GMebleLista
      */
     public GMebleLista() {
         initComponents();
+        mebel = new Mebel();
+        tca = new TableColumnAdjuster(tabelaMeble);
+        tableModelMebleLista = (TableModelMebleLista) tabelaMeble.getModel();
     }
     
     public GMebleLista(ArrayList<Mebel> lista) {
         initComponents();
         ((TableModelMebleLista)tabelaMeble.getModel()).setModelData(lista);
+    }
+    
+    public void loadData(){
+        if(lista == null) lista = new ArrayList();
+        lista = mebel.getData();
+        tableModelMebleLista.setModelData(lista);
+        tca.adjustColumns();
     }
 
     /**
@@ -35,9 +50,11 @@ public class GMebleLista extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        previewMebel = new javax.swing.JFrame();
+        gMebelNowy1 = new pl.isimon.drewdom.gui.GMebelNowy();
+        jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaMeble = new javax.swing.JTable();
-        buttonNowy = new javax.swing.JButton();
         buttonEdycja = new javax.swing.JButton();
         buttonPodglad = new javax.swing.JButton();
         buttonUsun = new javax.swing.JButton();
@@ -46,39 +63,79 @@ public class GMebleLista extends javax.swing.JPanel {
         labelSzukajKod = new javax.swing.JLabel();
         labelSzukajNazwa = new javax.swing.JLabel();
         buttonSzukaj = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+
+        previewMebel.setMinimumSize(new java.awt.Dimension(700, 600));
+        previewMebel.setPreferredSize(new java.awt.Dimension(700, 600));
+
+        gMebelNowy1.setMinimumSize(new java.awt.Dimension(620, 560));
+
+        jButton1.setText("Zapisz");
+
+        javax.swing.GroupLayout previewMebelLayout = new javax.swing.GroupLayout(previewMebel.getContentPane());
+        previewMebel.getContentPane().setLayout(previewMebelLayout);
+        previewMebelLayout.setHorizontalGroup(
+            previewMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(previewMebelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(previewMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gMebelNowy1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, previewMebelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
+                .addContainerGap())
+        );
+        previewMebelLayout.setVerticalGroup(
+            previewMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(previewMebelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(gMebelNowy1, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
 
         tabelaMeble.setModel(new TableModelMebleLista());
         jScrollPane1.setViewportView(tabelaMeble);
-
-        buttonNowy.setBackground(new java.awt.Color(255, 51, 51));
-        buttonNowy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/filenew.png"))); // NOI18N
-        buttonNowy.setText("Nowy");
-        buttonNowy.setEnabled(false);
 
         buttonEdycja.setBackground(new java.awt.Color(255, 51, 51));
         buttonEdycja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/editpaste.png"))); // NOI18N
         buttonEdycja.setText("Edycja");
         buttonEdycja.setEnabled(false);
 
+        buttonPodglad.setBackground(new java.awt.Color(255, 51, 102));
         buttonPodglad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/filefind.png"))); // NOI18N
         buttonPodglad.setText("Podgląd");
+        buttonPodglad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonPodgladActionPerformed(evt);
+            }
+        });
 
-        buttonUsun.setBackground(new java.awt.Color(255, 51, 51));
         buttonUsun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/edittrash.png"))); // NOI18N
         buttonUsun.setText("Usuń");
-        buttonUsun.setEnabled(false);
+        buttonUsun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonUsunActionPerformed(evt);
+            }
+        });
 
         textSzukajKod.setEnabled(false);
 
         textSzukajNazwa.setEnabled(false);
 
-        labelSzukajKod.setText("Kod");
+        labelSzukajKod.setText("Numer");
 
         labelSzukajNazwa.setText("Nazwa");
 
         buttonSzukaj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
         buttonSzukaj.setText("Szukaj");
         buttonSzukaj.setEnabled(false);
+
+        jLabel1.setText("Kod");
+
+        jTextField1.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -96,11 +153,14 @@ public class GMebleLista extends javax.swing.JPanel {
                         .addComponent(labelSzukajNazwa)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(textSzukajNazwa, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buttonSzukaj))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(buttonNowy)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(buttonPodglad)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonEdycja)
@@ -109,7 +169,9 @@ public class GMebleLista extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {buttonEdycja, buttonNowy, buttonPodglad, buttonSzukaj, buttonUsun});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {buttonEdycja, buttonPodglad, buttonSzukaj, buttonUsun});
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextField1, textSzukajKod, textSzukajNazwa});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,27 +182,53 @@ public class GMebleLista extends javax.swing.JPanel {
                     .addComponent(textSzukajNazwa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buttonSzukaj)
                     .addComponent(labelSzukajNazwa)
-                    .addComponent(labelSzukajKod))
+                    .addComponent(labelSzukajKod)
+                    .addComponent(jLabel1)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonUsun)
                     .addComponent(buttonEdycja)
-                    .addComponent(buttonPodglad)
-                    .addComponent(buttonNowy))
+                    .addComponent(buttonPodglad))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void buttonUsunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUsunActionPerformed
+          // TODO add your handling code here:
+        int selection = tabelaMeble.getSelectedRow();
+        if(selection!=-1){
+            Mebel m = tableModelMebleLista.getMebel(selection);
+            lista.remove(m);
+            mebel.usun(m);
+            tableModelMebleLista.setModelData(lista);
+        }
+    }//GEN-LAST:event_buttonUsunActionPerformed
+
+    private void buttonPodgladActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPodgladActionPerformed
+        int selection = tabelaMeble.getSelectedRow();
+        if(selection!=-1){
+            Mebel m = tableModelMebleLista.getMebel(selection);
+            previewMebel.setVisible(true);
+            gMebelNowy1.loadData(m);
+        }
+    }//GEN-LAST:event_buttonPodgladActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonEdycja;
-    private javax.swing.JButton buttonNowy;
     private javax.swing.JButton buttonPodglad;
     private javax.swing.JButton buttonSzukaj;
     private javax.swing.JButton buttonUsun;
+    private pl.isimon.drewdom.gui.GMebelNowy gMebelNowy1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelSzukajKod;
     private javax.swing.JLabel labelSzukajNazwa;
+    private javax.swing.JFrame previewMebel;
     private javax.swing.JTable tabelaMeble;
     private javax.swing.JTextField textSzukajKod;
     private javax.swing.JTextField textSzukajNazwa;

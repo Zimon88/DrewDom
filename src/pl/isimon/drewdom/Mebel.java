@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class Mebel extends SQLiteConnection{
    public String numerKatalogowy;
    public String nazwa;
+   public String kod;
    public ArrayList<ElementPozycja> lista = null;
 //   public Pracownik pracownik;
    
@@ -24,6 +25,7 @@ public class Mebel extends SQLiteConnection{
    
    private final static String COL_NR = "nr_katalogowy";
    private final static String COL_NAZWA = "nazwa";
+   private final static String COL_KOD = "kod";
    private final static String COL_PRACOWNIK =  "pracownik";
    
    private final static String TABLE_NAME = "mebel";
@@ -45,6 +47,7 @@ public class Mebel extends SQLiteConnection{
                 Mebel o = new Mebel();
                 o.numerKatalogowy = w.getString(COL_NR);
                 o.nazwa = w.getString(COL_NAZWA);
+                o.kod = w.getString(COL_KOD);
                 //TODO o.pracownik = 
                 lista.add(o);
             }
@@ -58,7 +61,7 @@ public class Mebel extends SQLiteConnection{
    }
    
    public Mebel getMebel(String nr){
-       Mebel m = new Mebel();
+        Mebel m = new Mebel();
         String sql = "SELECT * FROM "+TABLE_NAME+" WHERE "+COL_NR+" = '"+nr+"';";
         connect();
         try {
@@ -67,6 +70,7 @@ public class Mebel extends SQLiteConnection{
             while(w.next()){
                 m.numerKatalogowy = w.getString(COL_NR);
                 m.nazwa = w.getString(COL_NAZWA);
+                m.kod = w.getString(COL_KOD);
             }
             printSucces(sql, wynik);
         } catch (SQLException ex) {
@@ -79,7 +83,7 @@ public class Mebel extends SQLiteConnection{
    
    public void dodaj(Mebel mebel, ArrayList<ElementPozycja> elementyLista,ArrayList<OkuciePozycja> okucieLista, ArrayList<Opakowanie> opakowanieLista){
         connect();
-        String sql = "INSERT INTO "+TABLE_NAME+" VALUES ('"+mebel.numerKatalogowy+"','"+mebel.nazwa+"');";
+        String sql = "INSERT INTO "+TABLE_NAME+" VALUES ('"+mebel.numerKatalogowy+"','"+mebel.nazwa+"','"+mebel.kod+"');";
         int wynik;
         try {
             wynik = stmt.executeUpdate(sql);
@@ -89,6 +93,24 @@ public class Mebel extends SQLiteConnection{
             this.opakowanie.dodaj(mebel.numerKatalogowy,opakowanieLista);
         } catch (SQLException ex) {
             printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+   }
+   
+   public void usun(Mebel mebel){
+        connect();
+        String sql = "DELETE FROM "+TABLE_NAME+" WHERE "+COL_NR+" = '"+mebel.numerKatalogowy+"';";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+//            this.elementPozycja.usun(mebel.numerKatalogowy);
+            this.elementPozycja.usun(mebel.numerKatalogowy);
+            this.okuciePozycja.usun(mebel.numerKatalogowy);
+            this.opakowanie.usun(mebel.numerKatalogowy);
+        } catch (SQLException ex) {
+            printSqlErr(sql,ex);
         } finally {
             disconnect();
         }
