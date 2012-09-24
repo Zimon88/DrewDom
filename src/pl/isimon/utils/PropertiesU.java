@@ -20,10 +20,15 @@ import java.util.Properties;
  
 public class PropertiesU {
         //Plik z konfiguracją
-        private File f = new File("drewdom.properties");
+        private File f;
         //przyszły obiekt Properties
-        private Properties properties = new Properties();
+        private Properties properties;
  
+        public PropertiesU(){
+            f = new File("drewdom.properties");
+            properties = new Properties();
+        }
+        
         public void loadProperties(){
                 //Strumień wejściowy
                 InputStream is;

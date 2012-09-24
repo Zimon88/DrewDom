@@ -5,17 +5,29 @@
 package pl.isimon.drewdom.gui;
 
 import java.awt.Component;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
 import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTable;
+import pl.isimon.drewdom.Opakowanie;
 import pl.isimon.drewdom.Zamowienie;
 import pl.isimon.drewdom.ZamowieniePozycja;
 import pl.isimon.drewdom.gui.models.ComboBoxModelZamowienie;
+import pl.isimon.drewdom.gui.models.TableModelRaportKody;
+import pl.isimon.drewdom.gui.models.TableModelRaportOkucia;
+import pl.isimon.drewdom.gui.models.TableModelRaportOpakowania;
 import pl.isimon.drewdom.gui.models.TableModelRaportSzczegolwy;
 import pl.isimon.drewdom.gui.utils.ElementyRaportSzczegolowyCellRenderer;
 import pl.isimon.drewdom.gui.utils.MultiLineCellRenderer;
+import pl.isimon.drewdom.gui.utils.OpakowaniaCellRenderer;
 import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
+import pl.isimon.drewdom.raports.RaportOkucia;
+import pl.isimon.drewdom.raports.RaportOpakowania;
 import pl.isimon.drewdom.raports.RaportSzczegolowy;
 
 /**
@@ -30,24 +42,43 @@ public class GRaporty extends javax.swing.JPanel {
     ArrayList<Zamowienie> zamowienieLista = null;
     ZamowieniePozycja pozycja;
     TableModelRaportSzczegolwy tmrs;
+    TableModelRaportOpakowania tmro;
+    TableModelRaportKody tmrk;
+    TableModelRaportOkucia tmrok;
+    RaportOkucia raportOk;
+    RaportOpakowania raportO;
     RaportSzczegolowy raportS;
     TableColumnAdjuster tca;
+    TableColumnAdjuster tca2;
+    TableColumnAdjuster tcaKody;
+    TableColumnAdjuster tcaokucia;
     Zamowienie zamowienie;
+    Opakowanie opakowanie;
+    boolean resized=false;
     /**
      * Creates new form GRpaorty
      */
     public GRaporty() {
         initComponents();
+        opakowanie = new Opakowanie();
         zamowienie = new Zamowienie();
         raportS = new RaportSzczegolowy();
+        raportO = new RaportOpakowania();
         cbmz = (ComboBoxModelZamowienie) cbListaZamowien.getModel();
         pozycja= new ZamowieniePozycja();
         tmrs = (TableModelRaportSzczegolwy) tableRaportSzczegolwy.getModel();
-        int rowHeight = tableRaportSzczegolwy.getRowHeight();
-        tableRaportSzczegolwy.setRowHeight(rowHeight*3);
-        tableRaportSzczegolwy.getColumnModel().getColumn(1).setCellRenderer(new ElementyRaportSzczegolowyCellRenderer());
-        tableRaportSzczegolwy.getColumnModel().getColumn(0).setCellRenderer(new MultiLineCellRenderer());
+        tmro = (TableModelRaportOpakowania) tableRaportOpakowania.getModel();
+        tmrk = (TableModelRaportKody) tableRaportKody.getModel();
+        tmrok = (TableModelRaportOkucia) tableOkucia.getModel();
+        
+        tableRaportOpakowania.getColumnModel().getColumn(4).setCellRenderer(new OpakowaniaCellRenderer());
+//        tableRaportOpakowania.getColumnModel().getColumn(0).setCellRenderer(new MultiLineCellRenderer());
+        tableRaportSzczegolwy.getColumnModel().getColumn(2).setCellRenderer(new ElementyRaportSzczegolowyCellRenderer());
+        tableRaportSzczegolwy.getColumnModel().getColumn(1).setCellRenderer(new MultiLineCellRenderer());
+//        tableRaportSzczegolwy.setRowHeight(10000);
         tca = new TableColumnAdjuster(tableRaportSzczegolwy);
+        tca2 = new TableColumnAdjuster(tableRaportOpakowania);
+        tcaKody = new TableColumnAdjuster(tableRaportKody);
     }
     
     public void loadData(){
@@ -58,31 +89,91 @@ public class GRaporty extends javax.swing.JPanel {
     
     public void loadDataRaportSzczegolwy(Zamowienie z){
         tmrs.setModelData(raportS.getData(z));
-        zamowienie = z;
         labelRaportSzczegolowyNumer.setText(z.numer);
-        updateRowHeights();
+//        if(!zamowienie.equals(z)) 
+            updateRowHeights();
+        zamowienie = z;
         tca.adjustColumns();
     }
     
-    private void updateRowHeights()
-{
-    try
-    {
-        for (int row = 0; row < tableRaportSzczegolwy.getRowCount(); row++)
-        {
-            int rowHeight = tableRaportSzczegolwy.getRowHeight();
-
-            for (int column = 0; column < tableRaportSzczegolwy.getColumnCount(); column++)
+    public void loadDataRaportOpakowania(Zamowienie z){
+        tmro.setModelData(raportO.getData(z));
+        zamowienie=z;
+        updateRowHeights(tableRaportOpakowania);
+        tca2.adjustColumns();
+    }
+    
+    public void loadDataRaportKody(Zamowienie z){
+        tmrk.setModelData((new ZamowieniePozycja()).getPozycjeZamowienia(z.numer));
+        zamowienie=z;
+        tcaKody.adjustColumns();
+    }
+    
+    private void loadDataRaportOkucia(Zamowienie z) {
+        tmrok.setModelData(raportOk.getData(z));
+        zamowienie=z;
+        tcaokucia.adjustColumns();
+    }
+    
+    private void updateRowHeights(){
+        try{
+            for (int row = 0; row < tableRaportSzczegolwy.getRowCount(); row++)
             {
-                Component comp = tableRaportSzczegolwy.prepareRenderer(tableRaportSzczegolwy.getCellRenderer(row, column), row, column);
-                rowHeight = Math.max(rowHeight, comp.getPreferredSize().height);
+                int rowHeight = tableRaportSzczegolwy.getRowHeight(row);
+                for (int column = 2; column < tableRaportSzczegolwy.getColumnCount(); column++)
+                {
+                    Component comp = tableRaportSzczegolwy.prepareRenderer(tableRaportSzczegolwy.getCellRenderer(row, column), row, column);
+                    int height = comp.getPreferredSize().height;
+                    rowHeight = Math.max(rowHeight, height);
+                }
+                tableRaportSzczegolwy.setRowHeight(row, rowHeight);
             }
-
-            tableRaportSzczegolwy.setRowHeight(row, rowHeight);
+            resized = true;
+        }
+        catch(ClassCastException e) {}
+    }
+    
+    private void updateRowHeights(JTable table){
+        try{
+            for (int row = 0; row < table.getRowCount(); row++)
+            {
+                int rowHeight = table.getRowHeight(row);
+                for (int column = 1; column < table.getColumnCount(); column++)
+                {
+                    Component comp = table.prepareRenderer(table.getCellRenderer(row, column), row, column);
+                    int height = comp.getPreferredSize().height;
+//                    System.out.println("column "+ column+" height " + height);
+                    rowHeight = Math.max(rowHeight, height);
+                }
+//                    System.out.println(rowHeight);
+                table.setRowHeight(row, rowHeight);
+            }
+            resized = true;
+        }
+        catch(ClassCastException e) {}
+    }
+    
+    private void printTable(JTable table, String header, String footer){
+        try {
+            PrinterJob job = PrinterJob.getPrinterJob();
+            PageFormat pf = job.defaultPage();
+            Paper paper = pf.getPaper();
+            double margin = 20.;
+            paper.setImageableArea(margin, margin, paper.getWidth() - 2* margin, paper.getHeight() - 2* margin);
+            pf.setPaper(paper);
+            MessageFormat headerFormat = header!=null?new MessageFormat(header):null;
+            MessageFormat footerFormat = footer!=null?new MessageFormat(footer):null;
+            job.setPrintable(table.getPrintable(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat), job.validatePage(pf));
+            job.printDialog();
+            job.print();
+        } catch (PrinterException pe) {
+          System.err.println("Error printing: " + pe.getMessage());
         }
     }
-    catch(ClassCastException e) {}
-}
+    
+    private void printTable(JTable table){
+        this.printTable(table,null,null);
+    }
             
 
     /**
@@ -100,10 +191,22 @@ public class GRaporty extends javax.swing.JPanel {
         buttonRaportSzczegolowyDrukuj = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         labelRaportSzczegolowyNumer = new javax.swing.JLabel();
-        buttonRaportSzczegolwyPodglad = new javax.swing.JButton();
+        frameRaportOpakowania = new javax.swing.JFrame();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableRaportOpakowania = new javax.swing.JTable();
+        buttonRODrukuj = new javax.swing.JButton();
+        frameRaportOkucia = new javax.swing.JFrame();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tableOkucia = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        frameRaportKody = new javax.swing.JFrame();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tableRaportKody = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        buttonRaportSzczegolwy = new javax.swing.JButton();
+        buttonRaportOpakowania = new javax.swing.JButton();
+        buttonRaportOkucia = new javax.swing.JButton();
+        buttonRaportKody = new javax.swing.JButton();
         cbListaZamowien = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -111,7 +214,7 @@ public class GRaporty extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
 
-        frameRaportSzczegolowy.setMinimumSize(new java.awt.Dimension(600, 500));
+        frameRaportSzczegolowy.setMinimumSize(new java.awt.Dimension(800, 500));
 
         tableRaportSzczegolwy.setModel(new TableModelRaportSzczegolwy());
         jScrollPane1.setViewportView(tableRaportSzczegolwy);
@@ -132,54 +235,167 @@ public class GRaporty extends javax.swing.JPanel {
         frameRaportSzczegolowy.getContentPane().setLayout(frameRaportSzczegolowyLayout);
         frameRaportSzczegolowyLayout.setHorizontalGroup(
             frameRaportSzczegolowyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, frameRaportSzczegolowyLayout.createSequentialGroup()
+            .addGroup(frameRaportSzczegolowyLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(frameRaportSzczegolowyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(frameRaportSzczegolowyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(frameRaportSzczegolowyLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(buttonRaportSzczegolowyDrukuj))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, frameRaportSzczegolowyLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, frameRaportSzczegolowyLayout.createSequentialGroup()
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labelRaportSzczegolowyNumer)
-                .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelRaportSzczegolowyNumer, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, frameRaportSzczegolowyLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(buttonRaportSzczegolowyDrukuj)
+                        .addGap(10, 10, 10))))
         );
         frameRaportSzczegolowyLayout.setVerticalGroup(
             frameRaportSzczegolowyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(frameRaportSzczegolowyLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(labelRaportSzczegolowyNumer)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(frameRaportSzczegolowyLayout.createSequentialGroup()
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(frameRaportSzczegolowyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelRaportSzczegolowyNumer))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buttonRaportSzczegolowyDrukuj)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        buttonRaportSzczegolwyPodglad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
-        buttonRaportSzczegolwyPodglad.setText("Podgląd");
-        buttonRaportSzczegolwyPodglad.addActionListener(new java.awt.event.ActionListener() {
+        frameRaportOpakowania.setMinimumSize(new java.awt.Dimension(800, 500));
+
+        tableRaportOpakowania.setModel(new TableModelRaportOpakowania());
+        jScrollPane2.setViewportView(tableRaportOpakowania);
+
+        buttonRODrukuj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/fileprint.png"))); // NOI18N
+        buttonRODrukuj.setText("Drukuj");
+        buttonRODrukuj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonRaportSzczegolwyPodgladActionPerformed(evt);
+                buttonRODrukujActionPerformed(evt);
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
-        jButton2.setText("Podgląd");
-        jButton2.setEnabled(false);
+        javax.swing.GroupLayout frameRaportOpakowaniaLayout = new javax.swing.GroupLayout(frameRaportOpakowania.getContentPane());
+        frameRaportOpakowania.getContentPane().setLayout(frameRaportOpakowaniaLayout);
+        frameRaportOpakowaniaLayout.setHorizontalGroup(
+            frameRaportOpakowaniaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frameRaportOpakowaniaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(frameRaportOpakowaniaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, frameRaportOpakowaniaLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(buttonRODrukuj))
+                    .addComponent(jScrollPane2))
+                .addContainerGap())
+        );
+        frameRaportOpakowaniaLayout.setVerticalGroup(
+            frameRaportOpakowaniaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frameRaportOpakowaniaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonRODrukuj)
+                .addContainerGap())
+        );
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
-        jButton3.setText("Podgląd");
-        jButton3.setEnabled(false);
+        tableOkucia.setModel(new TableModelRaportOkucia());
+        jScrollPane4.setViewportView(tableOkucia);
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
-        jButton4.setText("Podgląd");
-        jButton4.setEnabled(false);
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/fileprint.png"))); // NOI18N
+        jButton2.setText("Drukuj");
+
+        javax.swing.GroupLayout frameRaportOkuciaLayout = new javax.swing.GroupLayout(frameRaportOkucia.getContentPane());
+        frameRaportOkucia.getContentPane().setLayout(frameRaportOkuciaLayout);
+        frameRaportOkuciaLayout.setHorizontalGroup(
+            frameRaportOkuciaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frameRaportOkuciaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(frameRaportOkuciaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, frameRaportOkuciaLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        frameRaportOkuciaLayout.setVerticalGroup(
+            frameRaportOkuciaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frameRaportOkuciaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addContainerGap())
+        );
+
+        frameRaportKody.setMinimumSize(new java.awt.Dimension(640, 480));
+
+        tableRaportKody.setModel(new TableModelRaportKody());
+        jScrollPane3.setViewportView(tableRaportKody);
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/fileprint.png"))); // NOI18N
+        jButton1.setText("Drukuj");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout frameRaportKodyLayout = new javax.swing.GroupLayout(frameRaportKody.getContentPane());
+        frameRaportKody.getContentPane().setLayout(frameRaportKodyLayout);
+        frameRaportKodyLayout.setHorizontalGroup(
+            frameRaportKodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frameRaportKodyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(frameRaportKodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, frameRaportKodyLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
+                .addContainerGap())
+        );
+        frameRaportKodyLayout.setVerticalGroup(
+            frameRaportKodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frameRaportKodyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
+
+        buttonRaportSzczegolwy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
+        buttonRaportSzczegolwy.setText("Podgląd");
+        buttonRaportSzczegolwy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRaportSzczegolwyActionPerformed(evt);
+            }
+        });
+
+        buttonRaportOpakowania.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
+        buttonRaportOpakowania.setText("Podgląd");
+        buttonRaportOpakowania.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRaportOpakowaniaActionPerformed(evt);
+            }
+        });
+
+        buttonRaportOkucia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
+        buttonRaportOkucia.setText("Podgląd");
+        buttonRaportOkucia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRaportOkuciaActionPerformed(evt);
+            }
+        });
+
+        buttonRaportKody.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
+        buttonRaportKody.setText("Podgląd");
+        buttonRaportKody.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRaportKodyActionPerformed(evt);
+            }
+        });
 
         cbListaZamowien.setModel(new ComboBoxModelZamowienie());
 
@@ -187,9 +403,9 @@ public class GRaporty extends javax.swing.JPanel {
 
         jLabel2.setText("Lista opakowowań dla zamówienia");
 
-        jLabel3.setText("Lista okuń dla zamówienia");
+        jLabel3.setText("Lista okuc dla zamówienia");
 
-        jLabel4.setText("Raport");
+        jLabel4.setText("Kody kreskowe");
 
         jCheckBox1.setText("Ostatnie zamówienie");
         jCheckBox1.setEnabled(false);
@@ -214,14 +430,14 @@ public class GRaporty extends javax.swing.JPanel {
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(buttonRaportSzczegolwyPodglad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(buttonRaportSzczegolwy, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buttonRaportOpakowania, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buttonRaportOkucia, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buttonRaportKody, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {buttonRaportSzczegolwyPodglad, jButton2, jButton3, jButton4});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {buttonRaportKody, buttonRaportOkucia, buttonRaportOpakowania, buttonRaportSzczegolwy});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,49 +448,74 @@ public class GRaporty extends javax.swing.JPanel {
                     .addComponent(jCheckBox1))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonRaportSzczegolwyPodglad)
+                    .addComponent(buttonRaportSzczegolwy)
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jButton2))
+                    .addComponent(buttonRaportOpakowania))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jButton3))
+                    .addComponent(buttonRaportOkucia))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jButton4))
+                    .addComponent(buttonRaportKody))
                 .addContainerGap(193, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonRaportSzczegolwyPodgladActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRaportSzczegolwyPodgladActionPerformed
-         // TODO add your handling code here:
+    private void buttonRaportSzczegolwyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRaportSzczegolwyActionPerformed
         Zamowienie z = (Zamowienie) cbListaZamowien.getSelectedItem();
         loadDataRaportSzczegolwy(z);
         frameRaportSzczegolowy.setVisible(true);
-    }//GEN-LAST:event_buttonRaportSzczegolwyPodgladActionPerformed
+    }//GEN-LAST:event_buttonRaportSzczegolwyActionPerformed
 
     private void buttonRaportSzczegolowyDrukujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRaportSzczegolowyDrukujActionPerformed
-        try {
-              MessageFormat headerFormat = new MessageFormat("Zamowienie nr: "+ zamowienie.numer+" z dnia: "+zamowienie.data);
-              MessageFormat footerFormat = new MessageFormat("Strona {0} ");
-              tableRaportSzczegolwy.print(JTable.PrintMode.NORMAL, headerFormat, footerFormat);
-            } catch (PrinterException pe) {
-              System.err.println("Error printing: " + pe.getMessage());
-            }
+        this.printTable(tableRaportSzczegolwy,"Zamowienie nr: " + zamowienie.numer,"Strona {0}");
     }//GEN-LAST:event_buttonRaportSzczegolowyDrukujActionPerformed
 
+    private void buttonRaportOpakowaniaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRaportOpakowaniaActionPerformed
+        Zamowienie z = (Zamowienie) cbListaZamowien.getSelectedItem();
+        loadDataRaportOpakowania(z);
+        frameRaportOpakowania.setVisible(true);
+    }//GEN-LAST:event_buttonRaportOpakowaniaActionPerformed
+
+    private void buttonRODrukujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRODrukujActionPerformed
+        this.printTable(tableRaportOpakowania,"Zamowienie nr: " + zamowienie.numer,"Strona {0}");
+    }//GEN-LAST:event_buttonRODrukujActionPerformed
+
+    private void buttonRaportKodyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRaportKodyActionPerformed
+        Zamowienie z = (Zamowienie) cbListaZamowien.getSelectedItem();
+        loadDataRaportKody(z);
+        frameRaportKody.setVisible(true);
+    }//GEN-LAST:event_buttonRaportKodyActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        printTable(tableRaportKody,"Zamowienie nr: " + zamowienie.numer,"Strona {0}");
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void buttonRaportOkuciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRaportOkuciaActionPerformed
+        Zamowienie z = (Zamowienie) cbListaZamowien.getSelectedItem();
+        loadDataRaportOkucia(z);
+        frameRaportOkucia.setVisible(true);
+    }//GEN-LAST:event_buttonRaportOkuciaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonRODrukuj;
+    private javax.swing.JButton buttonRaportKody;
+    private javax.swing.JButton buttonRaportOkucia;
+    private javax.swing.JButton buttonRaportOpakowania;
     private javax.swing.JButton buttonRaportSzczegolowyDrukuj;
-    private javax.swing.JButton buttonRaportSzczegolwyPodglad;
+    private javax.swing.JButton buttonRaportSzczegolwy;
     private javax.swing.JComboBox cbListaZamowien;
+    private javax.swing.JFrame frameRaportKody;
+    private javax.swing.JFrame frameRaportOkucia;
+    private javax.swing.JFrame frameRaportOpakowania;
     private javax.swing.JFrame frameRaportSzczegolowy;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -282,7 +523,15 @@ public class GRaporty extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel labelRaportSzczegolowyNumer;
+    private javax.swing.JTable tableOkucia;
+    private javax.swing.JTable tableRaportKody;
+    private javax.swing.JTable tableRaportOpakowania;
     private javax.swing.JTable tableRaportSzczegolwy;
     // End of variables declaration//GEN-END:variables
+
+    
 }

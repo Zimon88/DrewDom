@@ -7,10 +7,15 @@ package pl.isimon.drewdom.gui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Properties;
 import javax.swing.table.TableColumn;
 import pl.isimon.drewdom.ElementPozycja;
 import pl.isimon.drewdom.gui.models.TableModelMebelElementPozycjaRS;
 import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
+import pl.isimon.utils.PropertiesU;
 
 /**
  *
@@ -21,6 +26,8 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
     ArrayList<ElementPozycja> lista;
     TableModelMebelElementPozycjaRS model;
     TableColumnAdjuster tca;
+    Properties properties;
+    boolean resized = false;
     /**
      * Creates new form PanelCellRaportSElementy
      */
@@ -28,37 +35,48 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
         initComponents();
         model = (TableModelMebelElementPozycjaRS) tableElementy.getModel();
         tca = new TableColumnAdjuster(tableElementy);
-        
+        PropertiesU prop = new PropertiesU();
+        prop.loadProperties();
+        properties = prop.getProperties();
     }
 
     public void setLista(ArrayList<ElementPozycja> lista) {
         this.lista = lista;
+        Collections.sort(this.lista, new ElementComparator());
         model.setModelData(lista);
         updateRowHeights();
-        tca.adjustColumn(0);
-        tca.adjustColumn(1);
-        tca.adjustColumn(2);
+        updateColumWidth();
+    }
+    
+    public void sortByName(){
+        tableElementy.getRowSorter().toggleSortOrder(0);
+    }
+    
+    private void updateColumWidth(){
+//        tableElementy.getColumnModel().getColumn(2).setMinWidth(10);
+        tableElementy.getColumnModel().getColumn(0).setPreferredWidth(Integer.parseInt(properties.getProperty("column1")));
+        tableElementy.getColumnModel().getColumn(1).setPreferredWidth(Integer.parseInt(properties.getProperty("column2")));
+        tableElementy.getColumnModel().getColumn(2).setPreferredWidth(Integer.parseInt(properties.getProperty("column3")));
     }
     
     private void updateRowHeights()
     {
         try
         {
-            int totalHeight = 20;
-//            int headerHeight;
+            int totalHeight = 18;
             tableElementy.getTableHeader().setPreferredSize(new Dimension(tableElementy.getColumnModel().getTotalColumnWidth(), totalHeight));
-//            totalHeight += headerHeight;
             for (int row = 0; row < tableElementy.getRowCount(); row++)
             {
-                int rowHeight = tableElementy.getRowHeight();
-
+                
+                int rowHeight = Integer.parseInt(properties.getProperty("height"));
+                if(!resized) {
+                    rowHeight = Integer.parseInt(properties.getProperty("height"));
+                }
                 for (int column = 0; column < tableElementy.getColumnCount(); column++)
                 {
                     int rowH = rowHeight;
                     Component comp = tableElementy.prepareRenderer(tableElementy.getCellRenderer(row, column), row, column);
-                    if(column==0){
-//                        rowH *=3;
-                    }
+                   
                     rowHeight = Math.max(rowH, comp.getPreferredSize().height);
                 }
                 totalHeight +=(rowHeight+0);
@@ -66,9 +84,7 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
             }
             this.setPreferredSize(new Dimension(this.getWidth(), totalHeight));
             jScrollPane1.setPreferredSize(new Dimension(this.getWidth(), totalHeight));
-//            tableElementy.setPreferredSize(new Dimension (this.getWidth(), totalHeight));
             jScrollPane1.setViewportView(tableElementy);
-//            this.repaint();
         }
         catch(ClassCastException e) {}
     }
@@ -102,4 +118,11 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tableElementy;
     // End of variables declaration//GEN-END:variables
+
+    private class ElementComparator implements Comparator<ElementPozycja> {
+        @Override
+        public int compare(ElementPozycja o1, ElementPozycja o2) {
+            return o1.element.nazwa.compareTo(o2.element.nazwa);
+        }
+    }
 }

@@ -70,13 +70,14 @@ public class ZamowieniePozycja extends SQLiteConnection{
             ResultSet w = stmt.executeQuery(sql);
             int wynik =0;
             while(w.next()){
+                wynik++;
                 ZamowieniePozycja o = new ZamowieniePozycja();
                 o.ilosc = w.getInt(COL_ILOSC);
                 o.mebel = (new Mebel()).getMebel(w.getString(COL_NRMEBLA));
                 o.nrZamowienia = numer;
                 lista.add(o);
             }
-            printSucces(sql, wynik);
+            printSelect(sql, wynik);
         } catch (SQLException ex) {
             printSqlErr(sql, ex);
         } finally {
@@ -101,7 +102,38 @@ public class ZamowieniePozycja extends SQLiteConnection{
 
     @Override
     public String toString() {
-        return mebel + " \nSztuk:" + ilosc;
+        return mebel + " Sztuk:" + ilosc;
+    }
+
+    public void usun(ZamowieniePozycja z) {
+        String sql = "DELETE FROM "+TABLE_NAME+" WHERE " 
+                + COL_NRZAMOWIENIA+" = '" + z.nrZamowienia + "' "
+                + "AND " + COL_NRMEBLA + " = '" + z.mebel.numerKatalogowy + "'"
+                + ";";
+        int wynik;
+        connect();
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+    }
+
+    public void dodaj(String numer, ZamowieniePozycja poz) {
+        String sql = "INSERT INTO pozycja_zamowienia VALUES (null,'"+numer+"','"+poz.mebel.numerKatalogowy+"',"+poz.ilosc+");";
+        connect();
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql,ex);
+        } finally {
+            disconnect();
+        }
     }
     
 }

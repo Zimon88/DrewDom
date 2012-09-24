@@ -38,6 +38,7 @@ public class Zamowienie extends SQLiteConnection{
             ResultSet w = stmt.executeQuery(sql);
             int wynik =0;
             while(w.next()){
+                wynik++;
                 Zamowienie z = new Zamowienie();
                 z.numer = w.getString(COL_NUMER);
                 z.data  = w.getString(COL_DATA);
@@ -45,7 +46,7 @@ public class Zamowienie extends SQLiteConnection{
                 z.dataRealizacji = w.getString(COL_DATA_REALIZACJI);
                 lista.add(z);
             }
-            printSucces(sql, wynik);
+            printSelect(sql, wynik);
         } catch (SQLException ex) {
             printSqlErr(sql, ex);
         } finally {
@@ -107,6 +108,35 @@ public class Zamowienie extends SQLiteConnection{
     @Override
     public String toString() {
         return  numer + " - " + data;
+    }
+
+    public void edytuj(String numer, Date dataZamowienia, Date dataRealizacji) {
+        java.sql.Date sqlDate = null;
+        String s1 = "CURRENT_DATE";
+        String s2 = "null";
+        if(dataZamowienia!=null){
+            sqlDate = new java.sql.Date(dataZamowienia.getTime());
+            s1 = sqlDate.toString();
+        }
+        if(dataRealizacji!=null){
+            sqlDate = new java.sql.Date(dataRealizacji.getTime());
+            s2 = sqlDate.toString();
+        }
+        String sql = "UPDATE zamowienie SET "
+                + COL_DATA + " = '" +s1+ "', "
+                + COL_DATA_REALIZACJI + " = '" +s2+ "' "
+                + "WHERE " + COL_NUMER + " = '" +numer+ "';";
+        
+        connect();
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql,ex);
+        } finally {
+            disconnect();
+        }
     }
     
     

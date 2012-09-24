@@ -23,7 +23,6 @@ public class RaportSzczegolowy {
         pozycjaZamowienia = new ZamowieniePozycja();
     }
     
-    
     public ArrayList<RaportSzczegolowy> getData(Zamowienie z){
         ArrayList<RaportSzczegolowy> lista = new ArrayList();
         ArrayList<ZamowieniePozycja> listaMebli = pozycjaZamowienia.getPozycjeZamowienia(z.numer);
@@ -32,7 +31,7 @@ public class RaportSzczegolowy {
             ZamowieniePozycja m = listaMebli.get(i);
             r.zamowienie = z;
             r.pozycjaZamowienia = m;
-            r.listaElementow = (new ElementPozycja()).getData(m.mebel.numerKatalogowy,m.ilosc);
+            r.listaElementow = (new ElementPozycja()).getData(z.numer, m.mebel.numerKatalogowy,m.ilosc);
             lista.add(r);
         }
         return lista;

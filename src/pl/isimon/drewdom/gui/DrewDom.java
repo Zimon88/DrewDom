@@ -23,6 +23,7 @@ import pl.isimon.drewdom.Okucie;
 import pl.isimon.drewdom.Pracownik;
 import pl.isimon.drewdom.Zamowienie;
 import pl.isimon.drewdom.gui.utils.RotatedLabel;
+import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
 
 /**
  *
@@ -44,6 +45,7 @@ public class DrewDom extends javax.swing.JFrame {
     public ArrayList<Okucie> listaOkuc;
     public ArrayList<Zamowienie> listaZamowien;
     private boolean kontynuujDodawanie = false;
+    
     
     public DrewDom() {
         try {
@@ -205,8 +207,7 @@ public class DrewDom extends javax.swing.JFrame {
         );
 
         nowyMebel.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        nowyMebel.setMinimumSize(new java.awt.Dimension(680, 640));
-        nowyMebel.setPreferredSize(new java.awt.Dimension(720, 680));
+        nowyMebel.setMinimumSize(new java.awt.Dimension(720, 640));
 
         buttonNMZapisz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/filesave.png"))); // NOI18N
         buttonNMZapisz.setText("Zapisz");
@@ -253,8 +254,8 @@ public class DrewDom extends javax.swing.JFrame {
             nowyMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(nowyMebelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelNowyMebel, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelNowyMebel, javax.swing.GroupLayout.DEFAULT_SIZE, 622, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(nowyMebelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonWyczysc)
                     .addComponent(buttonAnuluj)
@@ -265,7 +266,7 @@ public class DrewDom extends javax.swing.JFrame {
         nowyMebelDialog.setLocationByPlatform(true);
         nowyMebelDialog.setMinimumSize(new java.awt.Dimension(260, 150));
         nowyMebelDialog.setModal(true);
-        nowyMebelDialog.setPreferredSize(new java.awt.Dimension(240, 120));
+        nowyMebelDialog.setPreferredSize(new java.awt.Dimension(276, 150));
 
         buttonOk.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/button_ok.png"))); // NOI18N
         buttonOk.setText("OK");
@@ -400,6 +401,7 @@ public class DrewDom extends javax.swing.JFrame {
     private void buttonNoweZamowienieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNoweZamowienieActionPerformed
         panelNoweZamowienie.clear();
         noweZamowienie.setVisible(true);
+        panelNoweZamowienie.loadData();
     }//GEN-LAST:event_buttonNoweZamowienieActionPerformed
 
     private void buttonNowyMebelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNowyMebelActionPerformed
@@ -458,14 +460,11 @@ public class DrewDom extends javax.swing.JFrame {
 
     private void buttonNMZapiszActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNMZapiszActionPerformed
         
-        Mebel m = new Mebel();
-        m.nazwa = panelNowyMebel.getNazwa();
-        m.numerKatalogowy = panelNowyMebel.getNumer();
-        m.kod = panelNowyMebel.getKod();
-        mebel.dodaj(m, panelNowyMebel.getElementLista(),panelNowyMebel.getOkucieLista(),panelNowyMebel.getOpakowanieLista());
+        panelNowyMebel.actionSave();
         nowyMebelDialog.setVisible(true);
         if(!kontynuujDodawanie) nowyMebel.dispose();
         panelNowyMebel.reset();
+        panelTabMeble.loadData();
     }//GEN-LAST:event_buttonNMZapiszActionPerformed
 
     private void buttonAnulujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAnulujActionPerformed

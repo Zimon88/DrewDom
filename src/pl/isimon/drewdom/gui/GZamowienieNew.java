@@ -4,12 +4,19 @@
  */
 package pl.isimon.drewdom.gui;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import pl.isimon.drewdom.gui.models.TableModelZamowieniePozycja;
 import pl.isimon.drewdom.gui.models.TableModelMebleLista;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pl.isimon.drewdom.Mebel;
 import pl.isimon.drewdom.Zamowienie;
 import pl.isimon.drewdom.ZamowieniePozycja;
+import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
 
 /**
  *
@@ -17,29 +24,61 @@ import pl.isimon.drewdom.ZamowieniePozycja;
  */
 public class GZamowienieNew extends javax.swing.JPanel {
 
+    private boolean edycja = false;
+    
+    
     /**
      * Creates new form GZamowienieNew
      */
     private Zamowienie zamowienie;
+    private Mebel mebel;
     private TableModelMebleLista tmml;
     private TableModelZamowieniePozycja tmzp;
     private ArrayList<ZamowieniePozycja> zamowienieLista;
+    private ZamowieniePozycja pozycja;
+    private TableColumnAdjuster tca;
+    private TableColumnAdjuster tca1;
+    
     public GZamowienieNew() {
         initComponents();
+        mebel = new Mebel();
+        pozycja = new ZamowieniePozycja();
+        tmzp = (TableModelZamowieniePozycja)tableZamowienie.getModel();
+        tmml = (TableModelMebleLista)tableMeble.getModel();
+        tca = new TableColumnAdjuster(tableMeble);
+        tca1 = new TableColumnAdjuster(tableZamowienie);
+        tca.adjustColumns();
+        tca1.adjustColumns();
     }
     
     public GZamowienieNew(ArrayList<Mebel> lista){
         this();
         zamowienieLista = new ArrayList();
         zamowienie = new Zamowienie();
-        tmzp = (TableModelZamowieniePozycja)tableZamowienie.getModel();
-        tmml = (TableModelMebleLista)tableMeble.getModel();
         tmml.setModelData(lista);
         tmzp.setModelData(zamowienieLista);
+        tca.adjustColumns();
+        tca1.adjustColumns();
+    }
+
+    public boolean isEdycja() {
+        return edycja;
+    }
+
+    public void setEdycja(boolean edycja) {
+        this.edycja = edycja;
+        textNumer.setEnabled(!edycja);
     }
     
+    
+    
     public void save(){
-        zamowienie.zapiszZamowienie(textNumer.getText(), zamowienieLista, dcDataZamowienia.getDate(), dcDataRealizaji.getDate());
+        if(edycja){
+            zamowienie.edytuj(textNumer.getText(),dcDataZamowienia.getDate(),dcDataRealizaji.getDate());
+        } else {
+            zamowienie.zapiszZamowienie(textNumer.getText(), zamowienieLista, dcDataZamowienia.getDate(), dcDataRealizaji.getDate());
+        }
+        
     }
     
     public void clear(){
@@ -48,6 +87,37 @@ public class GZamowienieNew extends javax.swing.JPanel {
         textNumer.setText("");
         dcDataZamowienia.setDate(null);
         dcDataRealizaji.setDate(null);
+    }
+    
+    public void loadData(Zamowienie z){
+        zamowienie = z;
+        zamowienieLista = pozycja.getPozycjeZamowienia(z.numer);
+        tmzp.setModelData(zamowienieLista);
+        tmml.setModelData(mebel.getData());
+        textNumer.setText(z.numer);
+        DateFormat formatter ; 
+        formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            if(z.dataRealizacji!=null & !z.dataRealizacji.equals("")){
+                dcDataRealizaji.setDate((Date)formatter.parse(z.dataRealizacji));
+            }
+            if(z.data!=null & !z.data.equals("")){
+                dcDataZamowienia.setDate((Date)formatter.parse(z.data));
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(GZamowienieNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        tca.adjustColumns();
+        tca1.adjustColumns();
+    }
+    
+    private void search(){
+        String numer = textNumerM.getText();
+        String nazwa = textNazwaM.getText();
+        String kod = textKodM.getText();
+        tmml.setModelData(mebel.getData(numer,nazwa,kod));
+        tca.adjustColumns();
+        tca1.adjustColumns();
     }
 
     /**
@@ -65,8 +135,8 @@ public class GZamowienieNew extends javax.swing.JPanel {
         tableMeble = new javax.swing.JTable();
         buttonDodaj = new javax.swing.JButton();
         labelSztuk = new javax.swing.JLabel();
-        textKod = new javax.swing.JTextField();
-        textNazwa = new javax.swing.JTextField();
+        textNumerM = new javax.swing.JTextField();
+        textNazwaM = new javax.swing.JTextField();
         textNumer = new javax.swing.JTextField();
         labelNumer = new javax.swing.JLabel();
         dcDataZamowienia = new com.toedter.calendar.JDateChooser();
@@ -74,10 +144,12 @@ public class GZamowienieNew extends javax.swing.JPanel {
         labelDataZamowienia = new javax.swing.JLabel();
         labelDataRealizacji = new javax.swing.JLabel();
         buttonSzukaj = new javax.swing.JButton();
-        labelKod = new javax.swing.JLabel();
+        labelNumerM = new javax.swing.JLabel();
         labelNazwa = new javax.swing.JLabel();
         buttonUsun = new javax.swing.JButton();
         spinnerSztuk = new javax.swing.JSpinner();
+        labelKodM = new javax.swing.JLabel();
+        textKodM = new javax.swing.JTextField();
 
         setMinimumSize(new java.awt.Dimension(620, 515));
         setPreferredSize(new java.awt.Dimension(620, 515));
@@ -99,9 +171,19 @@ public class GZamowienieNew extends javax.swing.JPanel {
 
         labelSztuk.setText("Sztuk");
 
-        textKod.setEnabled(false);
+        textNumerM.setToolTipText("Numer katalogowy");
+        textNumerM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textNumerMActionPerformed(evt);
+            }
+        });
 
-        textNazwa.setEnabled(false);
+        textNazwaM.setToolTipText("Nazwa");
+        textNazwaM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textNazwaMActionPerformed(evt);
+            }
+        });
 
         labelNumer.setText("Numer zamówienia");
 
@@ -111,9 +193,13 @@ public class GZamowienieNew extends javax.swing.JPanel {
 
         buttonSzukaj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
         buttonSzukaj.setText("Szukaj");
-        buttonSzukaj.setEnabled(false);
+        buttonSzukaj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSzukajActionPerformed(evt);
+            }
+        });
 
-        labelKod.setText("Kod");
+        labelNumerM.setText("Numer");
 
         labelNazwa.setText("Nazwa");
 
@@ -127,6 +213,15 @@ public class GZamowienieNew extends javax.swing.JPanel {
 
         spinnerSztuk.setModel(new javax.swing.SpinnerNumberModel(0, 0, 9999, 1));
 
+        labelKodM.setText("Kod");
+
+        textKodM.setToolTipText("Kod kreskowy");
+        textKodM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textKodMActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -137,16 +232,20 @@ public class GZamowienieNew extends javax.swing.JPanel {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelKod)
+                        .addComponent(labelNumerM)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textKod, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(textNumerM, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labelNazwa)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textNazwa, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(textNazwaM, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelKodM)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(textKodM, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonSzukaj)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buttonUsun))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -154,7 +253,7 @@ public class GZamowienieNew extends javax.swing.JPanel {
                                 .addComponent(labelNumer)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(textNumer, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                                 .addComponent(labelDataZamowienia))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -175,6 +274,8 @@ public class GZamowienieNew extends javax.swing.JPanel {
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {buttonDodaj, buttonSzukaj, buttonUsun});
 
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {textKodM, textNazwaM, textNumerM});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -193,12 +294,14 @@ public class GZamowienieNew extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelKod)
-                    .addComponent(textKod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelNumerM)
+                    .addComponent(textNumerM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelNazwa)
-                    .addComponent(textNazwa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textNazwaM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buttonSzukaj)
-                    .addComponent(buttonUsun))
+                    .addComponent(buttonUsun)
+                    .addComponent(labelKodM)
+                    .addComponent(textKodM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -213,23 +316,65 @@ public class GZamowienieNew extends javax.swing.JPanel {
     private void buttonDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDodajActionPerformed
         int selection = tableMeble.getSelectedRow();
         int sztuk = (int)spinnerSztuk.getModel().getValue();
-        
-        if(sztuk!=0 & selection!=-1){
-            ZamowieniePozycja poz = new ZamowieniePozycja();
-            poz.ilosc = sztuk;
-            poz.mebel = tmml.getMebel(selection);
-            //zamowienieLista.add(poz);
-            tmzp.addZamowieniePozycja(poz);
-            spinnerSztuk.getModel().setValue(new Integer(0));
+        int[] selectedRows = tableMeble.getSelectedRows();
+        if (selectedRows.length>1) {
+            if(sztuk!=0) {
+                for(int i = 0; i<selectedRows.length;i++){
+                    ZamowieniePozycja poz = new ZamowieniePozycja();
+                    poz.ilosc = sztuk;
+                    poz.mebel = tmml.getMebel(i);
+                    tmzp.addZamowieniePozycja(poz);
+                    if(edycja) {
+                        poz.dodaj(textNumer.getText(), poz);
+                    }
+                }
+            }
+        } else {
+            if(sztuk!=0 & selection!=-1){
+                ZamowieniePozycja poz = new ZamowieniePozycja();
+                poz.ilosc = sztuk;
+                poz.mebel = tmml.getMebel(selection);
+                tmzp.addZamowieniePozycja(poz);
+                if(edycja) {
+                    poz.dodaj(textNumer.getText(), poz);
+                }
+            }
         }
+        spinnerSztuk.getModel().setValue(new Integer(0));
     }//GEN-LAST:event_buttonDodajActionPerformed
 
     private void buttonUsunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUsunActionPerformed
-        ZamowieniePozycja zamp;
-        zamp = tmzp.getZamowieniePozycja(tableZamowienie.getSelectedRow());
-        zamowienieLista.remove(zamp);
-        tmzp.removeZamowieniePozycja(zamp);
+        int selection = tableZamowienie.getSelectedRow();
+        if(selection!=-1){
+            int[] selectedRows = tableZamowienie.getSelectedRows();
+            for(int i=0;i<selectedRows.length;i++){
+                ZamowieniePozycja zamp;
+                zamp = tmzp.getZamowieniePozycja(selectedRows[i]);
+                zamowienieLista.remove(zamp);
+                tmzp.removeZamowieniePozycja(zamp);
+                if(edycja) {
+                    zamp.usun(zamp);
+                }
+            }
+        }
+        
     }//GEN-LAST:event_buttonUsunActionPerformed
+
+    private void buttonSzukajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSzukajActionPerformed
+        search();
+    }//GEN-LAST:event_buttonSzukajActionPerformed
+
+    private void textNumerMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textNumerMActionPerformed
+        search();
+    }//GEN-LAST:event_textNumerMActionPerformed
+
+    private void textNazwaMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textNazwaMActionPerformed
+        search();
+    }//GEN-LAST:event_textNazwaMActionPerformed
+
+    private void textKodMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textKodMActionPerformed
+        search();
+    }//GEN-LAST:event_textKodMActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonDodaj;
@@ -241,15 +386,21 @@ public class GZamowienieNew extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labelDataRealizacji;
     private javax.swing.JLabel labelDataZamowienia;
-    private javax.swing.JLabel labelKod;
+    private javax.swing.JLabel labelKodM;
     private javax.swing.JLabel labelNazwa;
     private javax.swing.JLabel labelNumer;
+    private javax.swing.JLabel labelNumerM;
     private javax.swing.JLabel labelSztuk;
     private javax.swing.JSpinner spinnerSztuk;
     private javax.swing.JTable tableMeble;
     private javax.swing.JTable tableZamowienie;
-    private javax.swing.JTextField textKod;
-    private javax.swing.JTextField textNazwa;
+    private javax.swing.JTextField textKodM;
+    private javax.swing.JTextField textNazwaM;
     private javax.swing.JTextField textNumer;
+    private javax.swing.JTextField textNumerM;
     // End of variables declaration//GEN-END:variables
+
+    public void loadData() {
+        tmml.setModelData((new Mebel()).getData());
+    }
 }

@@ -45,6 +45,8 @@ public class GMebelNowy extends javax.swing.JPanel {
     private TableColumnAdjuster tcaTIE;
     private TableModelMebelElement tmme;
     private Element element;
+    private Mebel mebel;
+    private boolean preview = false;
 
     public ArrayList<Opakowanie> getOpakowanieLista() {
         return opakowanieLista;
@@ -69,9 +71,14 @@ public class GMebelNowy extends javax.swing.JPanel {
     public String getKod() {
         return textKod.getText();
     }
+
+    public void setPreview(boolean preview) {
+        this.preview = preview;
+    }
     
     public GMebelNowy() {
         initComponents();
+        mebel = new Mebel();
         elementPozycja = new ElementPozycja();
         okucie = new Okucie();
         element = new Element();
@@ -94,6 +101,7 @@ public class GMebelNowy extends javax.swing.JPanel {
     }
     
     public void loadData(){
+        tmmep.setModelData(new ArrayList());
         ocbm.setModelData(okucie.getData());
         tmme.setModelData(element.getData());
         tableIstniejaceElementy.getColumnModel().getColumn(5).setCellRenderer(new ZadaniaCellRenderer());
@@ -102,6 +110,7 @@ public class GMebelNowy extends javax.swing.JPanel {
     }
     
     public void loadData(Mebel m){
+        tmmep.setModelData(new ArrayList());
         ocbm.setModelData(okucie.getData());
         tmme.setModelData(element.getData());
         opakowanieLista = (new Opakowanie()).getData(m.numerKatalogowy);
@@ -114,8 +123,23 @@ public class GMebelNowy extends javax.swing.JPanel {
         tmmep.setModelData(elementLista);
         textNazwa.setText(m.nazwa);
         textKod.setText(m.kod);
-        textNumer.setText(m.kod);
+        textNumer.setText(m.numerKatalogowy);
         tcaTE.adjustColumns();
+        if(edycja) textNumer.setEnabled(false);
+        
+    }
+    
+    public void actionSave(){
+        Mebel m = new Mebel();
+        m.nazwa = getNazwa();
+        m.numerKatalogowy = getNumer();
+        m.kod = getKod();
+        if(edycja){
+            mebel.edytuj(m, getElementLista(), getOkucieLista(), getOpakowanieLista());
+            edycja = false;
+        } else {
+            mebel.dodaj(m, getElementLista(), getOkucieLista(), getOpakowanieLista());
+        }
     }
 
     /**
@@ -227,8 +251,8 @@ public class GMebelNowy extends javax.swing.JPanel {
                 .addGap(12, 12, 12))
         );
 
-        setMinimumSize(new java.awt.Dimension(620, 500));
-        setPreferredSize(new java.awt.Dimension(620, 500));
+        setMinimumSize(new java.awt.Dimension(620, 550));
+        setPreferredSize(new java.awt.Dimension(620, 550));
 
         labelNumer.setText("Numer");
 
@@ -354,7 +378,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(jLabel5)
                     .addComponent(spinnerNeW2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
                 .addGroup(panelNowyElementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonElementNowyDodaj)
                     .addComponent(spinnerNeIlosc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -370,16 +394,32 @@ public class GMebelNowy extends javax.swing.JPanel {
 
         buttonElementIstSzukaj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/viewmag.png"))); // NOI18N
         buttonElementIstSzukaj.setText("Szukaj");
-        buttonElementIstSzukaj.setEnabled(false);
+        buttonElementIstSzukaj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonElementIstSzukajActionPerformed(evt);
+            }
+        });
 
         textSzukajNazwaMebla.setToolTipText("Nazwa mebla");
-        textSzukajNazwaMebla.setEnabled(false);
+        textSzukajNazwaMebla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textSzukajNazwaMeblaActionPerformed(evt);
+            }
+        });
 
         textSzukajNumerMebla.setToolTipText("Numer Mebla");
-        textSzukajNumerMebla.setEnabled(false);
+        textSzukajNumerMebla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textSzukajNumerMeblaActionPerformed(evt);
+            }
+        });
 
         textSzukajNazwaCzesci.setToolTipText("Nazwa części");
-        textSzukajNazwaCzesci.setEnabled(false);
+        textSzukajNazwaCzesci.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textSzukajNazwaCzesciActionPerformed(evt);
+            }
+        });
 
         buttonIEDodaj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/button_ok.png"))); // NOI18N
         buttonIEDodaj.setText("Dodaj");
@@ -430,7 +470,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(textSzukajNumerMebla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(textSzukajNazwaCzesci, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelIstnejacyElementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonIEDodaj)
@@ -468,7 +508,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(buttonEdycja))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tabpanelElement, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Elementy", panelElementy);
@@ -515,7 +555,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                         .addComponent(spinnerOIlosc, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonODodaj)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                         .addComponent(buttonOUsun)))
                 .addContainerGap())
         );
@@ -523,7 +563,7 @@ public class GMebelNowy extends javax.swing.JPanel {
             panelOkuciaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelOkuciaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelOkuciaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbOkucia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -635,7 +675,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(spinnerWym2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(spinnerWym3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buttonOpakAnuluj))
-                .addContainerGap(304, Short.MAX_VALUE))
+                .addContainerGap(313, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Opakowanie", panelOpakowanie);
@@ -680,7 +720,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(jLabel12)
                     .addComponent(textKod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -690,27 +730,26 @@ public class GMebelNowy extends javax.swing.JPanel {
         int wym2 = (int) spinnerWym2.getValue();
         int wym3 = (int) spinnerWym3.getValue();
         if (wym1!=0 & wym2!=0 &wym3!=0){
-            if(!edycja){
-                Opakowanie opakowanie = null;
-                if(edycjaOpakowania){
-                    int selection = tableOpakowanie.getSelectedRow();
-                    opakowanie = tmo.getOpakowanie(selection);
-                    opakowanie.wymiar_x = wym1;
-                    opakowanie.wymiar_y = wym2;
-                    opakowanie.wymiar_z = wym3;
-                    opakowanieLista.set(selection,opakowanie);
-                } else {
-                    opakowanie = new Opakowanie();
-                    opakowanie.wymiar_x = wym1;
-                    opakowanie.wymiar_y = wym2;
-                    opakowanie.wymiar_z = wym3;
-                    opakowanieLista.add(opakowanie);
-                }
-                tmo.setModelData(opakowanieLista);
-                edycjaOpakowania = false;
+            Opakowanie opakowanie = null;
+            if(edycjaOpakowania){
+                int selection = tableOpakowanie.getSelectedRow();
+                opakowanie = tmo.getOpakowanie(selection);
+                opakowanie.wymiar_x = wym1;
+                opakowanie.wymiar_y = wym2;
+                opakowanie.wymiar_z = wym3;
+                opakowanieLista.set(selection,opakowanie);
+                if(edycja) opakowanie.edytuj(getNumer(),opakowanie);
             } else {
-                //TODO JEŻELI EDYCJA
+                opakowanie = new Opakowanie();
+                opakowanie.wymiar_x = wym1;
+                opakowanie.wymiar_y = wym2;
+                opakowanie.wymiar_z = wym3;
+                opakowanieLista.add(opakowanie);
+                if(edycja) opakowanie.dodaj(getNumer(),opakowanie);
             }
+            tmo.setModelData(opakowanieLista);
+            edycjaOpakowania = false;
+                
         }
         buttonOpakZapisz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/button_ok.png")));
         buttonOpakZapisz.setText("Dodaj");
@@ -726,10 +765,10 @@ public class GMebelNowy extends javax.swing.JPanel {
             Opakowanie opakowanie = tmo.getOpakowanie(selection);
             if(edycja){
                 //TODO JEŻELI EDYCJA
-            } else {
-                opakowanieLista.remove(opakowanie);
-                tmo.setModelData(opakowanieLista);
+                opakowanie.usun(getNumer(),opakowanie);
             }
+            opakowanieLista.remove(opakowanie);
+            tmo.setModelData(opakowanieLista);
         }
     }//GEN-LAST:event_buttonOpakUsunActionPerformed
 
@@ -745,7 +784,7 @@ public class GMebelNowy extends javax.swing.JPanel {
             spinnerWym2.setValue(opakowanie.wymiar_y);
             spinnerWym3.setValue(opakowanie.wymiar_z);
         }
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_buttonOpakEdytujActionPerformed
 
     private void buttonOpakAnulujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOpakAnulujActionPerformed
@@ -760,18 +799,17 @@ public class GMebelNowy extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonOpakAnulujActionPerformed
 
     private void buttonODodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonODodajActionPerformed
-        int ilosc = (int) spinnerOIlosc.getValue();
+         int ilosc = (int) spinnerOIlosc.getValue();
         if(ilosc!=0){
+            OkuciePozycja o = new OkuciePozycja();
+            o.okucie = (Okucie) cbOkucia.getSelectedItem();
+            o.ilosc = ilosc;
+            okucieLista.add(o);
+            tmop.setModelData(okucieLista);
+            cbOkucia.setSelectedIndex(-1);
+            spinnerOIlosc.setValue(0);
             if(edycja){
-
-            } else {
-                OkuciePozycja o = new OkuciePozycja();
-                o.okucie = (Okucie) cbOkucia.getSelectedItem();
-                o.ilosc = ilosc;
-                okucieLista.add(o);
-                tmop.setModelData(okucieLista);
-                cbOkucia.setSelectedIndex(-1);
-                spinnerOIlosc.setValue(0);
+                o.dodaj(getNumer(),o);
             }
         }
     }//GEN-LAST:event_buttonODodajActionPerformed
@@ -780,17 +818,16 @@ public class GMebelNowy extends javax.swing.JPanel {
         int selection = tableOkucia.getSelectedRow();
         if(selection!=-1){
             OkuciePozycja op = tmop.getOkuciePozycja(selection);
+            okucieLista.remove(op);
+            tmop.setModelData(okucieLista);
             if(edycja){
-
-            }else{
-                okucieLista.remove(op);
-                tmop.setModelData(okucieLista);
+                OkuciePozycja o = new OkuciePozycja();
+                o.usun(getNumer(),op);
             }
         }
     }//GEN-LAST:event_buttonOUsunActionPerformed
 
     private void buttonElementNowyDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonElementNowyDodajActionPerformed
-         // TODO add your handling code here:
         int ilosc = (int)spinnerNeIlosc.getValue();
         int wym1 = (int)spinnerNeW1.getValue();
         int wym2 = (int)spinnerNeW2.getValue();
@@ -837,14 +874,13 @@ public class GMebelNowy extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonElementNowyDodajActionPerformed
 
     private void buttonIEDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonIEDodajActionPerformed
-        // TODO add your handling code here:
         int ilosc = (int) spinnerIEIlosc.getValue();
         int selection = tableIstniejaceElementy.getSelectedRow();
         if(ilosc!=0 & selection!=-1){
-            if(edycja){
-                
-            } else {
-                Element e = tmme.getElement(selection);
+            int[] selectedRows = tableIstniejaceElementy.getSelectedRows();
+//                System.out.println(selectedRows.length);
+            for(int i=0;i<selectedRows.length;i++){
+                Element e = tmme.getElement(selectedRows[i]);
                 ElementPozycja ep = new ElementPozycja();
                 ep.element.id = e.id;
                 ep.element.nazwa = e.nazwa;
@@ -855,17 +891,26 @@ public class GMebelNowy extends javax.swing.JPanel {
                 ep.element.wym2 = e.wym2;
                 ep.element.wym3 = e.wym3;
                 elementLista.add(ep);
-                tmmep.setModelData(elementLista);
-                tcaTE.adjustColumns();
+                if(edycja) ep.dodaj(textNumer.getText(), ep);
             }
+            tmmep.setModelData(elementLista);
+            tcaTE.adjustColumns();
+            spinnerIEIlosc.setValue(0);
         }
     }//GEN-LAST:event_buttonIEDodajActionPerformed
 
     private void buttonUsunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUsunActionPerformed
         int selection = tableElementy.getSelectedRow();
         if(selection!=-1){
-            ElementPozycja ep = tmmep.getElementPozycja(selection);
-            elementLista.remove(ep);
+            String numer = textNumer.getText();
+            int[] selectedRows = tableElementy.getSelectedRows();
+            for(int i=0; i<selectedRows.length; i++){
+                ElementPozycja ep = tmmep.getElementPozycja(selectedRows[i]);
+                elementLista.remove(ep);
+                if(edycja) {
+                    ep.usun(ep,numer);
+                }
+            }
             tmmep.setModelData(elementLista);
         }
     }//GEN-LAST:event_buttonUsunActionPerformed
@@ -908,6 +953,29 @@ public class GMebelNowy extends javax.swing.JPanel {
         dialogEdycjaWarning.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void buttonElementIstSzukajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonElementIstSzukajActionPerformed
+        search();
+    }//GEN-LAST:event_buttonElementIstSzukajActionPerformed
+
+    private void textSzukajNazwaMeblaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSzukajNazwaMeblaActionPerformed
+        search();
+    }//GEN-LAST:event_textSzukajNazwaMeblaActionPerformed
+
+    private void textSzukajNumerMeblaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSzukajNumerMeblaActionPerformed
+        search();
+    }//GEN-LAST:event_textSzukajNumerMeblaActionPerformed
+
+    private void textSzukajNazwaCzesciActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSzukajNazwaCzesciActionPerformed
+        search();
+    }//GEN-LAST:event_textSzukajNazwaCzesciActionPerformed
+
+    private void search(){
+        String nazwaCzesci = textSzukajNazwaCzesci.getText();
+        String nazwaMebla = textSzukajNazwaMebla.getText();
+        String numerMebla = textSzukajNumerMebla.getText();
+        tmme.setModelData(element.getData(nazwaCzesci,nazwaMebla,numerMebla));
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonEdycja;
     private javax.swing.JButton buttonElementIstSzukaj;
@@ -976,6 +1044,7 @@ public class GMebelNowy extends javax.swing.JPanel {
 
     public void resetElement(){
         textElementNowyNazwa.setText("");
+//        tmmep.setModelData(new ArrayList());
         cbZadCnc.setSelected(false);
         cbZadKlej.setSelected(false);
         cbZadPila.setSelected(false);
@@ -990,11 +1059,17 @@ public class GMebelNowy extends javax.swing.JPanel {
         textNazwa.setText("");
         textNumer.setText("");
         textKod.setText("");
+        elementLista = new ArrayList();
+        okucieLista = new ArrayList();
+        opakowanieLista = new ArrayList();
         resetElement();
-        tmop.setModelData(new ArrayList());
         tmop.setModelData(new ArrayList());
         tmme.setModelData(element.getData());
         tmmep.setModelData(new ArrayList());
+    }
+
+    public boolean getPreview() {
+        return this.preview;
     }
 
     

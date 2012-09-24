@@ -21,6 +21,7 @@ public class OkuciePozycja extends SQLiteConnection {
     private final static String COL_ILOSC = "ilosc";
     private final static String COL_ID = "id";
     private final static String COL_NAZWA = "nazwa";
+    private final static String COL_OKUCIEID = "okucie_id";
 
     void dodaj(String numer, ArrayList<OkuciePozycja> okucieLista) {
         for(int i = 0; i<okucieLista.size();i++){
@@ -76,4 +77,36 @@ public class OkuciePozycja extends SQLiteConnection {
         }
         return lista;
     }
+
+    public void dodaj(String numer, OkuciePozycja o) {
+        connect();
+        String sql = "INSERT INTO "+TABLE_NAME+" VALUES ('"+numer+"',"+o.okucie.id+","+o.ilosc+");";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+    }
+
+    public void usun(String numer, OkuciePozycja op) {
+        connect();
+        String sql = "DELETE FROM "+TABLE_NAME+" WHERE "
+                +COL_MEBELNR+" = '"+numer+"' AND "
+                +COL_OKUCIEID+" = "+op.okucie.id+";";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql,ex);
+        } finally {
+            disconnect();
+        }
+    }
+
+    
 }

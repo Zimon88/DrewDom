@@ -14,10 +14,11 @@ import pl.isimon.drewdom.raports.RaportSzczegolowy;
 public class TableModelRaportSzczegolwy extends javax.swing.table.AbstractTableModel{
     // TODO all
     private ArrayList<RaportSzczegolowy> lista = null;
-        private final static Object[] columnNames = {"",""};
+        private final static Object[] columnNames = {"","",""};
         
-        private final static int IDX_MEBEL_DANE = 0;
-        private final static int IDX_ELEMENTY_LISTA = 1;
+        private final static int IDX_LP = 0;
+        private final static int IDX_MEBEL_DANE = 1;
+        private final static int IDX_ELEMENTY_LISTA = 2;
        
         /**
          * 
@@ -41,6 +42,7 @@ public class TableModelRaportSzczegolwy extends javax.swing.table.AbstractTableM
             if(lista == null) return null;
             RaportSzczegolowy o = lista.get(rowIndex);
             switch (columnIndex){
+                case IDX_LP: return rowIndex+1;
                 case IDX_MEBEL_DANE: return o.pozycjaZamowienia.toString();
                 case IDX_ELEMENTY_LISTA: return o.listaElementow;
                 default:

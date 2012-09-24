@@ -98,6 +98,27 @@ public class Mebel extends SQLiteConnection{
         }
    }
    
+    public void edytuj(Mebel mebel, ArrayList<ElementPozycja> elementyLista,ArrayList<OkuciePozycja> okucieLista, ArrayList<Opakowanie> opakowanieLista){
+        connect();
+//        String sql = "INSERT INTO "+TABLE_NAME+" VALUES ('"+mebel.numerKatalogowy+"','"+mebel.nazwa+"','"+mebel.kod+"');";
+        String sql = "UPDATE "+TABLE_NAME+ " SET "
+                +COL_NAZWA+ "='"+mebel.nazwa+"', "
+                +COL_KOD+ "='"+mebel.kod+"' "
+                + " WHERE "+COL_NR+"='"+mebel.numerKatalogowy+"';";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+            this.elementPozycja.edytuj(mebel.numerKatalogowy,elementyLista);
+//            this.okuciePozycja.edytuj(mebel.numerKatalogowy,okucieLista);
+//            this.opakowanie.dodaj(mebel.numerKatalogowy,opakowanieLista);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+   }
+   
    public void usun(Mebel mebel){
         connect();
         String sql = "DELETE FROM "+TABLE_NAME+" WHERE "+COL_NR+" = '"+mebel.numerKatalogowy+"';";
@@ -119,6 +140,45 @@ public class Mebel extends SQLiteConnection{
     @Override
     public String toString() {
         return  nazwa +"\n" + numerKatalogowy;
+    }
+
+    public ArrayList<Mebel> getData(String numer, String nazwa, String kod) {
+        ArrayList<Mebel> listaMebli = new ArrayList();
+        String sql = "SELECT * FROM "+TABLE_NAME+" WHERE ";
+        if(numer!=null & !"".equals(numer)){
+            sql += COL_NR + " LIKE '%"+numer+"%' ";
+        }
+        if(nazwa!=null & !"".equals(nazwa)){
+            if(numer!=null & !"".equals(numer)){
+                sql += " AND ";
+            }
+            sql += COL_NAZWA + " LIKE '%"+nazwa+"%' ";
+        }
+        if(kod!=null & !"".equals(kod)){
+            if((numer!=null & !"".equals(numer)) | (nazwa!=null & !"".equals(nazwa))){
+                sql += " AND ";
+            }
+            sql += COL_KOD + " LIKE '%"+kod+"%' ";
+        }
+        sql += ";";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                Mebel m = new Mebel();
+                m.numerKatalogowy = w.getString(COL_NR);
+                m.nazwa = w.getString(COL_NAZWA);
+                m.kod = w.getString(COL_KOD);
+                listaMebli.add(m);
+            }
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return listaMebli;
     }
    
 }

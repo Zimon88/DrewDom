@@ -81,4 +81,51 @@ public class Opakowanie extends SQLiteConnection{
             disconnect();
         }
     }
+
+    public void edytuj(String numer, Opakowanie opakowanie) {
+        connect();
+        String sql = "UPDATE "+TABLE_NAME+ " SET "
+                + COL_WYM1 + " = "+opakowanie.wymiar_x+ ", "
+                + COL_WYM2 + " = "+opakowanie.wymiar_y+ ", "
+                + COL_WYM3 + " = "+opakowanie.wymiar_z+ " "
+                + " WHERE "+COL_MEBELNR+"='"+numer+"'";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+    }
+
+    public void dodaj(String numer, Opakowanie o) {
+        connect();
+        String sql = "INSERT INTO "+TABLE_NAME+" VALUES (null,'"+numer+"',"+o.wymiar_x+","+o.wymiar_y+","+o.wymiar_z+");";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+    }
+
+    public void usun(String numer, Opakowanie opakowanie) {
+        connect();
+        String sql = "DELETE FROM "+TABLE_NAME+" WHERE "+COL_ID+" = "+opakowanie.id;
+                
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql,ex);
+        } finally {
+            disconnect();
+        }
+    }
 }

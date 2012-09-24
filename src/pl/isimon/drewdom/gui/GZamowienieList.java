@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import pl.isimon.drewdom.Zamowienie;
+import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
 
 /**
  *
@@ -23,10 +24,13 @@ public class GZamowienieList extends javax.swing.JPanel {
     private Zamowienie zamowienie;
     private TableModelZamowienie tmz;
     private ArrayList<Zamowienie> lista = null;
+    private TableColumnAdjuster tca;
+    
     public GZamowienieList() {
         initComponents();
         zamowienie = new Zamowienie();
         tmz = (TableModelZamowienie)TableZamowienie.getModel();
+        tca = new TableColumnAdjuster(TableZamowienie);
     }
     
 //    public void setData(ArrayList<Zamowienie> lista){
@@ -37,6 +41,7 @@ public class GZamowienieList extends javax.swing.JPanel {
         if (lista == null) lista = new ArrayList();
         lista = zamowienie.getData();
         tmz.setModelData(lista);
+        tca.adjustColumns();
     }
 
     /**
@@ -50,6 +55,8 @@ public class GZamowienieList extends javax.swing.JPanel {
 
         framePreview = new javax.swing.JFrame();
         panelZamowieniePreview = new pl.isimon.drewdom.gui.GZamowieniePreview();
+        frameEdycja = new javax.swing.JFrame();
+        panelZamowienie = new pl.isimon.drewdom.gui.GZamowienieNew();
         jScrollPane1 = new javax.swing.JScrollPane();
         TableZamowienie = new javax.swing.JTable();
         buttonPodglad = new javax.swing.JButton();
@@ -77,6 +84,25 @@ public class GZamowienieList extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        frameEdycja.setMinimumSize(new java.awt.Dimension(640, 540));
+
+        javax.swing.GroupLayout frameEdycjaLayout = new javax.swing.GroupLayout(frameEdycja.getContentPane());
+        frameEdycja.getContentPane().setLayout(frameEdycjaLayout);
+        frameEdycjaLayout.setHorizontalGroup(
+            frameEdycjaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frameEdycjaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panelZamowienie, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        frameEdycjaLayout.setVerticalGroup(
+            frameEdycjaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frameEdycjaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panelZamowienie, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         setPreferredSize(new java.awt.Dimension(620, 400));
 
         TableZamowienie.setModel(new pl.isimon.drewdom.gui.models.TableModelZamowienie());
@@ -95,9 +121,13 @@ public class GZamowienieList extends javax.swing.JPanel {
         buttonRealizacja.setText("Zrealizowane");
         buttonRealizacja.setEnabled(false);
 
-        buttonNowe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/filenew.png"))); // NOI18N
-        buttonNowe.setText("Nowe");
-        buttonNowe.setEnabled(false);
+        buttonNowe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/editpaste.png"))); // NOI18N
+        buttonNowe.setText("Edytuj");
+        buttonNowe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonNoweActionPerformed(evt);
+            }
+        });
 
         buttonDrukuj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/fileprint.png"))); // NOI18N
         buttonDrukuj.setText("Drukuj");
@@ -129,7 +159,7 @@ public class GZamowienieList extends javax.swing.JPanel {
                         .addComponent(buttonUsun)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonDrukuj)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                         .addComponent(buttonRealizacja)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonPodglad)))
@@ -177,6 +207,16 @@ public class GZamowienieList extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_buttonUsunActionPerformed
 
+    private void buttonNoweActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNoweActionPerformed
+        int selection = TableZamowienie.getSelectedRow();
+        if(selection!=-1){
+            Zamowienie z = tmz.getZamowienie(selection);
+            panelZamowienie.loadData(z);
+            panelZamowienie.setEdycja(true);
+            frameEdycja.setVisible(true);
+        }
+    }//GEN-LAST:event_buttonNoweActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable TableZamowienie;
     private javax.swing.JButton buttonDrukuj;
@@ -184,8 +224,10 @@ public class GZamowienieList extends javax.swing.JPanel {
     private javax.swing.JButton buttonPodglad;
     private javax.swing.JButton buttonRealizacja;
     private javax.swing.JButton buttonUsun;
+    private javax.swing.JFrame frameEdycja;
     private javax.swing.JFrame framePreview;
     private javax.swing.JScrollPane jScrollPane1;
+    private pl.isimon.drewdom.gui.GZamowienieNew panelZamowienie;
     private pl.isimon.drewdom.gui.GZamowieniePreview panelZamowieniePreview;
     // End of variables declaration//GEN-END:variables
 
