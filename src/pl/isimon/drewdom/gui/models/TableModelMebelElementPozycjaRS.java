@@ -30,6 +30,7 @@ public class TableModelMebelElementPozycjaRS extends javax.swing.table.AbstractT
         private final static int IDX_ZADANIE_K = 3;
         private final static int IDX_ZADANIE_P = 4;
         private final static int IDX_ZADANIE_C = 5;
+        private final static String IKS = "XXXXXXXXXXXXXXXXXXXXXXX";
        
         /**
          * 
@@ -57,9 +58,9 @@ public class TableModelMebelElementPozycjaRS extends javax.swing.table.AbstractT
                 case IDX_NAZWA: return o.element.nazwa;
                 case IDX_WYMIAR: return o.element.wym1+"x"+o.element.wym2+"x"+o.element.wym3;
                 case IDX_ILOSC: return o.ilosc;
-                case IDX_ZADANIE_K: if(x == 2 | x == 4 | x==6) return "X"; return "";
-                case IDX_ZADANIE_P: if(x == 1 | x == 4 | x==5) return "X"; return "";
-                case IDX_ZADANIE_C: if(x == 1 | x == 2 | x==3) return "X"; return "";
+                case IDX_ZADANIE_K: if(x == 2 | x == 4 | x==6) return IKS; return "";
+                case IDX_ZADANIE_P: if(x == 1 | x == 4 | x==5) return IKS; return "";
+                case IDX_ZADANIE_C: if(x == 1 | x == 2 | x==3) return IKS; return "";
                 default:
                     return o;
             }

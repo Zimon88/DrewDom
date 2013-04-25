@@ -8,34 +8,36 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import pl.isimon.drewdom.Opakowanie;
-import pl.isimon.drewdom.gui.models.TableModelOpakowanie2;
+import pl.isimon.drewdom.OpakowaniePozycja;
+import pl.isimon.drewdom.gui.models.TableModelOpakowanie3;
 import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
 
 /**
  *
  * @author Simon
  */
-public class PanelCellRaportOpakowania extends javax.swing.JPanel {
+public class PanelCellRaportOpakowania3 extends javax.swing.JPanel {
 
-    ArrayList<Opakowanie> lista;
-    TableModelOpakowanie2 model;
+    ArrayList<OpakowaniePozycja> lista;
+    TableModelOpakowanie3 model;
     TableColumnAdjuster tca;
     /**
      * Creates new form PanelCellRaportSElementy
      */
-    public PanelCellRaportOpakowania() {
+    public PanelCellRaportOpakowania3() {
         initComponents();
-        model = (TableModelOpakowanie2) tableElementy.getModel();
+        model = (TableModelOpakowanie3) tableElementy.getModel();
         tableElementy.getTableHeader().setEnabled(false);
         tca = new TableColumnAdjuster(tableElementy);
         tca.setOnlyAdjustLarger(false);
+        tableElementy.getColumnModel().getColumn(1).setPreferredWidth(200);
     }
 
-    public void setLista(ArrayList<Opakowanie> lista) {
+    public void setLista(ArrayList<OpakowaniePozycja> lista) {
         this.lista = lista;
         model.setModelData(lista);
         updateRowHeights();
-        tca.adjustColumns();
+        tca.adjustColumn(0);
         
     }
     
@@ -88,7 +90,7 @@ public class PanelCellRaportOpakowania extends javax.swing.JPanel {
 
         tableElementy.setAutoCreateRowSorter(true);
         tableElementy.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        tableElementy.setModel(new TableModelOpakowanie2());
+        tableElementy.setModel(new TableModelOpakowanie3());
         jScrollPane1.setViewportView(tableElementy);
 
         add(jScrollPane1);

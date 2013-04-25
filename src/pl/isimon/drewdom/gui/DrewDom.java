@@ -91,6 +91,8 @@ public class DrewDom extends javax.swing.JFrame {
         buttonOk = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         cbContinue = new javax.swing.JCheckBox();
+        szukajKartonu = new javax.swing.JFrame();
+        gSzukajKartonu1 = new pl.isimon.drewdom.gui.GSzukajKartonu();
         tabPanel = new javax.swing.JTabbedPane();
         panelTabZamowienia = new pl.isimon.drewdom.gui.GZamowienieList();
         panelTabMeble = new pl.isimon.drewdom.gui.GMebleLista();
@@ -100,6 +102,7 @@ public class DrewDom extends javax.swing.JFrame {
         buttonChangelog = new javax.swing.JButton();
         buttonNoweZamowienie = new javax.swing.JButton();
         buttonNowyMebel = new javax.swing.JButton();
+        buttonSzukajKartonu = new javax.swing.JButton();
 
         changelog.setTitle("ChangeLog");
         changelog.setMinimumSize(new java.awt.Dimension(640, 480));
@@ -266,7 +269,6 @@ public class DrewDom extends javax.swing.JFrame {
         nowyMebelDialog.setLocationByPlatform(true);
         nowyMebelDialog.setMinimumSize(new java.awt.Dimension(260, 150));
         nowyMebelDialog.setModal(true);
-        nowyMebelDialog.setPreferredSize(new java.awt.Dimension(276, 150));
 
         buttonOk.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/button_ok.png"))); // NOI18N
         buttonOk.setText("OK");
@@ -305,6 +307,26 @@ public class DrewDom extends javax.swing.JFrame {
                 .addGroup(nowyMebelDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbContinue)
                     .addComponent(buttonOk))
+                .addContainerGap())
+        );
+
+        szukajKartonu.setTitle("Szukaj kartonu");
+        szukajKartonu.setMinimumSize(new java.awt.Dimension(560, 340));
+
+        javax.swing.GroupLayout szukajKartonuLayout = new javax.swing.GroupLayout(szukajKartonu.getContentPane());
+        szukajKartonu.getContentPane().setLayout(szukajKartonuLayout);
+        szukajKartonuLayout.setHorizontalGroup(
+            szukajKartonuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, szukajKartonuLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(gSzukajKartonu1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        szukajKartonuLayout.setVerticalGroup(
+            szukajKartonuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(szukajKartonuLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(gSzukajKartonu1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -368,6 +390,18 @@ public class DrewDom extends javax.swing.JFrame {
             }
         });
         tollBar.add(buttonNowyMebel);
+
+        buttonSzukajKartonu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x48/filefind.png"))); // NOI18N
+        buttonSzukajKartonu.setText("Szukaj Kartonu");
+        buttonSzukajKartonu.setFocusable(false);
+        buttonSzukajKartonu.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        buttonSzukajKartonu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        buttonSzukajKartonu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSzukajKartonuActionPerformed(evt);
+            }
+        });
+        tollBar.add(buttonSzukajKartonu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -493,6 +527,10 @@ public class DrewDom extends javax.swing.JFrame {
                  
     }//GEN-LAST:event_tabPanelStateChanged
 
+    private void buttonSzukajKartonuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSzukajKartonuActionPerformed
+        szukajKartonu.setVisible(true);
+    }//GEN-LAST:event_buttonSzukajKartonuActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -537,10 +575,12 @@ public class DrewDom extends javax.swing.JFrame {
     private javax.swing.JButton buttonNoweZamowienie;
     private javax.swing.JButton buttonNowyMebel;
     private javax.swing.JButton buttonOk;
+    private javax.swing.JButton buttonSzukajKartonu;
     private javax.swing.JButton buttonWyczysc;
     private javax.swing.JCheckBox cbContinue;
     private javax.swing.JFrame changelog;
     private javax.swing.JEditorPane changelogPanel;
+    private pl.isimon.drewdom.gui.GSzukajKartonu gSzukajKartonu1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane2;
@@ -554,6 +594,7 @@ public class DrewDom extends javax.swing.JFrame {
     private pl.isimon.drewdom.gui.GRaporty panelTabRaporty;
     private pl.isimon.drewdom.gui.GZamowienieList panelTabZamowienia;
     private pl.isimon.drewdom.gui.utils.RotatedLabel rotatedLabel1;
+    private javax.swing.JFrame szukajKartonu;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JToolBar tollBar;
     // End of variables declaration//GEN-END:variables

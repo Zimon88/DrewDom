@@ -15,19 +15,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
 import pl.isimon.drewdom.Opakowanie;
+import pl.isimon.drewdom.OpakowaniePozycja;
 import pl.isimon.drewdom.Zamowienie;
 import pl.isimon.drewdom.ZamowieniePozycja;
 import pl.isimon.drewdom.gui.models.ComboBoxModelZamowienie;
 import pl.isimon.drewdom.gui.models.TableModelRaportKody;
 import pl.isimon.drewdom.gui.models.TableModelRaportOkucia;
 import pl.isimon.drewdom.gui.models.TableModelRaportOpakowania;
+import pl.isimon.drewdom.gui.models.TableModelRaportOpakowania3;
 import pl.isimon.drewdom.gui.models.TableModelRaportSzczegolwy;
 import pl.isimon.drewdom.gui.utils.ElementyRaportSzczegolowyCellRenderer;
 import pl.isimon.drewdom.gui.utils.MultiLineCellRenderer;
+import pl.isimon.drewdom.gui.utils.OkucieCellRenderer;
 import pl.isimon.drewdom.gui.utils.OpakowaniaCellRenderer;
+import pl.isimon.drewdom.gui.utils.OpakowaniaCellRenderer3;
 import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
 import pl.isimon.drewdom.raports.RaportOkucia;
 import pl.isimon.drewdom.raports.RaportOpakowania;
+import pl.isimon.drewdom.raports.RaportOpakowania3;
 import pl.isimon.drewdom.raports.RaportSzczegolowy;
 
 /**
@@ -38,20 +43,25 @@ public class GRaporty extends javax.swing.JPanel {
 
     
     private ComboBoxModelZamowienie cbmz;
+    ComboBoxModelZamowienie cbmz3;
     ArrayList<ZamowieniePozycja> pozycjeLista;
     ArrayList<Zamowienie> zamowienieLista = null;
     ZamowieniePozycja pozycja;
+    OpakowaniePozycja opakowaniePozycja;
     TableModelRaportSzczegolwy tmrs;
     TableModelRaportOpakowania tmro;
+    TableModelRaportOpakowania3 tmro3;
     TableModelRaportKody tmrk;
     TableModelRaportOkucia tmrok;
     RaportOkucia raportOk;
     RaportOpakowania raportO;
+    RaportOpakowania3 raportO3;
     RaportSzczegolowy raportS;
     TableColumnAdjuster tca;
     TableColumnAdjuster tca2;
     TableColumnAdjuster tcaKody;
     TableColumnAdjuster tcaokucia;
+    TableColumnAdjuster tca3;
     Zamowienie zamowienie;
     Opakowanie opakowanie;
     boolean resized=false;
@@ -64,21 +74,30 @@ public class GRaporty extends javax.swing.JPanel {
         zamowienie = new Zamowienie();
         raportS = new RaportSzczegolowy();
         raportO = new RaportOpakowania();
+        raportO3 = new RaportOpakowania3();
+        raportOk = new RaportOkucia();
+        opakowaniePozycja = new OpakowaniePozycja();
         cbmz = (ComboBoxModelZamowienie) cbListaZamowien.getModel();
+        cbmz3 = (ComboBoxModelZamowienie) cbZamowienia.getModel();
         pozycja= new ZamowieniePozycja();
         tmrs = (TableModelRaportSzczegolwy) tableRaportSzczegolwy.getModel();
         tmro = (TableModelRaportOpakowania) tableRaportOpakowania.getModel();
         tmrk = (TableModelRaportKody) tableRaportKody.getModel();
         tmrok = (TableModelRaportOkucia) tableOkucia.getModel();
+        tmro3 = (TableModelRaportOpakowania3) tableRaportOpakowania1.getModel();
         
         tableRaportOpakowania.getColumnModel().getColumn(4).setCellRenderer(new OpakowaniaCellRenderer());
+        tableRaportOpakowania1.getColumnModel().getColumn(3).setCellRenderer(new OpakowaniaCellRenderer3());
 //        tableRaportOpakowania.getColumnModel().getColumn(0).setCellRenderer(new MultiLineCellRenderer());
         tableRaportSzczegolwy.getColumnModel().getColumn(2).setCellRenderer(new ElementyRaportSzczegolowyCellRenderer());
         tableRaportSzczegolwy.getColumnModel().getColumn(1).setCellRenderer(new MultiLineCellRenderer());
+        tableOkucia.getColumnModel().getColumn(4).setCellRenderer(new OkucieCellRenderer());
 //        tableRaportSzczegolwy.setRowHeight(10000);
         tca = new TableColumnAdjuster(tableRaportSzczegolwy);
         tca2 = new TableColumnAdjuster(tableRaportOpakowania);
+        tca3 = new TableColumnAdjuster(tableRaportOpakowania1);
         tcaKody = new TableColumnAdjuster(tableRaportKody);
+        tcaokucia = new TableColumnAdjuster(tableOkucia);
     }
     
     public void loadData(){
@@ -102,6 +121,13 @@ public class GRaporty extends javax.swing.JPanel {
         updateRowHeights(tableRaportOpakowania);
         tca2.adjustColumns();
     }
+    public void loadDataRaportOpakowania3(Zamowienie z){
+        tmro3.setModelData(raportO3.getData(z));
+        cbmz3.setModelData(zamowienieLista);
+        zamowienie=z;
+        updateRowHeights(tableRaportOpakowania1);
+        tca3.adjustColumns();
+    }
     
     public void loadDataRaportKody(Zamowienie z){
         tmrk.setModelData((new ZamowieniePozycja()).getPozycjeZamowienia(z.numer));
@@ -112,6 +138,7 @@ public class GRaporty extends javax.swing.JPanel {
     private void loadDataRaportOkucia(Zamowienie z) {
         tmrok.setModelData(raportOk.getData(z));
         zamowienie=z;
+        updateRowHeights(tableOkucia);
         tcaokucia.adjustColumns();
     }
     
@@ -198,11 +225,18 @@ public class GRaporty extends javax.swing.JPanel {
         frameRaportOkucia = new javax.swing.JFrame();
         jScrollPane4 = new javax.swing.JScrollPane();
         tableOkucia = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
+        bDrukujOkucia = new javax.swing.JButton();
         frameRaportKody = new javax.swing.JFrame();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableRaportKody = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
+        frameRaportOpakowania3 = new javax.swing.JFrame();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        tableRaportOpakowania1 = new javax.swing.JTable();
+        buttonRODrukuj1 = new javax.swing.JButton();
+        cbZamowienia = new javax.swing.JComboBox();
+        bDodaj = new javax.swing.JButton();
+        bLacz = new javax.swing.JButton();
         buttonRaportSzczegolwy = new javax.swing.JButton();
         buttonRaportOpakowania = new javax.swing.JButton();
         buttonRaportOkucia = new javax.swing.JButton();
@@ -213,6 +247,7 @@ public class GRaporty extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
+        jButton2 = new javax.swing.JButton();
 
         frameRaportSzczegolowy.setMinimumSize(new java.awt.Dimension(800, 500));
 
@@ -266,6 +301,7 @@ public class GRaporty extends javax.swing.JPanel {
 
         frameRaportOpakowania.setMinimumSize(new java.awt.Dimension(800, 500));
 
+        tableRaportOpakowania.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         tableRaportOpakowania.setModel(new TableModelRaportOpakowania());
         jScrollPane2.setViewportView(tableRaportOpakowania);
 
@@ -300,11 +336,18 @@ public class GRaporty extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        frameRaportOkucia.setMinimumSize(new java.awt.Dimension(640, 480));
+
         tableOkucia.setModel(new TableModelRaportOkucia());
         jScrollPane4.setViewportView(tableOkucia);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/fileprint.png"))); // NOI18N
-        jButton2.setText("Drukuj");
+        bDrukujOkucia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/fileprint.png"))); // NOI18N
+        bDrukujOkucia.setText("Drukuj");
+        bDrukujOkucia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDrukujOkuciaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout frameRaportOkuciaLayout = new javax.swing.GroupLayout(frameRaportOkucia.getContentPane());
         frameRaportOkucia.getContentPane().setLayout(frameRaportOkuciaLayout);
@@ -315,7 +358,7 @@ public class GRaporty extends javax.swing.JPanel {
                 .addGroup(frameRaportOkuciaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, frameRaportOkuciaLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton2))
+                        .addComponent(bDrukujOkucia))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -325,7 +368,7 @@ public class GRaporty extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(bDrukujOkucia)
                 .addContainerGap())
         );
 
@@ -362,6 +405,68 @@ public class GRaporty extends javax.swing.JPanel {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
+                .addContainerGap())
+        );
+
+        frameRaportOpakowania3.setMinimumSize(new java.awt.Dimension(800, 500));
+
+        tableRaportOpakowania1.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        tableRaportOpakowania1.setModel(new TableModelRaportOpakowania3());
+        jScrollPane5.setViewportView(tableRaportOpakowania1);
+
+        buttonRODrukuj1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x16/fileprint.png"))); // NOI18N
+        buttonRODrukuj1.setText("Drukuj");
+        buttonRODrukuj1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRODrukuj1ActionPerformed(evt);
+            }
+        });
+
+        cbZamowienia.setModel(new ComboBoxModelZamowienie());
+
+        bDodaj.setText("Dodaj kartony");
+        bDodaj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDodajActionPerformed(evt);
+            }
+        });
+
+        bLacz.setText("Łącz");
+        bLacz.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bLaczActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout frameRaportOpakowania3Layout = new javax.swing.GroupLayout(frameRaportOpakowania3.getContentPane());
+        frameRaportOpakowania3.getContentPane().setLayout(frameRaportOpakowania3Layout);
+        frameRaportOpakowania3Layout.setHorizontalGroup(
+            frameRaportOpakowania3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frameRaportOpakowania3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(frameRaportOpakowania3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(frameRaportOpakowania3Layout.createSequentialGroup()
+                        .addComponent(cbZamowienia, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bDodaj)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bLacz)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buttonRODrukuj1))
+                    .addComponent(jScrollPane5))
+                .addContainerGap())
+        );
+        frameRaportOpakowania3Layout.setVerticalGroup(
+            frameRaportOpakowania3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frameRaportOpakowania3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(frameRaportOpakowania3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buttonRODrukuj1)
+                    .addComponent(cbZamowienia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bDodaj)
+                    .addComponent(bLacz))
                 .addContainerGap())
         );
 
@@ -410,6 +515,13 @@ public class GRaporty extends javax.swing.JPanel {
         jCheckBox1.setText("Ostatnie zamówienie");
         jCheckBox1.setEnabled(false);
 
+        jButton2.setText("Kartony");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -426,8 +538,11 @@ public class GRaporty extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(buttonRaportSzczegolwy, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -453,7 +568,8 @@ public class GRaporty extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(buttonRaportOpakowania))
+                    .addComponent(buttonRaportOpakowania)
+                    .addComponent(jButton2))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -464,6 +580,9 @@ public class GRaporty extends javax.swing.JPanel {
                     .addComponent(buttonRaportKody))
                 .addContainerGap(193, Short.MAX_VALUE))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {buttonRaportOpakowania, jButton2});
+
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonRaportSzczegolwyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRaportSzczegolwyActionPerformed
@@ -502,17 +621,88 @@ public class GRaporty extends javax.swing.JPanel {
         frameRaportOkucia.setVisible(true);
     }//GEN-LAST:event_buttonRaportOkuciaActionPerformed
 
+    private void bDrukujOkuciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDrukujOkuciaActionPerformed
+         printTable(tableOkucia,"Zamowienie nr: " + zamowienie.numer,"Strona {0}");
+    }//GEN-LAST:event_bDrukujOkuciaActionPerformed
+
+    private void buttonRODrukuj1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRODrukuj1ActionPerformed
+        this.printTable(tableRaportOpakowania1,"Zamowienie nr: " + zamowienie.numer,"Strona {0}");
+    }//GEN-LAST:event_buttonRODrukuj1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Zamowienie z = (Zamowienie) cbListaZamowien.getSelectedItem();
+        loadDataRaportOpakowania3(z);
+        frameRaportOpakowania3.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void bDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDodajActionPerformed
+        Zamowienie z = (Zamowienie) cbZamowienia.getSelectedItem();
+        ArrayList<RaportOpakowania3> data = raportO3.getData(z);
+        ArrayList<RaportOpakowania3> modelData = tmro3.getModelData();
+        ArrayList<RaportOpakowania3> newList = new ArrayList();
+        newList.addAll(modelData);
+        boolean exist = false;
+        for(int i=0;i<data.size();i++){
+            
+            RaportOpakowania3 o = data.get(i);
+            for(int j=0;j<newList.size();j++){
+                RaportOpakowania3 o2 = newList.get(j);
+                if(o2.pozycjaZamowienia.mebel.numerKatalogowy.equals(o.pozycjaZamowienia.mebel.numerKatalogowy) ){
+                    o2.pozycjaZamowienia.ilosc+=o2.pozycjaZamowienia.ilosc;
+                    for(int k=0;k<o.opakowanieLista.size();k++){
+                        o2.opakowanieLista.get(k).sztuk+=o.opakowanieLista.get(k).sztuk;
+//                        System.out.println(o2.opakowanieLista.get(k).sztuk);
+                    }
+                    exist = true;
+                    break;
+                }            
+                
+            }
+//            System.out.println(exist);
+//            try { 
+//                Thread.sleep(1000); 
+//                } 
+//                catch ( InterruptedException e) { 
+//                } 
+            if(!exist) {
+                newList.add(o);
+            } else {
+                exist = false;
+            }
+        }
+//        newList.addAll(modelData);
+        //newList = raportO3.laczKartony(newList);
+        tmro3.setModelData(newList);
+//        tmro3.setModelData(raportO3.laczKartony(newList));
+        updateRowHeights(tableRaportOpakowania1);
+        tca3.adjustColumns();
+//        tableRaportOpakowania1.
+    }//GEN-LAST:event_bDodajActionPerformed
+
+    private void bLaczActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLaczActionPerformed
+        ArrayList<RaportOpakowania3> modelData = tmro3.getModelData();
+        tmro3.setModelData(raportO3.laczKartony(modelData));
+         updateRowHeights(tableRaportOpakowania1);
+        tca3.adjustColumns();
+    }//GEN-LAST:event_bLaczActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bDodaj;
+    private javax.swing.JButton bDrukujOkucia;
+    private javax.swing.JButton bLacz;
     private javax.swing.JButton buttonRODrukuj;
+    private javax.swing.JButton buttonRODrukuj1;
     private javax.swing.JButton buttonRaportKody;
     private javax.swing.JButton buttonRaportOkucia;
     private javax.swing.JButton buttonRaportOpakowania;
     private javax.swing.JButton buttonRaportSzczegolowyDrukuj;
     private javax.swing.JButton buttonRaportSzczegolwy;
     private javax.swing.JComboBox cbListaZamowien;
+    private javax.swing.JComboBox cbZamowienia;
     private javax.swing.JFrame frameRaportKody;
     private javax.swing.JFrame frameRaportOkucia;
     private javax.swing.JFrame frameRaportOpakowania;
+    private javax.swing.JFrame frameRaportOpakowania3;
     private javax.swing.JFrame frameRaportSzczegolowy;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -526,10 +716,12 @@ public class GRaporty extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel labelRaportSzczegolowyNumer;
     private javax.swing.JTable tableOkucia;
     private javax.swing.JTable tableRaportKody;
     private javax.swing.JTable tableRaportOpakowania;
+    private javax.swing.JTable tableRaportOpakowania1;
     private javax.swing.JTable tableRaportSzczegolwy;
     // End of variables declaration//GEN-END:variables
 

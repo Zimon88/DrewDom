@@ -7,6 +7,7 @@ package pl.isimon.drewdom.gui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import pl.isimon.drewdom.OkuciePozycja;
 import pl.isimon.drewdom.Opakowanie;
 import pl.isimon.drewdom.gui.models.TableModelOkuciePozycja;
 import pl.isimon.drewdom.gui.models.TableModelOpakowanie2;
@@ -18,21 +19,21 @@ import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
  */
 public class PanelCellRaportOkucia extends javax.swing.JPanel {
 
-    ArrayList<Opakowanie> lista;
-    TableModelOpakowanie2 model;
+    ArrayList<OkuciePozycja> lista;
+    TableModelOkuciePozycja model;
     TableColumnAdjuster tca;
     /**
      * Creates new form PanelCellRaportSElementy
      */
     public PanelCellRaportOkucia() {
         initComponents();
-        model = (TableModelOpakowanie2) tableOkucia.getModel();
+        model = (TableModelOkuciePozycja) tableOkucia.getModel();
         tableOkucia.getTableHeader().setEnabled(false);
         tca = new TableColumnAdjuster(tableOkucia);
         tca.setOnlyAdjustLarger(false);
     }
 
-    public void setLista(ArrayList<Opakowanie> lista) {
+    public void setLista(ArrayList<OkuciePozycja> lista) {
         this.lista = lista;
         model.setModelData(lista);
         updateRowHeights();

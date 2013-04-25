@@ -37,4 +37,13 @@ public class RaportOpakowania {
         return lista;
     }
     
+    public ArrayList<RaportOpakowania> laczKartony(Zamowienie z){
+        
+        ArrayList<RaportOpakowania> lista = new ArrayList();
+        ArrayList<RaportOpakowania> listaNowa = new ArrayList();
+        lista = this.getData(z);
+        
+        return listaNowa;
+    }
+    
 }
