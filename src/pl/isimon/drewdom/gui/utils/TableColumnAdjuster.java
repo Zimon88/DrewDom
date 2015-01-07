@@ -64,6 +64,7 @@ public class TableColumnAdjuster implements PropertyChangeListener, TableModelLi
 		for (int i = 0; i < tcm.getColumnCount(); i++)
 		{
 			adjustColumn(i);
+                        //System.out.println("\nKolumna" + i);
 		}
 	}
 

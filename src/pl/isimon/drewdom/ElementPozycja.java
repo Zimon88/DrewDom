@@ -4,6 +4,7 @@
  */
 package pl.isimon.drewdom;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,12 +24,13 @@ public class ElementPozycja extends SQLiteConnection{
     private final static String TABLE_NAME_ELEMENT = "element";
     private final static String COL_MEBELNR = "mebel_nr";
     
-    private final static String COL_ID = "id";
-    private final static String COL_NAZWA = "nazwa";
-    private final static String COL_WYM1 = "wymiar_x";
-    private final static String COL_WYM2 = "wymiar_y";
-    private final static String COL_WYM3 = "wymiar_z";
+    private final static String COL_ID      = "id";
+    private final static String COL_NAZWA   = "nazwa";
+    private final static String COL_WYM1    = "wymiar_x";
+    private final static String COL_WYM2    = "wymiar_y";
+    private final static String COL_WYM3    = "wymiar_z";
     private final static String COL_ZADANIE = "zadanie";
+    private final static String COL_WYDAJNOSC = "wydajnosc";
     
     private final static String COL_ILOSC = "ilosc";
 
@@ -80,8 +82,8 @@ public class ElementPozycja extends SQLiteConnection{
     }
     
     public ArrayList<ElementPozycja> getData(String nrZamowienia, String numer, int sztuk){
-        int ilosc = 1;
-        if(sztuk!=0) ilosc = sztuk;
+        int iloscMebli = 1;
+        if(sztuk!=0) iloscMebli = sztuk;
         ArrayList<ElementPozycja> lista = new ArrayList();
         String sql = "SELECT "
                 + "element.id,"
@@ -90,6 +92,7 @@ public class ElementPozycja extends SQLiteConnection{
                 + "element.wymiar_y,"
                 + "element.wymiar_z,"
                 + "element.zadanie,"
+                + "element.wydajnosc,"
                 + "mebel_elementy.ilosc"
                 + " FROM "
                 + "zamowienie,"
@@ -118,7 +121,100 @@ public class ElementPozycja extends SQLiteConnection{
                 e.element.wym2 = w.getInt(COL_WYM2);
                 e.element.wym3 = w.getInt(COL_WYM3);
                 e.element.zadanie = w.getInt(COL_ZADANIE);
-                e.ilosc  = w.getInt(COL_ILOSC)*ilosc;
+                e.element.wydajnosc = w.getInt(COL_WYDAJNOSC);
+                
+                int ei = w.getInt(COL_ILOSC)*iloscMebli;
+//                System.out.println("ilosc elementow "+w.getInt(COL_ILOSC)+" ilosc mebli na zamowieniu "+iloscMebli);
+                int ew = e.element.wydajnosc;
+//                System.out.println("Wydajnosc "+ ew);
+                if ((ei % ew)==0){
+                    
+                    e.ilosc = ei/ew;
+//                    System.out.println(" 0 "+e.ilosc);
+                } else {
+                    
+                    e.ilosc = (ei/ew) + 1;
+                    //if((ei/ew) == 0) e.ilosc++;
+                    
+//                    System.out.println(" 1 "+e.ilosc);
+                }
+                //e.ilosc  = w.getInt(COL_ILOSC)*iloscMebli/e.element.wydajnosc;
+                System.out.println(e.ilosc);
+                lista.add(e);
+            }
+            printSelect(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return lista;
+    }
+    
+    public ArrayList<ElementPozycja> getData(ArrayList<String> nrZamowienia, String nazwa){
+        //int ilosc = 1;
+        //if(sztuk!=0) ilosc = sztuk;
+        ArrayList<ElementPozycja> lista = new ArrayList();
+        String nrZ = "";
+        for(int i=0;i<nrZamowienia.size();i++){
+            nrZ += "zamowienie.nr_zamowienia = '"+nrZamowienia.get(i)+"'";
+            if(i<nrZamowienia.size()-1){
+                nrZ = nrZ + " OR ";
+            }
+        }
+        String sql = "SELECT "
+                + "element.id,"
+                + "element.nazwa,"
+                + "element.wymiar_x,"
+                + "element.wymiar_y,"
+                + "element.wymiar_z,"
+                + "element.zadanie,"
+                + "element.wydajnosc,"
+                + "mebel_elementy.ilosc"
+                + " FROM "
+                + "zamowienie,"
+                + "pozycja_zamowienia,"
+                + "element,"
+                + "mebel,"
+                + "mebel_elementy "
+                + "WHERE "
+                //+ "mebel.nr_katalogowy = '"+numer+"' "
+                //+ "AND "
+                //+ "mebel_elementy.mebel_nr = mebel.nr_katalogowy "
+                //+ "AND "
+                + "element.nazwa LIKE %"+nazwa+"% " 
+                + "AND mebel_elementy.element_id = element.id "
+                + "AND mebel_elementy.mebel_nr = pozycja_zamowienia.mebel_nr "
+                + "AND pozycja_zamowienia.nr_zamowienia = zamowienie.nr_zamowienia "
+                + "AND ("+nrZ+")"
+                + "GROUP BY element.id;";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                ElementPozycja e = new ElementPozycja();
+                wynik++;
+                e.element.id = w.getInt(COL_ID);
+                e.element.nazwa = w.getString(COL_NAZWA);
+                e.element.wym1 = w.getInt(COL_WYM1);
+                e.element.wym2 = w.getInt(COL_WYM2);
+                e.element.wym3 = w.getInt(COL_WYM3);
+                e.element.zadanie = w.getInt(COL_ZADANIE);
+                e.element.wydajnosc = w.getInt(COL_WYDAJNOSC);
+                
+                e.ilosc = w.getInt(COL_ILOSC);
+                
+                int ei = w.getInt(COL_ILOSC);
+                int ew = e.element.wydajnosc;
+                if ((ei % ew)==0){
+                    e.ilosc = ei/ew;
+                } else {
+                    e.ilosc = ei/ew + 1;
+                }
+
+                
+//                e.ilosc  = w.getInt(COL_ILOSC)*ilosc;
                 lista.add(e);
             }
             printSelect(sql, wynik);
@@ -244,6 +340,7 @@ public class ElementPozycja extends SQLiteConnection{
                 + "element.wymiar_y,"
                 + "element.wymiar_z,"
                 + "element.zadanie,"
+                + "element.wydajnosc,"
                 + "mebel_elementy.ilosc"
                 + " FROM "
                 + "zamowienie,"
@@ -257,10 +354,16 @@ public class ElementPozycja extends SQLiteConnection{
                 + "AND mebel_elementy.element_id = element.id "
                 + "GROUP BY element.id;";
         connect();
+        //PreparedStatement st = 
+        //System.out.println("łączenie z baza zakonczone");
         try {
+            //System.out.println("Wywołanie zapytania");
             ResultSet w = stmt.executeQuery(sql);
+             //System.out.println("zapytanie przesłane");
             int wynik =0;
+             //System.out.println("Wyniki:");
             while(w.next()){
+                //System.out.println("przetwrzanie wiersza" + (wynik+1));
                 ElementPozycja e = new ElementPozycja();
                 wynik++;
                 e.element.id = w.getInt(COL_ID);
@@ -269,6 +372,7 @@ public class ElementPozycja extends SQLiteConnection{
                 e.element.wym2 = w.getInt(COL_WYM2);
                 e.element.wym3 = w.getInt(COL_WYM3);
                 e.element.zadanie = w.getInt(COL_ZADANIE);
+                e.element.wydajnosc = w.getInt(COL_WYDAJNOSC);
                 e.ilosc  = w.getInt(COL_ILOSC)*ilosc;
                 lista.add(e);
             }

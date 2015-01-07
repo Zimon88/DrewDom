@@ -31,6 +31,7 @@ public class Okucie extends SQLiteConnection{
                 o.id = w.getInt(COL_ID);
                 o.nazwa = w.getString(COL_NAZWA);
                 lista.add(o);
+                wynik++;
             }
             printSelect(sql, wynik);
         } catch (SQLException ex) {

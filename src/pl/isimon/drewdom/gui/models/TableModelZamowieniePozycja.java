@@ -14,12 +14,13 @@ import pl.isimon.drewdom.ZamowieniePozycja;
 public class TableModelZamowieniePozycja extends javax.swing.table.AbstractTableModel{
     // TODO all
     private ArrayList<ZamowieniePozycja> lista = null;
-        private final static Object[] columnNames = {"","Numer katalogowy","Nazwa","Ilość"};
+        private final static Object[] columnNames = {"Pozycja","Numer katalogowy","Nazwa","Ilość"};
         
         private final static int LP_IDX = 0;
         private final static int IDX_NUMER = 1;
         private final static int IDX_NAZWA = 2;
         private final static int IDX_ILOSC = 3;
+        private final static int IDX_POZYCJA = 4;
        
         /**
          * 
@@ -43,7 +44,7 @@ public class TableModelZamowieniePozycja extends javax.swing.table.AbstractTable
             if(lista == null) return null;
             ZamowieniePozycja o = lista.get(rowIndex);
             switch (columnIndex){
-                case LP_IDX: return rowIndex+1;
+                case LP_IDX: return o.pozycja;
                 case IDX_NUMER: return o.mebel.numerKatalogowy;
                 case IDX_NAZWA: return o.mebel.nazwa;
                 case IDX_ILOSC: return o.ilosc;

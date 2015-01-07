@@ -23,6 +23,13 @@ public class RaportOpakowania3 {
     public RaportOpakowania3() {
         pozycjaZamowienia = new ZamowieniePozycja();
     }
+
+    @Override
+    public String toString() {
+        return "RaportOpakowania3{\n" + "pozycjaZamowienia=" + pozycjaZamowienia + ", opakowanieLista=" + opakowanieLista + '}';
+    }
+    
+    
     
     
     public ArrayList<RaportOpakowania3> getData(Zamowienie z){
@@ -45,6 +52,28 @@ public class RaportOpakowania3 {
         if(listaNowa.isEmpty()){
             listaNowa.add(lista.get(0));
         }
+        
+        for(int ii=1;ii<lista.size();ii++){
+            RaportOpakowania3 old = lista.get(ii);
+            for(int n =0;n<listaNowa.size();n++){
+                RaportOpakowania3 current = listaNowa.get(n);
+                for(int j=0;j<old.opakowanieLista.size();j++){
+                    Opakowanie oOld = old.opakowanieLista.get(j).opakowanie;
+                    for(int k=0;k<current.opakowanieLista.size();k++){
+                        Opakowanie oCurrent = current.opakowanieLista.get(k).opakowanie;
+                        if(oOld.equals(oCurrent)){
+                            //System.out.println(current);
+                            
+                            current.opakowanieLista.get(k).sztuk += old.opakowanieLista.get(j).sztuk;
+                            old.opakowanieLista.remove(j);
+                        }
+                    }
+                }
+            }
+            if(!old.opakowanieLista.isEmpty()) listaNowa.add(old);
+        }
+        
+        /*
         for(int i=1;i<lista.size();i++){
             boolean exists = false;
             boolean added = false;
@@ -97,7 +126,7 @@ public class RaportOpakowania3 {
 //                added = false;
             }
         }
-        
+        */
         return listaNowa;
     }
     

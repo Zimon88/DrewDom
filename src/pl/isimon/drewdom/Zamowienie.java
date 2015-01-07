@@ -7,6 +7,7 @@ package pl.isimon.drewdom;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -55,9 +56,31 @@ public class Zamowienie extends SQLiteConnection{
         return lista;
     }
     
+     public ArrayList<String> getDataNR(){
+        ArrayList<String> lista = new ArrayList();
+        String sql = "SELECT * FROM zamowienie";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                wynik++;
+                lista.add(w.getString(COL_NUMER));
+            }
+            printSelect(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return lista;
+    }
+    
     public void zapiszZamowienie(String numer, ArrayList<ZamowieniePozycja> lista, Date dataZamowienia, Date dataRealizacji){
         java.sql.Date sqlDate = null;
-        String s1 = "CURRENT_DATE";
+        SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd");
+        //System.out.println(data.format(new Date()));
+        String s1 = d.format(new Date());
         String s2 = "null";
         if(dataZamowienia!=null){
             sqlDate = new java.sql.Date(dataZamowienia.getTime());

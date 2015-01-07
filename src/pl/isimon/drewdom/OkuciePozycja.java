@@ -68,6 +68,7 @@ public class OkuciePozycja extends SQLiteConnection {
                 o.okucie.id = w.getInt(COL_ID);
                 o.okucie.nazwa = w.getString(COL_NAZWA);
                 lista.add(o);
+                wynik++;
             }
             printSelect(sql, wynik);
         } catch (SQLException ex) {

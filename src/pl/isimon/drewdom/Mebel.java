@@ -38,7 +38,7 @@ public class Mebel extends SQLiteConnection{
    
    public ArrayList<Mebel> getData(){
         ArrayList<Mebel> lista = new ArrayList();
-        String sql = "SELECT * FROM "+TABLE_NAME;
+        String sql = "SELECT * FROM "+TABLE_NAME+" LIMIT 50";
         connect();
         try {
             ResultSet w = stmt.executeQuery(sql);
@@ -50,8 +50,9 @@ public class Mebel extends SQLiteConnection{
                 o.kod = w.getString(COL_KOD);
                 //TODO o.pracownik = 
                 lista.add(o);
+                wynik++;
             }
-            printSucces(sql, wynik);
+            printSelect(sql, wynik);
         } catch (SQLException ex) {
             printSqlErr(sql, ex);
         } finally {

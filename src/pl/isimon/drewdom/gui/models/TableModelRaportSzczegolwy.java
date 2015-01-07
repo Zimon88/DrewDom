@@ -42,7 +42,7 @@ public class TableModelRaportSzczegolwy extends javax.swing.table.AbstractTableM
             if(lista == null) return null;
             RaportSzczegolowy o = lista.get(rowIndex);
             switch (columnIndex){
-                case IDX_LP: return rowIndex+1;
+                case IDX_LP: return o.pozycjaZamowienia.pozycja;
                 case IDX_MEBEL_DANE: return o.pozycjaZamowienia.toString();
                 case IDX_ELEMENTY_LISTA: return o.listaElementow;
                 default:

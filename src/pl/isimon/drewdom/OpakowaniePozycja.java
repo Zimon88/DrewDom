@@ -26,4 +26,11 @@ public class OpakowaniePozycja {
         }
         return lista;
     }
+
+    @Override
+    public String toString() {
+        return "OpakowaniePozycja{" + "opakowanie=" + opakowanie + ", sztuk=" + sztuk + '}';
+    }
+    
+    
 }

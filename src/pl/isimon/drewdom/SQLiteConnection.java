@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.sqlite.SQLiteJDBCLoader;
 import pl.isimon.utils.PropertiesU;
 
 
@@ -71,6 +72,7 @@ public class SQLiteConnection {
             polaczenie = DriverManager.getConnection("jdbc:sqlite:"+databaseDirectory+databaseFilename);
             stmt = polaczenie.createStatement();
             polaczenie.setAutoCommit(true);
+            //System.out.println(String.format("%s mode", SQLiteJDBCLoader.isNativeMode() ? "native" : "pure-java"));
         } catch (ClassNotFoundException ex) {
             System.err.println("Nie można załadować sterownika bazy danych" + ex);
         } catch (SQLException ex) {

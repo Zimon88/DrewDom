@@ -79,6 +79,7 @@ public class Opakowanie extends SQLiteConnection{
                 o.wymiar_y = w.getInt(COL_WYM2);
                 o.wymiar_z = w.getInt(COL_WYM3);
                 lista.add(o);
+                wynik++;
             }
             printSelect(sql, wynik);
         } catch (SQLException ex) {
@@ -195,6 +196,11 @@ public class Opakowanie extends SQLiteConnection{
         hash = 59 * hash + this.wymiar_y;
         hash = 59 * hash + this.wymiar_z;
         return hash;
+    }
+
+    @Override
+    public String toString() {
+        return "Opakowanie{" + "wymiar_x=" + wymiar_x + ", wymiar_y=" + wymiar_y + ", wymiar_z=" + wymiar_z + ", nrMebla=" + nrMebla + ", id=" + id + '}';
     }
     
     

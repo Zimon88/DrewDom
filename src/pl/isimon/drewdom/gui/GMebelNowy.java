@@ -90,9 +90,9 @@ public class GMebelNowy extends javax.swing.JPanel {
         tmop = (TableModelOkuciePozycja)tableOkucia.getModel();
         tmmep = (TableModelMebelElementPozycja) tableElementy.getModel();
         tmme = (TableModelMebelElement) tableIstniejaceElementy.getModel();
-        tmo.setModelData(opakowanieLista);
-        tmop.setModelData(okucieLista);
-        tmmep.setModelData(elementLista);
+        //tmo.setModelData(opakowanieLista);
+        //tmop.setModelData(okucieLista);
+        //tmmep.setModelData(elementLista);
         tableElementy.getColumnModel().getColumn(4).setCellRenderer(new ZadaniaCellRenderer());
         tableElementy.getColumnModel().getColumn(5).setCellRenderer(new CheckBoxCellRenderer());
         tcaTE = new TableColumnAdjuster(tableElementy);
@@ -111,8 +111,9 @@ public class GMebelNowy extends javax.swing.JPanel {
     
     public void loadData(Mebel m){
         tmmep.setModelData(new ArrayList());
-        ocbm.setModelData(okucie.getData());
-        tmme.setModelData(element.getData());
+        System.out.println("1");
+        //ocbm.setModelData(okucie.getData());
+        //tmme.setModelData(element.getData());
         opakowanieLista = (new Opakowanie()).getData(m.numerKatalogowy);
         okucieLista = (new OkuciePozycja()).getData(m.numerKatalogowy);
         elementLista = elementPozycja.getData(m.numerKatalogowy,1);
@@ -181,6 +182,9 @@ public class GMebelNowy extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         spinnerNeIlosc = new javax.swing.JSpinner();
+        jLabel14 = new javax.swing.JLabel();
+        spinnerWyd = new javax.swing.JSpinner();
+        jLabel15 = new javax.swing.JLabel();
         panelIstnejacyElement = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableIstniejaceElementy = new javax.swing.JTable();
@@ -313,6 +317,12 @@ public class GMebelNowy extends javax.swing.JPanel {
 
         spinnerNeIlosc.setModel(new javax.swing.SpinnerNumberModel(0, 0, 999, 1));
 
+        jLabel14.setText("z jednego blatu");
+
+        spinnerWyd.setModel(new javax.swing.SpinnerNumberModel(1, 1, 1000, 1));
+
+        jLabel15.setText("Sztuk");
+
         javax.swing.GroupLayout panelNowyElementLayout = new javax.swing.GroupLayout(panelNowyElement);
         panelNowyElement.setLayout(panelNowyElementLayout);
         panelNowyElementLayout.setHorizontalGroup(
@@ -346,13 +356,22 @@ public class GMebelNowy extends javax.swing.JPanel {
                                 .addComponent(spinnerNeW3, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
                                 .addComponent(cbZadCnc, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelNowyElementLayout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelNowyElementLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(spinnerNeIlosc, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonElementNowyDodaj)))))
+                                .addGroup(panelNowyElementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelNowyElementLayout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(spinnerNeIlosc, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(buttonElementNowyDodaj))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelNowyElementLayout.createSequentialGroup()
+                                        .addComponent(jLabel15)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(spinnerWyd, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel14)
+                                        .addGap(23, 23, 23)))))))
                 .addContainerGap())
         );
         panelNowyElementLayout.setVerticalGroup(
@@ -378,7 +397,12 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(jLabel5)
                     .addComponent(spinnerNeW2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(panelNowyElementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(spinnerWyd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(panelNowyElementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonElementNowyDodaj)
                     .addComponent(spinnerNeIlosc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -470,7 +494,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(textSzukajNumerMebla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(textSzukajNazwaCzesci, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelIstnejacyElementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonIEDodaj)
@@ -508,7 +532,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(buttonEdycja))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tabpanelElement, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Elementy", panelElementy);
@@ -563,7 +587,7 @@ public class GMebelNowy extends javax.swing.JPanel {
             panelOkuciaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelOkuciaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelOkuciaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbOkucia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -675,7 +699,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(spinnerWym2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(spinnerWym3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buttonOpakAnuluj))
-                .addContainerGap(313, Short.MAX_VALUE))
+                .addContainerGap(310, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Opakowanie", panelOpakowanie);
@@ -689,7 +713,7 @@ public class GMebelNowy extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelNumer)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -720,7 +744,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(jLabel12)
                     .addComponent(textKod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -829,6 +853,8 @@ public class GMebelNowy extends javax.swing.JPanel {
 
     private void buttonElementNowyDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonElementNowyDodajActionPerformed
         int ilosc = (int)spinnerNeIlosc.getValue();
+        int wydajnosc = 1;
+        wydajnosc = (int)spinnerWyd.getValue();
         int wym1 = (int)spinnerNeW1.getValue();
         int wym2 = (int)spinnerNeW2.getValue();
         int wym3 = (int)spinnerNeW3.getValue();
@@ -846,6 +872,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                 ep.element.wym1 = wym1;
                 ep.element.wym2 = wym2;
                 ep.element.wym3 = wym3;
+                ep.element.wydajnosc = wydajnosc;
                 if(!ep.nowy){
                     elementPozycja.edytuj(textKod.getText(), ep);
                 }
@@ -863,6 +890,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                 ep.element.wym1 = wym1;
                 ep.element.wym2 = wym2;
                 ep.element.wym3 = wym3;
+                ep.element.wydajnosc = wydajnosc;
                 elementLista.add(ep);
                 tmmep.setModelData(elementLista);
                 tcaTE.adjustColumns();
@@ -890,6 +918,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                 ep.element.wym1 = e.wym1;
                 ep.element.wym2 = e.wym2;
                 ep.element.wym3 = e.wym3;
+                ep.element.wydajnosc = e.wydajnosc;
                 elementLista.add(ep);
                 if(edycja) ep.dodaj(textNumer.getText(), ep);
             }
@@ -928,6 +957,7 @@ public class GMebelNowy extends javax.swing.JPanel {
             }
             Element e = elementPozycja.element;
             textElementNowyNazwa.setText(e.nazwa);
+            spinnerWyd.setValue(e.wydajnosc);
             spinnerNeW1.setValue(e.wym1);
             spinnerNeW2.setValue(e.wym2);
             spinnerNeW3.setValue(e.wym3);
@@ -999,6 +1029,8 @@ public class GMebelNowy extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1025,6 +1057,7 @@ public class GMebelNowy extends javax.swing.JPanel {
     private javax.swing.JSpinner spinnerNeW2;
     private javax.swing.JSpinner spinnerNeW3;
     private javax.swing.JSpinner spinnerOIlosc;
+    private javax.swing.JSpinner spinnerWyd;
     private javax.swing.JSpinner spinnerWym1;
     private javax.swing.JSpinner spinnerWym2;
     private javax.swing.JSpinner spinnerWym3;
@@ -1052,6 +1085,7 @@ public class GMebelNowy extends javax.swing.JPanel {
         spinnerNeW2.setValue(0);
         spinnerNeW3.setValue(0);
         spinnerNeIlosc.setValue(0);
+        spinnerWyd.setValue(1);
         //reload istnejace elementy
     }
     

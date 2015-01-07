@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
+import pl.isimon.drewdom.CSVData;
 import pl.isimon.drewdom.Opakowanie;
 import pl.isimon.drewdom.OpakowaniePozycja;
 import pl.isimon.drewdom.Zamowienie;
@@ -98,6 +99,7 @@ public class GRaporty extends javax.swing.JPanel {
         tca3 = new TableColumnAdjuster(tableRaportOpakowania1);
         tcaKody = new TableColumnAdjuster(tableRaportKody);
         tcaokucia = new TableColumnAdjuster(tableOkucia);
+        
     }
     
     public void loadData(){
@@ -248,6 +250,7 @@ public class GRaporty extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jButton2 = new javax.swing.JButton();
+        bCSVExport = new javax.swing.JButton();
 
         frameRaportSzczegolowy.setMinimumSize(new java.awt.Dimension(800, 500));
 
@@ -503,6 +506,11 @@ public class GRaporty extends javax.swing.JPanel {
         });
 
         cbListaZamowien.setModel(new ComboBoxModelZamowienie());
+        cbListaZamowien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbListaZamowienActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Zestawienie zamówienia wraz z wyzczególnieniem ilości elementów");
 
@@ -519,6 +527,13 @@ public class GRaporty extends javax.swing.JPanel {
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
+            }
+        });
+
+        bCSVExport.setText("CSV Export");
+        bCSVExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bCSVExportActionPerformed(evt);
             }
         });
 
@@ -544,11 +559,12 @@ public class GRaporty extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButton2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(buttonRaportSzczegolwy, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(buttonRaportOpakowania, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(buttonRaportOkucia, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(buttonRaportKody, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(buttonRaportSzczegolwy, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                            .addComponent(buttonRaportOpakowania, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(buttonRaportOkucia, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                            .addComponent(buttonRaportKody, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                            .addComponent(bCSVExport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
 
@@ -578,7 +594,9 @@ public class GRaporty extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(buttonRaportKody))
-                .addContainerGap(193, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
+                .addComponent(bCSVExport)
+                .addContainerGap())
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {buttonRaportOpakowania, jButton2});
@@ -642,7 +660,12 @@ public class GRaporty extends javax.swing.JPanel {
         ArrayList<RaportOpakowania3> newList = new ArrayList();
         newList.addAll(modelData);
         boolean exist = false;
+        
+        newList.addAll(data);
+ 
+/*        
         for(int i=0;i<data.size();i++){
+ 
             
             RaportOpakowania3 o = data.get(i);
             for(int j=0;j<newList.size();j++){
@@ -670,8 +693,10 @@ public class GRaporty extends javax.swing.JPanel {
                 exist = false;
             }
         }
+*/        
+        
 //        newList.addAll(modelData);
-        //newList = raportO3.laczKartony(newList);
+        newList = raportO3.laczKartony(newList);
         tmro3.setModelData(newList);
 //        tmro3.setModelData(raportO3.laczKartony(newList));
         updateRowHeights(tableRaportOpakowania1);
@@ -686,7 +711,19 @@ public class GRaporty extends javax.swing.JPanel {
         tca3.adjustColumns();
     }//GEN-LAST:event_bLaczActionPerformed
 
+    private void bCSVExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCSVExportActionPerformed
+        Zamowienie z = (Zamowienie) cbListaZamowien.getSelectedItem();
+        CSVData csv = new CSVData();
+        ArrayList<CSVData> d = csv.getData(z.numer);
+        csv.exportCSV(d, z.numer);
+    }//GEN-LAST:event_bCSVExportActionPerformed
+
+    private void cbListaZamowienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbListaZamowienActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbListaZamowienActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bCSVExport;
     private javax.swing.JButton bDodaj;
     private javax.swing.JButton bDrukujOkucia;
     private javax.swing.JButton bLacz;

@@ -19,6 +19,7 @@ public class Element extends SQLiteConnection{
     public int wym2;
     public int wym3;
     public int zadanie;
+    public int wydajnosc;
     public Mebel mebel = null;
     
     private final static String TABLE_NAME = "element";
@@ -29,6 +30,7 @@ public class Element extends SQLiteConnection{
     private final static String COL_WYM2 = "wymiar_y";
     private final static String COL_WYM3 = "wymiar_z";
     private final static String COL_ZADANIE = "zadanie";
+    private final static String COL_WYDAJNOSC = "wydajnosc";
     
     private final static String COL_MEBEL_KOD = "mebel_numer";
     private final static String COL_MEBEL_NAZWA = "mebel_nazwa";
@@ -49,6 +51,7 @@ public class Element extends SQLiteConnection{
                 + "element.wymiar_y,"
                 + "element.wymiar_z,"
                 + "element.zadanie,"
+                + "element.wydajnosc,"
                 + "mebel.nr_katalogowy as mebel_numer,"
                 + "mebel.nazwa as mebel_nazwa "
                 + " FROM "
@@ -82,6 +85,7 @@ public class Element extends SQLiteConnection{
                 e.wym2 = w.getInt(COL_WYM2);
                 e.wym3 = w.getInt(COL_WYM3);
                 e.zadanie = w.getInt(COL_ZADANIE);
+                e.wydajnosc = w.getInt(COL_WYDAJNOSC);
                 e.mebel.numerKatalogowy = w.getString(COL_MEBEL_KOD);
                 e.mebel.nazwa = w.getString(COL_MEBEL_NAZWA);
                 lista.add(e);
@@ -112,6 +116,7 @@ public class Element extends SQLiteConnection{
                 e.wym2 = w.getInt(COL_WYM2);
                 e.wym3 = w.getInt(COL_WYM3);
                 e.zadanie = w.getInt(COL_ZADANIE);
+                e.wydajnosc = w.getInt(COL_WYDAJNOSC);
                 e.mebel.numerKatalogowy = w.getString(COL_MEBEL_KOD);
                 e.mebel.nazwa = w.getString(COL_MEBEL_NAZWA);
                 lista.add(e);
@@ -128,7 +133,7 @@ public class Element extends SQLiteConnection{
     public int dodaj(Element e){
         int last_id = 0;
         connect();
-        String sql = "INSERT INTO "+TABLE_NAME+" VALUES (null,'"+e.nazwa+"',"+e.wym1+","+e.wym2+","+e.wym3+",'',"+e.zadanie+");";
+        String sql = "INSERT INTO "+TABLE_NAME+" VALUES (null,'"+e.nazwa+"',"+e.wym1+","+e.wym2+","+e.wym3+",'',"+e.zadanie+","+e.wydajnosc+");";
         int wynik;
         try {
             wynik = stmt.executeUpdate(sql);
@@ -164,7 +169,8 @@ public class Element extends SQLiteConnection{
                 + COL_WYM1 + " = " + e.wym1 + ", "
                 + COL_WYM2 + " = " + e.wym2 + ", "
                 + COL_WYM3 + " = " + e.wym3 + ", "
-                + COL_ZADANIE + " = " + e.zadanie + " "
+                + COL_ZADANIE + " = " + e.zadanie + ", "
+                + COL_WYDAJNOSC + " = " + e.wydajnosc + " "
                 + "WHERE " + COL_ID + "=" + e.id+";";
         int wynik;
         try {
