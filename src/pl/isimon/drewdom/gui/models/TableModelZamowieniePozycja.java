@@ -44,7 +44,10 @@ public class TableModelZamowieniePozycja extends javax.swing.table.AbstractTable
             if(lista == null) return null;
             ZamowieniePozycja o = lista.get(rowIndex);
             switch (columnIndex){
-                case LP_IDX: return o.pozycja;
+                case LP_IDX: {
+                    if (o.pozycja==0) return rowIndex+1;
+                    else return o.pozycja;
+                }
                 case IDX_NUMER: return o.mebel.numerKatalogowy;
                 case IDX_NAZWA: return o.mebel.nazwa;
                 case IDX_ILOSC: return o.ilosc;
@@ -81,5 +84,11 @@ public class TableModelZamowieniePozycja extends javax.swing.table.AbstractTable
             this.lista.remove(o);
             fireTableDataChanged();
         }
+
+    public void updateIlosc(int selection, ZamowieniePozycja zamp) {
+        lista.set(selection, zamp);
+    }
+
+    
 
 }

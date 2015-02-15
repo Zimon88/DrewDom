@@ -124,22 +124,12 @@ public class ElementPozycja extends SQLiteConnection{
                 e.element.wydajnosc = w.getInt(COL_WYDAJNOSC);
                 
                 int ei = w.getInt(COL_ILOSC)*iloscMebli;
-//                System.out.println("ilosc elementow "+w.getInt(COL_ILOSC)+" ilosc mebli na zamowieniu "+iloscMebli);
                 int ew = e.element.wydajnosc;
-//                System.out.println("Wydajnosc "+ ew);
                 if ((ei % ew)==0){
-                    
                     e.ilosc = ei/ew;
-//                    System.out.println(" 0 "+e.ilosc);
                 } else {
-                    
                     e.ilosc = (ei/ew) + 1;
-                    //if((ei/ew) == 0) e.ilosc++;
-                    
-//                    System.out.println(" 1 "+e.ilosc);
                 }
-                //e.ilosc  = w.getInt(COL_ILOSC)*iloscMebli/e.element.wydajnosc;
-                System.out.println(e.ilosc);
                 lista.add(e);
             }
             printSelect(sql, wynik);

@@ -22,15 +22,15 @@ import pl.isimon.drewdom.ElementPozycja;
 public class TableModelMebelElementPozycjaRS extends javax.swing.table.AbstractTableModel{
     // TODO all
     private ArrayList<ElementPozycja> lista = null;
-        private final static Object[] columnNames = {"Element","Wymiar","Szt","klejenie","Piła","CnC"};
+        private final static Object[] columnNames = {"Element","Wymiar","Szt","Piła","CnC"};
         
         private final static int IDX_NAZWA = 0;
         private final static int IDX_WYMIAR = 1;
         private final static int IDX_ILOSC = 2;
-        private final static int IDX_ZADANIE_K = 3;
-        private final static int IDX_ZADANIE_P = 4;
-        private final static int IDX_ZADANIE_C = 5;
-        private final static String IKS = "XXXXXXXXXXXXXXXXXXXXXXX";
+//        private final static int IDX_ZADANIE_K = 3;
+        private final static int IDX_ZADANIE_P = 3;
+        private final static int IDX_ZADANIE_C = 4;
+        private final static String IKS = "XXXXXXXXXXXXXXXXXXXXX";
        
         /**
          * 
@@ -55,10 +55,13 @@ public class TableModelMebelElementPozycjaRS extends javax.swing.table.AbstractT
             ElementPozycja o = lista.get(rowIndex);
             int x = o.element.zadanie;
             switch (columnIndex){
-                case IDX_NAZWA: return o.element.nazwa;
+                case IDX_NAZWA: {
+                    if(o.element.wydajnosc>1) return o.element.nazwa+" ("+o.element.wydajnosc+" z 1)";
+                    return o.element.nazwa;
+                }
                 case IDX_WYMIAR: return o.element.wym1+"x"+o.element.wym2+"x"+o.element.wym3;
                 case IDX_ILOSC: return o.ilosc;
-                case IDX_ZADANIE_K: if(x == 2 | x == 4 | x==6) return IKS; return "";
+//                case IDX_ZADANIE_K: if(x == 2 | x == 4 | x==6) return IKS; return "";
                 case IDX_ZADANIE_P: if(x == 1 | x == 4 | x==5) return IKS; return "";
                 case IDX_ZADANIE_C: if(x == 1 | x == 2 | x==3) return IKS; return "";
                 default:

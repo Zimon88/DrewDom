@@ -125,6 +125,22 @@ public class ZamowieniePozycja extends SQLiteConnection{
             disconnect();
         }
     }
+    
+    public void edytujIlosc(ZamowieniePozycja ep, int ilosc) {
+        connect();
+        String sql = "UPDATE "+TABLE_NAME+" "
+                + "SET "+COL_ILOSC+" = "+ilosc+" "
+                + "WHERE "+COL_NRMEBLA+" = '"+ep.mebel.numerKatalogowy+"' AND "+COL_NRZAMOWIENIA+"='"+ep.nrZamowienia+"';";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+    }
 
     public void dodaj(String numer, ZamowieniePozycja poz) {
         String sql = "SELECT pozycja FROM "+ TABLE_NAME +" WHERE "+COL_NRZAMOWIENIA+" = '"+numer+"' ORDER BY pozycja desc LIMIT 1;";

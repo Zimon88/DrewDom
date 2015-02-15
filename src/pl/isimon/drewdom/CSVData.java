@@ -11,7 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -25,6 +27,7 @@ public class CSVData extends SQLiteConnection {
     public int elementX;
     public int elementY;
     public int elementZ;
+    public int wydajnosc;
     public int ilosc;
     
     public ArrayList<CSVData> getData(String z){
@@ -40,6 +43,7 @@ public class CSVData extends SQLiteConnection {
                     + "element.wymiar_x AS elementX, "
                     + "element.wymiar_y AS elementY, "
                     + "element.wymiar_z AS elementZ, "
+                    + "element.wydajnosc AS wydajnosc, "
                     + "(SUM(mebel_elementy.ilosc)*pozycja_zamowienia.ilosc) AS ilosc "
                 + "FROM zamowienie, pozycja_zamowienia, element, mebel_elementy, mebel "
                 + "WHERE zamowienie.nr_zamowienia = '"+z+"' "
@@ -47,7 +51,8 @@ public class CSVData extends SQLiteConnection {
                     + "AND pozycja_zamowienia.mebel_nr=mebel.nr_katalogowy "
                     + "AND mebel_elementy.mebel_nr=mebel.nr_katalogowy "
                     + "AND element.id=mebel_elementy.element_id "
-                + "GROUP BY  element.wymiar_x, element.wymiar_y, element.wymiar_z, mebel.nazwa "
+//                + "GROUP BY element.wymiar_x, element.wymiar_y, element.wymiar_z, mebel.nazwa. element.id  "
+                + "GROUP BY mebel.nr_katalogowy, element.id  "
                 + "ORDER BY element.wymiar_z, element.wymiar_x, element.wymiar_y DESC;";
         connect();
         try {
@@ -63,7 +68,17 @@ public class CSVData extends SQLiteConnection {
                 e.elementX = w.getInt("elementX");
                 e.elementY = w.getInt("elementY");
                 e.elementZ = w.getInt("elementZ");
+                e.wydajnosc = w.getInt("wydajnosc");
+                
                 e.ilosc = w.getInt("ilosc");
+                int ei = e.ilosc;
+                int ew = e.wydajnosc;
+                if ((ei % ew)==0){
+                    e.ilosc = ei/ew;
+                } else {
+                    e.ilosc = (ei/ew) + 1;
+                }
+                
                 lista.add(e);
             }
             printSelect(sql, wynik);
@@ -77,7 +92,11 @@ public class CSVData extends SQLiteConnection {
     
     public void exportCSV(ArrayList<CSVData> d, String nr){
         
-        String path = "csv\\"+nr;
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH-mm");
+        //System.out.println(data.format(new Date()));
+        String s1 = date.format(new Date());
+                
+        String path = "csv\\"+nr+"_"+s1;
         File dir = new File(path);
         if (!dir.exists()) {
             System.out.println("creating directory: " + path);
@@ -101,13 +120,23 @@ public class CSVData extends SQLiteConnection {
         for(int i=0; i<d.size(); i++){
             c = d.get(i);
             int z = c.elementZ;
+            String struktura = "TAK";
+            
             String opis = 
-                    nr+".p"+c.pozycja+" "
+                    nr+"-"+c.pozycja+" "
                     //+c.mebelNazwa+" "
                     +c.elementNazwa;
+            if(c.wydajnosc>1) opis = opis +" ("+c.wydajnosc+"z1)";
+            
+            
+            if ((z == 4) && c.elementNazwa.toLowerCase().contains("szuf")){
+                struktura = "NIE";
+            }
+            
             String arkusz = "P300";
             int x = c.elementX;
-            if(x<=250)                  arkusz = "P0300";
+            if(z==4)                    arkusz = "P2130";
+            else if(x<=250)             arkusz = "P0300";
             else if(250<x && x<=300)    arkusz = "P0350";
             else if(300<x && x<=350)    arkusz = "P0400";
             else if(350<x && x<=400)    arkusz = "P0450";
@@ -152,15 +181,20 @@ public class CSVData extends SQLiteConnection {
             else if(2300<x && x<=2350)  arkusz = "P2400";
             else if(2350<x && x<=2400)  arkusz = "P2450";
             arkusz = arkusz+"Z"+z;
-            String data = c.elementX+"|"+c.elementY+"|"+c.ilosc+"|"+opis+"|TAK|"+"NNNN||"+arkusz+"|||||||\n";
+            
+            
+            
+            String data = c.elementX+"|"+c.elementY+"|"+c.ilosc+"|"+opis+"|"+struktura+"|"+"NNNN||"+arkusz+"|||||||\n";
             
             try{
                 //String data = " This content will append to the end of the file";
                 String filename = nr+"_"+z+".csv";
+//                System.out.println("plik: " + filename);
                 File file =new File(path+filename);
 
                 if(!file.exists()){
                         file.createNewFile();
+                        System.out.println("plik: " + filename);
                 }
                 //true = append file
                 FileWriter fileWritter = new FileWriter(path+file.getName(),true);
