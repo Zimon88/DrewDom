@@ -5,15 +5,19 @@
  */
 package pl.isimon.drewdom;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static java.lang.Math.toIntExact;
 
 /**
  *
@@ -29,7 +33,8 @@ public class CSVData extends SQLiteConnection {
     public int elementZ;
     public int wydajnosc;
     public int ilosc;
-    
+    private JSONArray arkusze = null;
+
     public ArrayList<CSVData> getData(String z){
         
         ArrayList<CSVData> lista = new ArrayList<>();
@@ -90,6 +95,40 @@ public class CSVData extends SQLiteConnection {
         return lista;
     }
     
+    private JSONArray setArkuszeList() {
+        JSONParser parser = new JSONParser();
+        JSONArray a = new JSONArray();
+        try {
+            File f = new File("res\\arkusze.json");
+            Object obj = parser.parse(new FileReader(f));
+
+            JSONObject jsonObject = (JSONObject) obj;
+            System.out.println(jsonObject);
+
+            a = (JSONArray) jsonObject.get("arkusze");
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return a;
+    }
+    
+    private String getArkusz(int x) {
+
+        for (int i = 0; i < arkusze.size(); i++) {
+            int xmin = toIntExact((Long)((JSONObject)arkusze.get(i)).get("xmin"));
+            int xmax = toIntExact((Long)((JSONObject)arkusze.get(i)).get("xmin"));
+            String a = (String)((JSONObject)arkusze.get(i)).get("arkusz");
+            if(xmin<x && x<=xmax) return a;
+        }
+
+        return new String();
+    }
+    
     public void exportCSV(ArrayList<CSVData> d, String nr){
         
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH-mm");
@@ -114,18 +153,20 @@ public class CSVData extends SQLiteConnection {
         }
                 
         path = path + "\\";
-        
+
+        this.arkusze = setArkuszeList();
         CSVData c = new CSVData();
-        
+
+
         for(int i=0; i<d.size(); i++){
             c = d.get(i);
             int z = c.elementZ;
             String struktura = "TAK";
             
             String opis = 
-                    nr+"-"+c.pozycja+" "
-                    //+c.mebelNazwa+" "
-                    +c.elementNazwa;
+                nr+"-"+c.pozycja+" "
+                //+c.mebelNazwa+" "
+                +c.elementNazwa;
             if(c.wydajnosc>1) opis = opis +" ("+c.wydajnosc+"z1)";
             
             
@@ -135,62 +176,19 @@ public class CSVData extends SQLiteConnection {
             
             String arkusz = "P300";
             int x = c.elementX;
-            if(z==4)                    arkusz = "P2130";
-            else if(x<=250)             arkusz = "P0300";
-            else if(250<x && x<=300)    arkusz = "P0350";
-            else if(300<x && x<=350)    arkusz = "P0400";
-            else if(350<x && x<=400)    arkusz = "P0450";
-            else if(400<x && x<=450)    arkusz = "P0500";
-            else if(450<x && x<=500)    arkusz = "P0550";
-            else if(500<x && x<=550)    arkusz = "P0600";
-            else if(550<x && x<=600)    arkusz = "P0650";
-            else if(600<x && x<=650)    arkusz = "P0700";
-            else if(650<x && x<=700)    arkusz = "P0750";
-            else if(700<x && x<=750)    arkusz = "P0800";
-            else if(750<x && x<=800)    arkusz = "P0850";
-            else if(800<x && x<=850)    arkusz = "P0900";
-            else if(850<x && x<=900)    arkusz = "P0950";
-            else if(900<x && x<=950)    arkusz = "P1000";
-            else if(950<x && x<=1000)   arkusz = "P1050";
-            else if(1000<x && x<=1050)  arkusz = "P1100";
-            else if(1050<x && x<=1100)  arkusz = "P1150";
-            else if(1100<x && x<=1150)  arkusz = "P1200";
-            else if(1150<x && x<=1200)  arkusz = "P1250";
-            else if(1200<x && x<=1250)  arkusz = "P1300";
-            else if(1250<x && x<=1300)  arkusz = "P1350";
-            else if(1300<x && x<=1350)  arkusz = "P1400";
-            else if(1350<x && x<=1400)  arkusz = "P1450";
-            else if(1400<x && x<=1450)  arkusz = "P1500";
-            else if(1450<x && x<=1500)  arkusz = "P1550";
-            else if(1500<x && x<=1550)  arkusz = "P1600";
-            else if(1550<x && x<=1600)  arkusz = "P1650";
-            else if(1600<x && x<=1650)  arkusz = "P1700";
-            else if(1650<x && x<=1700)  arkusz = "P1750";
-            else if(1700<x && x<=1750)  arkusz = "P1800";
-            else if(1750<x && x<=1800)  arkusz = "P1850";
-            else if(1800<x && x<=1850)  arkusz = "P1900";
-            else if(1850<x && x<=1900)  arkusz = "P1950";
-            else if(1900<x && x<=1950)  arkusz = "P2000";
-            else if(1950<x && x<=2000)  arkusz = "P2050";
-            else if(2000<x && x<=2050)  arkusz = "P2100";
-            else if(2050<x && x<=2100)  arkusz = "P2150";
-            else if(2100<x && x<=2150)  arkusz = "P2200";
-            else if(2150<x && x<=2200)  arkusz = "P2250";
-            else if(2200<x && x<=2250)  arkusz = "P2300";
-            else if(2250<x && x<=2300)  arkusz = "P2350";
-            else if(2300<x && x<=2350)  arkusz = "P2400";
-            else if(2350<x && x<=2400)  arkusz = "P2450";
-            arkusz = arkusz+"Z"+z;
-            
-            
-            
+            if(z==4) {
+                arkusz = "P2130";
+            } else {
+                arkusz=getArkusz(x);
+            }
+
             String data = c.elementX+"|"+c.elementY+"|"+c.ilosc+"|"+opis+"|"+struktura+"|"+"NNNN||"+arkusz+"|||||||\n";
-            
-            try{
+
+            try {
                 //String data = " This content will append to the end of the file";
                 String filename = nr+"_"+z+".csv";
 //                System.out.println("plik: " + filename);
-                File file =new File(path+filename);
+                File file = new File(path+filename);
 
                 if(!file.exists()){
                         file.createNewFile();
@@ -204,12 +202,9 @@ public class CSVData extends SQLiteConnection {
 
                 //System.out.println("Added " + data + " \n\tto " + file.getName());
 
-            }catch(IOException e){
-                    e.printStackTrace();
+            } catch(IOException e) {
+                e.printStackTrace();
             }
-            
         }
-        
-        
     }
 }
