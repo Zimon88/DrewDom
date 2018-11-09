@@ -138,6 +138,22 @@ public class Opakowanie extends SQLiteConnection{
             disconnect();
         }
     }
+    
+    public void edytuj(String stary, String nowy){
+        connect();
+        String sql = "UPDATE "+TABLE_NAME+" "
+                + "SET "+COL_MEBELNR+" = '"+nowy+"' "
+                + "WHERE "+COL_MEBELNR+" = '"+stary+"';";
+        int wynik;
+        try {
+            wynik = stmt.executeUpdate(sql);
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql);
+        } finally {
+            disconnect();
+        }
+    }
 
     public void dodaj(String numer, Opakowanie o) {
         connect();
