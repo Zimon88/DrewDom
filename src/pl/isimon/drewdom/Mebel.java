@@ -26,7 +26,6 @@ public class Mebel extends SQLiteConnection{
     private final static String COL_NR = "nr_katalogowy";
     private final static String COL_NAZWA = "nazwa";
     private final static String COL_KOD = "kod";
-    private final static String COL_PRACOWNIK =  "pracownik";
 
     private final static String TABLE_NAME = "mebel";
 
@@ -37,7 +36,7 @@ public class Mebel extends SQLiteConnection{
     }
    
     public ArrayList<Mebel> getData(){
-        ArrayList<Mebel> lista = new ArrayList();
+        ArrayList<Mebel> mebelList = new ArrayList();
         String sql = "SELECT * FROM "+TABLE_NAME+" LIMIT 50";
         connect();
         try {
@@ -49,7 +48,7 @@ public class Mebel extends SQLiteConnection{
                 o.nazwa = w.getString(COL_NAZWA);
                 o.kod = w.getString(COL_KOD);
                 //TODO o.pracownik = 
-                lista.add(o);
+                mebelList.add(o);
                 wynik++;
             }
             printSelect(sql, wynik);
@@ -58,10 +57,10 @@ public class Mebel extends SQLiteConnection{
         } finally {
             disconnect();
         }
-        return lista;
+        return mebelList;
    }
    
-   public Mebel getMebel(String nr){
+    public Mebel getMebel(String nr){
         Mebel m = new Mebel();
         String sql = "SELECT * FROM "+TABLE_NAME+" WHERE "+COL_NR+" = '"+nr+"';";
         connect();
@@ -80,7 +79,29 @@ public class Mebel extends SQLiteConnection{
             disconnect();
         }
         return m;
-   }
+    }
+    
+    public Mebel getMebel(String nr, int sztuk){
+        Mebel m = new Mebel();
+        String sql = "SELECT * FROM "+TABLE_NAME+" WHERE "+COL_NR+" = '"+nr+"';";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                m.numerKatalogowy = w.getString(COL_NR);
+                m.nazwa = w.getString(COL_NAZWA);
+                m.kod = w.getString(COL_KOD);
+                m.lista = elementPozycja.getData2(nr, sztuk);
+            }
+            printSucces(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return m;
+    }
    
     public void dodaj(Mebel mebel, ArrayList<ElementPozycja> elementyLista,ArrayList<OkuciePozycja> okucieLista, ArrayList<Opakowanie> opakowanieLista){
         connect();

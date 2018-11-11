@@ -6,7 +6,6 @@ package pl.isimon.drewdom.raports;
 
 import java.util.ArrayList;
 import pl.isimon.drewdom.ElementPozycja;
-import pl.isimon.drewdom.Mebel;
 import pl.isimon.drewdom.Zamowienie;
 import pl.isimon.drewdom.ZamowieniePozycja;
 
@@ -15,8 +14,8 @@ import pl.isimon.drewdom.ZamowieniePozycja;
  * @author Simon
  */
 public class RaportSzczegolowy {
-    public Zamowienie zamowienie = null;;
-    public ZamowieniePozycja pozycjaZamowienia = null;;
+    public Zamowienie zamowienie = null;
+    public ZamowieniePozycja pozycjaZamowienia = null;
     public ArrayList<ElementPozycja> listaElementow = null;
 
     public RaportSzczegolowy() {

@@ -98,6 +98,7 @@ public class DrewDom extends javax.swing.JFrame {
         panelTabMeble = new pl.isimon.drewdom.gui.GMebleLista();
         panelTabOkucia = new pl.isimon.drewdom.gui.GOkucia();
         panelTabRaporty = new pl.isimon.drewdom.gui.GRaporty();
+        panelTabPrio = new pl.isimon.drewdom.gui.GPrio();
         tollBar = new javax.swing.JToolBar();
         buttonChangelog = new javax.swing.JButton();
         buttonNoweZamowienie = new javax.swing.JButton();
@@ -350,6 +351,7 @@ public class DrewDom extends javax.swing.JFrame {
         tabPanel.addTab("Meble", new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x22/furniture.png")), panelTabMeble); // NOI18N
         tabPanel.addTab("Okucia", new javax.swing.ImageIcon(getClass().getResource("/pl/isimon/drewdom/gui/images/x22/exec.png")), panelTabOkucia); // NOI18N
         tabPanel.addTab("Raporty", panelTabRaporty);
+        tabPanel.addTab("Priorytety", panelTabPrio);
 
         tollBar.setFloatable(false);
         tollBar.setRollover(true);
@@ -591,6 +593,7 @@ public class DrewDom extends javax.swing.JFrame {
     private pl.isimon.drewdom.gui.GMebelNowy panelNowyMebel;
     private pl.isimon.drewdom.gui.GMebleLista panelTabMeble;
     private pl.isimon.drewdom.gui.GOkucia panelTabOkucia;
+    private pl.isimon.drewdom.gui.GPrio panelTabPrio;
     private pl.isimon.drewdom.gui.GRaporty panelTabRaporty;
     private pl.isimon.drewdom.gui.GZamowienieList panelTabZamowienia;
     private pl.isimon.drewdom.gui.utils.RotatedLabel rotatedLabel1;

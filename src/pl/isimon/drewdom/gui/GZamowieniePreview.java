@@ -149,12 +149,12 @@ public class GZamowieniePreview extends javax.swing.JPanel {
     private void buttonDrukujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDrukujActionPerformed
          // TODO add your handling code here:
         try {
-              MessageFormat headerFormat = new MessageFormat("Zamowienie nr: "+ zamowienie.numer+" z dnia: "+zamowienie.data);
-              MessageFormat footerFormat = new MessageFormat("Strona {0} ");
-              tableMeble.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
-            } catch (PrinterException pe) {
-              System.err.println("Error printing: " + pe.getMessage());
-            }
+            MessageFormat headerFormat = new MessageFormat("Zamowienie nr: "+ zamowienie.numer+" z dnia: "+zamowienie.data);
+            MessageFormat footerFormat = new MessageFormat("Strona {0} ");
+            tableMeble.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+        } catch (PrinterException pe) {
+            System.err.println("Error printing: " + pe.getMessage());
+        }
     }//GEN-LAST:event_buttonDrukujActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

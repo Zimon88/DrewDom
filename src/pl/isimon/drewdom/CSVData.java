@@ -33,7 +33,7 @@ public class CSVData extends SQLiteConnection {
     public int elementZ;
     public int wydajnosc;
     public int ilosc;
-    private JSONArray arkusze = null;
+    private ArrayList<Arkusz> arkusze = null;
 
     public ArrayList<CSVData> getData(String z){
         
@@ -120,13 +120,9 @@ public class CSVData extends SQLiteConnection {
     private String getArkusz(int x) {
 
         for (int i = 0; i < arkusze.size(); i++) {
-            int xmin = toIntExact((Long)((JSONObject)arkusze.get(i)).get("xmin"));
-            int xmax = toIntExact((Long)((JSONObject)arkusze.get(i)).get("xmin"));
-            String a = (String)((JSONObject)arkusze.get(i)).get("arkusz");
-            if(xmin<x && x<=xmax) return a;
+            if(arkusze.get(i).getXmin()<x && x<=arkusze.get(i).getXmax()) return arkusze.get(i).getName();
         }
-
-        return new String();
+        return null;
     }
     
     public void exportCSV(ArrayList<CSVData> d, String nr){
@@ -154,7 +150,7 @@ public class CSVData extends SQLiteConnection {
                 
         path = path + "\\";
 
-        this.arkusze = setArkuszeList();
+        this.arkusze = new Arkusz().getArkusze();
         CSVData c = new CSVData();
 
 

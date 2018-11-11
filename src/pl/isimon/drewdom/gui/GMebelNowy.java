@@ -47,6 +47,7 @@ public class GMebelNowy extends javax.swing.JPanel {
     private Element element;
     private Mebel mebel;
     private boolean preview = false;
+    private String oldNumber;
 
     public ArrayList<Opakowanie> getOpakowanieLista() {
         return opakowanieLista;
@@ -126,7 +127,10 @@ public class GMebelNowy extends javax.swing.JPanel {
         textKod.setText(m.kod);
         textNumer.setText(m.numerKatalogowy);
         tcaTE.adjustColumns();
-        if(edycja) textNumer.setEnabled(false);
+        if(edycja) {
+            this.oldNumber = m.numerKatalogowy;
+            //textNumer.setEnabled(false);
+        }
         
     }
     
@@ -136,7 +140,13 @@ public class GMebelNowy extends javax.swing.JPanel {
         m.numerKatalogowy = getNumer();
         m.kod = getKod();
         if(edycja){
-            mebel.edytuj(m, getElementLista(), getOkucieLista(), getOpakowanieLista());
+            
+            if (m.numerKatalogowy == null ? oldNumber != null : !m.numerKatalogowy.equals(oldNumber)){
+                System.out.println("UPDATING PRODUCT NUMBER");
+                mebel.edytuj(m, getElementLista(), getOkucieLista(), getOpakowanieLista(), oldNumber);
+            } else {
+                mebel.edytuj(m, getElementLista(), getOkucieLista(), getOpakowanieLista());
+            }
             edycja = false;
         } else {
             mebel.dodaj(m, getElementLista(), getOkucieLista(), getOpakowanieLista());
@@ -532,7 +542,7 @@ public class GMebelNowy extends javax.swing.JPanel {
                     .addComponent(buttonEdycja))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tabpanelElement, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Elementy", panelElementy);

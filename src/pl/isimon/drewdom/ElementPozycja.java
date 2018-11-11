@@ -21,18 +21,16 @@ public class ElementPozycja extends SQLiteConnection{
     
     private final static String TABLE_NAME = "mebel_elementy";
     
-    private final static String TABLE_NAME_ELEMENT = "element";
-    private final static String COL_MEBELNR = "mebel_nr";
-    
-    private final static String COL_ID      = "id";
-    private final static String COL_NAZWA   = "nazwa";
-    private final static String COL_WYM1    = "wymiar_x";
-    private final static String COL_WYM2    = "wymiar_y";
-    private final static String COL_WYM3    = "wymiar_z";
-    private final static String COL_ZADANIE = "zadanie";
-    private final static String COL_WYDAJNOSC = "wydajnosc";
-    
-    private final static String COL_ILOSC = "ilosc";
+    private final static String TABLE_NAME_ELEMENT  = "element";
+    private final static String COL_MEBELNR         = "mebel_nr";
+    private final static String COL_ID              = "id";
+    private final static String COL_NAZWA           = "nazwa";
+    private final static String COL_WYM1            = "wymiar_x";
+    private final static String COL_WYM2            = "wymiar_y";
+    private final static String COL_WYM3            = "wymiar_z";
+    private final static String COL_ZADANIE         = "zadanie";
+    private final static String COL_WYDAJNOSC       = "wydajnosc";
+    private final static String COL_ILOSC           = "ilosc";
 
     public ElementPozycja() {
         element = new Element();
@@ -379,6 +377,31 @@ public class ElementPozycja extends SQLiteConnection{
                 e.element.wym3 = w.getInt(COL_WYM3);
                 e.element.zadanie = w.getInt(COL_ZADANIE);
                 e.element.wydajnosc = w.getInt(COL_WYDAJNOSC);
+                e.ilosc  = w.getInt(COL_ILOSC)*ilosc;
+                lista.add(e);
+            }
+            printSelect(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return lista;
+    }
+    
+    public ArrayList<ElementPozycja> getData2(String numer, int sztuk) {
+        int ilosc = 1;
+        if(sztuk!=0) ilosc = sztuk;
+        ArrayList<ElementPozycja> lista = new ArrayList();
+        String sql = "SELECT * FROM "+TABLE_NAME+" WHERE mebel_nr = '"+numer+"';";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                ElementPozycja e = new ElementPozycja();
+                wynik++;
+                e.element = element.getElement(w.getInt("element_id"));
                 e.ilosc  = w.getInt(COL_ILOSC)*ilosc;
                 lista.add(e);
             }

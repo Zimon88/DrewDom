@@ -182,7 +182,7 @@ public class GRaporty extends javax.swing.JPanel {
         catch(ClassCastException e) {}
     }
     
-    private void printTable(JTable table, String header, String footer){
+    void printTable(JTable table, String header, String footer){
         try {
             PrinterJob job = PrinterJob.getPrinterJob();
             PageFormat pf = job.defaultPage();
@@ -200,7 +200,7 @@ public class GRaporty extends javax.swing.JPanel {
         }
     }
     
-    private void printTable(JTable table){
+    public void printTable(JTable table){
         this.printTable(table,null,null);
     }
             

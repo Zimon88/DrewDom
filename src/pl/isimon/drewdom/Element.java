@@ -42,6 +42,62 @@ public class Element extends SQLiteConnection{
         this.mebel = mebel;
     }
     
+    public Element getElement(int id){
+        Element e = new Element();
+        
+        String sql = "SELECT * FROM element WHERE id = "+id+";";
+        System.out.println(sql);
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+                wynik++;
+                e.id = w.getInt(COL_ID);
+                e.nazwa = w.getString(COL_NAZWA);
+                e.wym1 = w.getInt(COL_WYM1);
+                e.wym2 = w.getInt(COL_WYM2);
+                e.wym3 = w.getInt(COL_WYM3);
+                e.zadanie = w.getInt(COL_ZADANIE);
+                e.wydajnosc = w.getInt(COL_WYDAJNOSC);
+            printSelect(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return e;
+    }
+    
+    public ArrayList<Element> getElements(String numerMebla){
+        ArrayList<Element> lista = new ArrayList();
+        
+        String sql = "SELECT * FROM element WHERE id IN (SELECT element_id FROM mebel_elementy WHERE mebel_nr = '"+numerMebla+"');";
+        
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                Element e = new Element(new Mebel());
+                wynik++;
+                e.id = w.getInt(COL_ID);
+                e.nazwa = w.getString(COL_NAZWA);
+                e.wym1 = w.getInt(COL_WYM1);
+                e.wym2 = w.getInt(COL_WYM2);
+                e.wym3 = w.getInt(COL_WYM3);
+                e.zadanie = w.getInt(COL_ZADANIE);
+                e.wydajnosc = w.getInt(COL_WYDAJNOSC);
+                lista.add(e);
+            }
+            printSelect(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return lista;
+    }
+    
     public ArrayList<Element> getData(String nazwaCzesci, String nazwaMebla, String numerMebla) {
         ArrayList<Element> lista = new ArrayList();
         String sql = "SELECT "

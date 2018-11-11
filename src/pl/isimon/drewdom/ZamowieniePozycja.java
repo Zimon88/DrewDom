@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * @author Simon
  */
 public class ZamowieniePozycja extends SQLiteConnection{
+    public int id;
     public String nrZamowienia;
     public Mebel mebel;
     public int ilosc;
@@ -74,6 +75,7 @@ public class ZamowieniePozycja extends SQLiteConnection{
             while(w.next()){
                 wynik++;
                 ZamowieniePozycja o = new ZamowieniePozycja();
+                o.id = w.getInt(COL_ID);
                 o.ilosc = w.getInt(COL_ILOSC);
                 o.mebel = (new Mebel()).getMebel(w.getString(COL_NRMEBLA));
                 o.nrZamowienia = numer;
@@ -88,6 +90,35 @@ public class ZamowieniePozycja extends SQLiteConnection{
             disconnect();
         }
         return lista;
+    }
+    
+    public ZamowieniePozycja getPozycjaZamowienia(int id, boolean getElements){
+        ZamowieniePozycja o = new ZamowieniePozycja();
+        String sql = "SELECT * FROM "+ TABLE_NAME +" WHERE "+COL_ID+" = "+id+";";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                wynik++;
+                o.id = w.getInt(COL_ID);
+                o.ilosc = w.getInt(COL_ILOSC);
+                if (getElements) {
+                    o.mebel = (new Mebel()).getMebel(w.getString(COL_NRMEBLA),o.ilosc);
+                } else {
+                    o.mebel = (new Mebel()).getMebel(w.getString(COL_NRMEBLA));
+                }
+                o.nrZamowienia = w.getString(COL_NRZAMOWIENIA);
+                o.pozycja = w.getInt(COL_POZYCJA);
+                System.out.println(o.toString());
+            }
+            printSelect(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return o;
     }
     
     public void usun(String numer){
