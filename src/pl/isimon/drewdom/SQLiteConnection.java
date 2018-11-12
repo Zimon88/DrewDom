@@ -6,11 +6,9 @@ package pl.isimon.drewdom;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.sqlite.SQLiteJDBCLoader;
 import pl.isimon.utils.PropertiesU;
 
 
@@ -43,27 +41,25 @@ public class SQLiteConnection {
         databaseFilename = p.getProperties().getProperty("database_filename");
         databaseDirectory = p.getProperties().getProperty("database_directory");
         console = Boolean.getBoolean(p.getProperties().getProperty("console"));
-       /* 
-        try {
-            Class.forName("org.sqlite.JDBC");
-            polaczenie = DriverManager.getConnection("jdbc:sqlite:res\\"+filename);
-            stmt = polaczenie.createStatement();
-            polaczenie.setAutoCommit(true);
-        } catch (ClassNotFoundException ex) {
-            System.err.println("Nie można załadować sterownika bazy danych" + ex);
-        } catch (SQLException ex) {
-            System.err.println("Nie można połączyć z bazą danych" + ex);
-        } finally{
+        
+        int version = Integer.parseInt(p.getProperties().getProperty("version"));
+        
+        if (version == 1) {
+            connect();
+            String sql = "CREATE TABLE IF NOT EXISTS priorytety (list_id INTEGER, pozycja integer);";
+            int wynik=0;
             try {
-                polaczenie.close();
-                polaczenie = null;
-                stmt = null;
+                stmt.execute(sql);
+                p.saveProperties("version", "2");
+                System.out.println("Updated to version 2");
+                version = 2;
             } catch (SQLException ex) {
-                System.err.println("Nie można zakończyć połączenia z bazą danych" + ex);
+                printSqlErr(sql, ex);
+            } finally {
+                disconnect();
             }
         }
-        * 
-        */
+
     }
 
     public void connect(){
