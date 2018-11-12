@@ -13,6 +13,7 @@ import java.awt.print.PrinterJob;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import javax.swing.JTable;
+import pl.isimon.drewdom.CSVData;
 import pl.isimon.drewdom.Priorytety;
 import pl.isimon.drewdom.Zamowienie;
 import pl.isimon.drewdom.ZamowieniePozycja;
@@ -106,6 +107,7 @@ public class GPrio extends javax.swing.JPanel {
         usunButton = new javax.swing.JButton();
         detailsButton = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         prioDetailsFrame.setMinimumSize(new java.awt.Dimension(800, 600));
 
@@ -235,6 +237,13 @@ public class GPrio extends javax.swing.JPanel {
             }
         });
 
+        jButton2.setText("CSV Export");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -252,6 +261,8 @@ public class GPrio extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(detailsButton)
@@ -292,7 +303,8 @@ public class GPrio extends javax.swing.JPanel {
                     .addComponent(saveButton)
                     .addComponent(jButton4)
                     .addComponent(detailsButton)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -412,6 +424,15 @@ public class GPrio extends javax.swing.JPanel {
         this.printTable(tablePrioDetails, "Lista Priorytetów: "+((ComboBoxModelPrio)comboPrio.getModel()).getSelectedItem(), null);
     }//GEN-LAST:event_buttonRDrukujActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        int selected = ((ComboBoxModelPrio)comboPrio.getModel()).getSelectedItem();
+        CSVData csv = new CSVData();
+        ArrayList<CSVData> d = new ArrayList();
+        d = csv.getData2(selected);
+        csv.exportCSV(d, "Prio_"+selected);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     void printTable(JTable table, String header, String footer){
         try {
             PrinterJob job = PrinterJob.getPrinterJob();
@@ -437,6 +458,7 @@ public class GPrio extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> comboZamowienia;
     private javax.swing.JButton detailsButton;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

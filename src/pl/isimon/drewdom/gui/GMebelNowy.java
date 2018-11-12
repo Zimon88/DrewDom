@@ -117,7 +117,7 @@ public class GMebelNowy extends javax.swing.JPanel {
         //tmme.setModelData(element.getData());
         opakowanieLista = (new Opakowanie()).getData(m.numerKatalogowy);
         okucieLista = (new OkuciePozycja()).getData(m.numerKatalogowy);
-        elementLista = elementPozycja.getData(m.numerKatalogowy,1);
+        elementLista = elementPozycja.getData2(m.numerKatalogowy,1);
         tableIstniejaceElementy.getColumnModel().getColumn(5).setCellRenderer(new ZadaniaCellRenderer());
         tcaTIE.adjustColumns();
         tmo.setModelData(opakowanieLista);

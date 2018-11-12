@@ -32,7 +32,7 @@ public class Arkusz {
     }
     
     public int getXmax() {
-        return xmax;
+        return this.xmax;
     }
     
     public String getName() {
@@ -55,8 +55,9 @@ public class Arkusz {
             for (int i = 0; i < parsedArray.size(); i++) {
                 Arkusz a = new Arkusz();
                 a.xmin = toIntExact((Long)((JSONObject)parsedArray.get(i)).get("xmin"));
-                a.xmax = toIntExact((Long)((JSONObject)parsedArray.get(i)).get("xmin"));
+                a.xmax = toIntExact((Long)((JSONObject)parsedArray.get(i)).get("xmax"));
                 a.name = (String)((JSONObject)parsedArray.get(i)).get("arkusz");
+                //System.out.println(a);
                 arkusze.add(a);
             }
 
@@ -70,4 +71,11 @@ public class Arkusz {
 
         return arkusze;
     }
+
+    @Override
+    public String toString() {
+        return "xmin:"+this.getXmin()+" xmax:"+this.getXmax()+" name:"+this.getName(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 }

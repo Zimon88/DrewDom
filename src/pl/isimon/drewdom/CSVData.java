@@ -33,7 +33,11 @@ public class CSVData extends SQLiteConnection {
     public int elementZ;
     public int wydajnosc;
     public int ilosc;
-    private ArrayList<Arkusz> arkusze = null;
+    private ArrayList<Arkusz> arkusze;
+    
+    public CSVData(){
+        
+    }
 
     public ArrayList<CSVData> getData(String z){
         
@@ -95,32 +99,138 @@ public class CSVData extends SQLiteConnection {
         return lista;
     }
     
-    private JSONArray setArkuszeList() {
-        JSONParser parser = new JSONParser();
-        JSONArray a = new JSONArray();
+    public ArrayList<CSVData> getData2(String z){
+        
+        ArrayList<CSVData> lista = new ArrayList<>();
+        
+        String sql = 
+                "SELECT "
+                    + "pozycja_zamowienia.pozycja, "
+                    + "pozycja_zamowienia.id, "
+                    + "mebel.nazwa AS mebel_nazwa,"
+                    + "mebel.nr_katalogowy AS mebel_nr, "
+                    + "element.nazwa AS element_nazwa,"
+                    + "element.wymiar_x AS elementX, "
+                    + "element.wymiar_y AS elementY, "
+                    + "element.wymiar_z AS elementZ, "
+                    + "element.wydajnosc AS wydajnosc, "
+                    + "(SUM(mebel_elementy.ilosc)*pozycja_zamowienia.ilosc) AS ilosc "
+                + "FROM zamowienie, pozycja_zamowienia, element, mebel_elementy, mebel "
+                + "WHERE zamowienie.nr_zamowienia = '"+z+"' "
+                    + "AND pozycja_zamowienia.nr_zamowienia=zamowienie.nr_zamowienia "
+                    + "AND pozycja_zamowienia.id NOT IN (SELECT pozycja FROM priorytety) "
+                    + "AND pozycja_zamowienia.mebel_nr=mebel.nr_katalogowy "
+                    + "AND mebel_elementy.mebel_nr=mebel.nr_katalogowy "
+                    + "AND element.id=mebel_elementy.element_id "
+//                + "GROUP BY element.wymiar_x, element.wymiar_y, element.wymiar_z, mebel.nazwa. element.id  "
+                + "GROUP BY mebel.nr_katalogowy, element.id  "
+                + "ORDER BY element.wymiar_z, element.wymiar_x, element.wymiar_y DESC;";
+        connect();
         try {
-            File f = new File("res\\arkusze.json");
-            Object obj = parser.parse(new FileReader(f));
-
-            JSONObject jsonObject = (JSONObject) obj;
-            System.out.println(jsonObject);
-
-            a = (JSONArray) jsonObject.get("arkusze");
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                CSVData e  = new CSVData();
+                wynik++;
+                e.pozycja = w.getInt("pozycja");
+                e.mebelNazwa = w.getString("mebel_nazwa");
+                e.mebelNr = w.getString("mebel_nr");
+                e.elementNazwa = w.getString("element_nazwa");
+                e.elementX = w.getInt("elementX");
+                e.elementY = w.getInt("elementY");
+                e.elementZ = w.getInt("elementZ");
+                e.wydajnosc = w.getInt("wydajnosc");
+                
+                e.ilosc = w.getInt("ilosc");
+                int ei = e.ilosc;
+                int ew = e.wydajnosc;
+                if ((ei % ew)==0){
+                    e.ilosc = ei/ew;
+                } else {
+                    e.ilosc = (ei/ew) + 1;
+                }
+                
+                lista.add(e);
+            }
+            printSelect(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
         }
-        return a;
+        return lista;
+    }
+    
+    public ArrayList<CSVData> getData2(int z){
+        
+        ArrayList<CSVData> lista = new ArrayList<>();
+        
+        String sql = 
+                "SELECT "
+                    + "pozycja_zamowienia.pozycja, "
+                    + "pozycja_zamowienia.id AS pzid, "
+                    + "mebel.nazwa AS mebel_nazwa,"
+                    + "mebel.nr_katalogowy AS mebel_nr, "
+                    + "element.nazwa AS element_nazwa,"
+                    + "element.wymiar_x AS elementX, "
+                    + "element.wymiar_y AS elementY, "
+                    + "element.wymiar_z AS elementZ, "
+                    + "element.wydajnosc AS wydajnosc, "
+                    + "priorytety.pozycja AS priop, "
+                    + "priorytety.list_id, "
+                    + "(SUM(mebel_elementy.ilosc)*pozycja_zamowienia.ilosc) AS ilosc "
+                + "FROM zamowienie, pozycja_zamowienia, element, mebel_elementy, mebel, priorytety "
+                + "WHERE priorytety.list_id = "+z+" "
+                    + "AND pzid=priop "
+                    + "AND pozycja_zamowienia.mebel_nr=mebel.nr_katalogowy "
+                    + "AND mebel_elementy.mebel_nr=mebel.nr_katalogowy "
+                    + "AND element.id=mebel_elementy.element_id "
+//                + "GROUP BY element.wymiar_x, element.wymiar_y, element.wymiar_z, mebel.nazwa. element.id  "
+                + "GROUP BY mebel.nr_katalogowy, element.id  "
+                + "ORDER BY element.wymiar_z, element.wymiar_x, element.wymiar_y DESC;";
+        connect();
+        try {
+            ResultSet w = stmt.executeQuery(sql);
+            int wynik =0;
+            while(w.next()){
+                CSVData e  = new CSVData();
+                wynik++;
+                e.pozycja = w.getInt("pozycja");
+                e.mebelNazwa = w.getString("mebel_nazwa");
+                e.mebelNr = w.getString("mebel_nr");
+                e.elementNazwa = w.getString("element_nazwa");
+                e.elementX = w.getInt("elementX");
+                e.elementY = w.getInt("elementY");
+                e.elementZ = w.getInt("elementZ");
+                e.wydajnosc = w.getInt("wydajnosc");
+                
+                e.ilosc = w.getInt("ilosc");
+                int ei = e.ilosc;
+                int ew = e.wydajnosc;
+                if ((ei % ew)==0){
+                    e.ilosc = ei/ew;
+                } else {
+                    e.ilosc = (ei/ew) + 1;
+                }
+                
+                lista.add(e);
+            }
+            printSelect(sql, wynik);
+        } catch (SQLException ex) {
+            printSqlErr(sql, ex);
+        } finally {
+            disconnect();
+        }
+        return lista;
     }
     
     private String getArkusz(int x) {
 
-        for (int i = 0; i < arkusze.size(); i++) {
-            if(arkusze.get(i).getXmin()<x && x<=arkusze.get(i).getXmax()) return arkusze.get(i).getName();
+        for (int i = 0; i < this.arkusze.size(); i++) {
+            if(arkusze.get(i).getXmin()<x && x<=arkusze.get(i).getXmax()) {
+                System.out.println(arkusze.get(i));
+                return arkusze.get(i).getName();
+            }
         }
         return null;
     }
@@ -128,7 +238,7 @@ public class CSVData extends SQLiteConnection {
     public void exportCSV(ArrayList<CSVData> d, String nr){
         
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH-mm");
-        //System.out.println(data.format(new Date()));
+        this.arkusze = new Arkusz().getArkusze();
         String s1 = date.format(new Date());
                 
         String path = "csv\\"+nr+"_"+s1;
@@ -150,9 +260,7 @@ public class CSVData extends SQLiteConnection {
                 
         path = path + "\\";
 
-        this.arkusze = new Arkusz().getArkusze();
         CSVData c = new CSVData();
-
 
         for(int i=0; i<d.size(); i++){
             c = d.get(i);
@@ -179,7 +287,7 @@ public class CSVData extends SQLiteConnection {
             }
 
             String data = c.elementX+"|"+c.elementY+"|"+c.ilosc+"|"+opis+"|"+struktura+"|"+"NNNN||"+arkusz+"|||||||\n";
-
+            System.out.println(data);
             try {
                 //String data = " This content will append to the end of the file";
                 String filename = nr+"_"+z+".csv";

@@ -22,9 +22,14 @@ public class RaportSzczegolowy {
         pozycjaZamowienia = new ZamowieniePozycja();
     }
     
-    public ArrayList<RaportSzczegolowy> getData(Zamowienie z){
+    public ArrayList<RaportSzczegolowy> getData(Zamowienie z, boolean removePrio){
         ArrayList<RaportSzczegolowy> lista = new ArrayList();
-        ArrayList<ZamowieniePozycja> listaMebli = pozycjaZamowienia.getPozycjeZamowienia(z.numer);
+        ArrayList<ZamowieniePozycja> listaMebli;
+        if (removePrio) {
+            listaMebli = pozycjaZamowienia.getPozycjeZamowienia2(z.numer);
+        } else {
+            listaMebli = pozycjaZamowienia.getPozycjeZamowienia(z.numer);
+        }
         for(int i = 0; i<listaMebli.size();i++){
             RaportSzczegolowy r = new RaportSzczegolowy();
             ZamowieniePozycja m = listaMebli.get(i);
