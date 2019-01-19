@@ -5,11 +5,6 @@
  */
 package pl.isimon.drewdom;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -177,7 +172,7 @@ public class CSVData extends SQLiteConnection {
                     + "element.wydajnosc AS wydajnosc "
 //                    + ", * "
                 + "FROM priorytety,pozycja_zamowienia,mebel,mebel_elementy,element "
-                + "WHERE priorytety.list_id=4 "
+                + "WHERE priorytety.list_id="+z+" "
                     + "AND priorytety.pozycja=pozycja_zamowienia.id "
                     + "AND pozycja_zamowienia.mebel_nr=mebel.nr_katalogowy "
                     + "AND mebel_elementy.mebel_nr=mebel.nr_katalogowy "
