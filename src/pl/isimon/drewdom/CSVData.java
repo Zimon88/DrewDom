@@ -165,29 +165,26 @@ public class CSVData extends SQLiteConnection {
         
         ArrayList<CSVData> lista = new ArrayList<>();
         
-        String sql = 
-                "SELECT "
+        String sql = "SELECT "
+                    + "SUM(mebel_elementy.ilosc*pozycja_zamowienia.ilosc) AS ilosc, "
                     + "pozycja_zamowienia.pozycja, "
-                    + "pozycja_zamowienia.id AS pzid, "
-                    + "mebel.nazwa AS mebel_nazwa,"
+                    + "mebel.nazwa AS mebel_nazwa, "
                     + "mebel.nr_katalogowy AS mebel_nr, "
-                    + "element.nazwa AS element_nazwa,"
+                    + "element.nazwa AS element_nazwa, "
                     + "element.wymiar_x AS elementX, "
                     + "element.wymiar_y AS elementY, "
                     + "element.wymiar_z AS elementZ, "
-                    + "element.wydajnosc AS wydajnosc, "
-                    + "priorytety.pozycja AS priop, "
-                    + "priorytety.list_id, "
-                    + "(SUM(mebel_elementy.ilosc)*pozycja_zamowienia.ilosc) AS ilosc "
-                + "FROM zamowienie, pozycja_zamowienia, element, mebel_elementy, mebel, priorytety "
-                + "WHERE priorytety.list_id = "+z+" "
-                    + "AND pzid=priop "
+                    + "element.wydajnosc AS wydajnosc "
+//                    + ", * "
+                + "FROM priorytety,pozycja_zamowienia,mebel,mebel_elementy,element "
+                + "WHERE priorytety.list_id=4 "
+                    + "AND priorytety.pozycja=pozycja_zamowienia.id "
                     + "AND pozycja_zamowienia.mebel_nr=mebel.nr_katalogowy "
                     + "AND mebel_elementy.mebel_nr=mebel.nr_katalogowy "
                     + "AND element.id=mebel_elementy.element_id "
-//                + "GROUP BY element.wymiar_x, element.wymiar_y, element.wymiar_z, mebel.nazwa. element.id  "
-                + "GROUP BY mebel.nr_katalogowy, element.id  "
+                + "GROUP BY mebel.nr_katalogowy, element.id "
                 + "ORDER BY element.wymiar_z, element.wymiar_x, element.wymiar_y DESC;";
+        
         connect();
         try {
             ResultSet w = stmt.executeQuery(sql);
@@ -203,7 +200,6 @@ public class CSVData extends SQLiteConnection {
                 e.elementY = w.getInt("elementY");
                 e.elementZ = w.getInt("elementZ");
                 e.wydajnosc = w.getInt("wydajnosc");
-                
                 e.ilosc = w.getInt("ilosc");
                 int ei = e.ilosc;
                 int ew = e.wydajnosc;
