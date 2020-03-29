@@ -11,6 +11,7 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
@@ -109,6 +110,7 @@ public class GRaporty extends javax.swing.JPanel {
     }
     
     public void loadDataRaportSzczegolwy(Zamowienie z){
+//        tableRaportSzczegolwy.setModel(new TableModelRaportSzczegolwy(),qrCheckBox.isSelected());
         tmrs.setModelData(raportS.getData(z,usunPrioCB.isSelected()));
         labelRaportSzczegolowyNumer.setText(z.numer);
 //        if(!zamowienie.equals(z)) 
@@ -251,8 +253,9 @@ public class GRaporty extends javax.swing.JPanel {
         jButton2 = new javax.swing.JButton();
         bCSVExport = new javax.swing.JButton();
         usunPrioCB = new javax.swing.JCheckBox();
+        qrCheckBox = new javax.swing.JCheckBox();
 
-        frameRaportSzczegolowy.setMinimumSize(new java.awt.Dimension(800, 500));
+        frameRaportSzczegolowy.setMinimumSize(new java.awt.Dimension(1024, 800));
 
         tableRaportSzczegolwy.setModel(new TableModelRaportSzczegolwy());
         jScrollPane1.setViewportView(tableRaportSzczegolwy);
@@ -512,7 +515,7 @@ public class GRaporty extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setText("Zestawienie zamówienia wraz z wyzczególnieniem ilości elementów");
+        jLabel1.setText("Zestawienie zamówienia wraz z elementami");
 
         jLabel2.setText("Lista opakowowań dla zamówienia");
 
@@ -537,6 +540,13 @@ public class GRaporty extends javax.swing.JPanel {
         usunPrioCB.setSelected(true);
         usunPrioCB.setText("Usuń priorytety");
 
+        qrCheckBox.setText("QR");
+        qrCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                qrCheckBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -548,7 +558,7 @@ public class GRaporty extends javax.swing.JPanel {
                         .addComponent(usunPrioCB)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cbListaZamowien, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -558,12 +568,14 @@ public class GRaporty extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButton2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(buttonRaportSzczegolwy, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
-                            .addComponent(buttonRaportOpakowania, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                            .addComponent(buttonRaportOkucia, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
-                            .addComponent(buttonRaportKody, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
-                            .addComponent(bCSVExport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(qrCheckBox)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(buttonRaportSzczegolwy, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                                .addComponent(buttonRaportOpakowania, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                                .addComponent(buttonRaportOkucia, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                                .addComponent(buttonRaportKody, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                                .addComponent(bCSVExport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
 
@@ -580,7 +592,9 @@ public class GRaporty extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonRaportSzczegolwy)
                     .addComponent(jLabel1))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(qrCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(buttonRaportOpakowania)
@@ -593,7 +607,7 @@ public class GRaporty extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(buttonRaportKody))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
                 .addComponent(bCSVExport)
                 .addContainerGap())
         );
@@ -604,6 +618,7 @@ public class GRaporty extends javax.swing.JPanel {
 
     private void buttonRaportSzczegolwyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRaportSzczegolwyActionPerformed
         Zamowienie z = (Zamowienie) cbListaZamowien.getSelectedItem();
+        tableRaportSzczegolwy.getColumnModel().getColumn(2).setCellRenderer(new ElementyRaportSzczegolowyCellRenderer(qrCheckBox.isSelected()));
         loadDataRaportSzczegolwy(z);
         frameRaportSzczegolowy.setVisible(true);
     }//GEN-LAST:event_buttonRaportSzczegolwyActionPerformed
@@ -678,20 +693,38 @@ public class GRaporty extends javax.swing.JPanel {
     }//GEN-LAST:event_bLaczActionPerformed
 
     private void bCSVExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCSVExportActionPerformed
-        Zamowienie z = (Zamowienie) cbListaZamowien.getSelectedItem();
-        CSVData csv = new CSVData();
-        ArrayList<CSVData> d = new ArrayList();
-        if (usunPrioCB.isSelected()){
-            d = csv.getData2(z.numer);
-        } else {
-            d = csv.getData(z.numer);
+        if(!this.generatingCVS) {
+            this.generatingCVS = true;
+            Zamowienie z = (Zamowienie) cbListaZamowien.getSelectedItem();
+            this.bCSVExport.setEnabled(false);
+            this.bCSVExport.setText("Tworzenie CSV");
+            CSVData csv = new CSVData();
+            ArrayList<CSVData> d = new ArrayList();
+            if (usunPrioCB.isSelected()){
+                d = csv.getData2(z.numer);
+            } else {
+                d = csv.getData(z.numer);
+            }
+            csv.exportCSV(d, z.numer);
+            try {
+                TimeUnit.SECONDS.sleep(10);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GRaporty.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.bCSVExport.setEnabled(true);
+            this.bCSVExport.setText("Export CSV");
+            this.generatingCVS = false;
         }
-        csv.exportCSV(d, z.numer);
+        
     }//GEN-LAST:event_bCSVExportActionPerformed
 
     private void cbListaZamowienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbListaZamowienActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbListaZamowienActionPerformed
+
+    private void qrCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qrCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_qrCheckBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCSVExport;
@@ -725,6 +758,7 @@ public class GRaporty extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel labelRaportSzczegolowyNumer;
+    private javax.swing.JCheckBox qrCheckBox;
     private javax.swing.JTable tableOkucia;
     private javax.swing.JTable tableRaportKody;
     private javax.swing.JTable tableRaportOpakowania;
@@ -732,6 +766,5 @@ public class GRaporty extends javax.swing.JPanel {
     private javax.swing.JTable tableRaportSzczegolwy;
     private javax.swing.JCheckBox usunPrioCB;
     // End of variables declaration//GEN-END:variables
-
-    
+    private boolean generatingCVS = false;   
 }

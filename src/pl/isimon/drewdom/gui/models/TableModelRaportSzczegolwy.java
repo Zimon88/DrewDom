@@ -26,6 +26,9 @@ public class TableModelRaportSzczegolwy extends javax.swing.table.AbstractTableM
         public TableModelRaportSzczegolwy() {
         }
         
+        public TableModelRaportSzczegolwy(boolean a) {
+        }
+        
         @Override
         public int getRowCount() {
             if(lista == null) return 0;

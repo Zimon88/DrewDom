@@ -277,7 +277,7 @@ public class CSVData extends SQLiteConnection {
                 arkusz=getArkusz(x);
             }
 
-            String data = c.elementX+"|"+c.elementY+"|"+c.ilosc+"|"+opis+"|"+struktura+"|"+"NNNN||"+arkusz+"|||||||\n";
+            String data = c.elementX+"|"+c.elementY+"|"+c.ilosc+"|"+opis+"|"+struktura+"|"+"NNNN||"+arkusz+"Z"+z+"|||||||\n";
             System.out.println(data);
             try {
                 //String data = " This content will append to the end of the file";

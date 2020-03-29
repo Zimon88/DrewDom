@@ -33,7 +33,11 @@ public class Zamowienie extends SQLiteConnection{
     
     public ArrayList<Zamowienie> getData(){
         ArrayList<Zamowienie> lista = new ArrayList();
-        String sql = "SELECT * FROM zamowienie";
+        String sql = "SELECT * FROM zamowienie " 
+                + "ORDER BY " 
+                    + COL_DATA + " DESC, " 
+                    + COL_NUMER + " DESC";
+                
         connect();
         try {
             ResultSet w = stmt.executeQuery(sql);
@@ -79,9 +83,10 @@ public class Zamowienie extends SQLiteConnection{
     public void zapiszZamowienie(String numer, ArrayList<ZamowieniePozycja> lista, Date dataZamowienia, Date dataRealizacji){
         java.sql.Date sqlDate = null;
         SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd");
-        //System.out.println(data.format(new Date()));
+//        System.out.println(data.format(new Date()));
         String s1 = d.format(new Date());
-        String s2 = "null";
+//        String s1 = "datetime('now')";
+        String s2 = "";
         if(dataZamowienia!=null){
             sqlDate = new java.sql.Date(dataZamowienia.getTime());
             s1 = sqlDate.toString();
@@ -135,8 +140,8 @@ public class Zamowienie extends SQLiteConnection{
 
     public void edytuj(String numer, Date dataZamowienia, Date dataRealizacji) {
         java.sql.Date sqlDate = null;
-        String s1 = "CURRENT_DATE";
-        String s2 = "null";
+        String s1 = "datetime('now')";
+        String s2 = "";
         if(dataZamowienia!=null){
             sqlDate = new java.sql.Date(dataZamowienia.getTime());
             s1 = sqlDate.toString();
@@ -146,7 +151,7 @@ public class Zamowienie extends SQLiteConnection{
             s2 = sqlDate.toString();
         }
         String sql = "UPDATE zamowienie SET "
-                + COL_DATA + " = '" +s1+ "', "
+//                + COL_DATA + " = '" +s1+ "', "
                 + COL_DATA_REALIZACJI + " = '" +s2+ "' "
                 + "WHERE " + COL_NUMER + " = '" +numer+ "';";
         
@@ -161,7 +166,4 @@ public class Zamowienie extends SQLiteConnection{
             disconnect();
         }
     }
-    
-    
-    
 }

@@ -62,6 +62,10 @@ public class SQLiteConnection {
 
     }
 
+    public PropertiesU getP() {
+        return p;
+    }
+
     public void connect(){
         try {
             Class.forName("org.sqlite.JDBC");

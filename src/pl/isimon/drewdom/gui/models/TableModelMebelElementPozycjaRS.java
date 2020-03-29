@@ -22,20 +22,27 @@ import pl.isimon.drewdom.ElementPozycja;
 public class TableModelMebelElementPozycjaRS extends javax.swing.table.AbstractTableModel{
     // TODO all
     private ArrayList<ElementPozycja> lista = null;
-        private final static Object[] columnNames = {"Element","Wymiar","Szt","Piła","CnC"};
+        private final static Object[] columnNames = {"Element","Wymiar","Szt","QR","Notatki"};
         
         private final static int IDX_NAZWA = 0;
         private final static int IDX_WYMIAR = 1;
         private final static int IDX_ILOSC = 2;
+        private final static int IDX_QR = 3;
+        private final static int IDX_NOTATKI = 4;
 //        private final static int IDX_ZADANIE_K = 3;
-        private final static int IDX_ZADANIE_P = 3;
-        private final static int IDX_ZADANIE_C = 4;
-        private final static String IKS = "XXXXXXXXXXXXXXXXXXXXX";
+//        private final static int IDX_ZADANIE_P = 4;
+//        private final static int IDX_ZADANIE_C = 5;
+//        private final static String IKS = "XXXXXXXXXXXXXXXXXXXXX";
+        
+        private boolean hideQR = false;
        
         /**
          * 
          */
         public TableModelMebelElementPozycjaRS() {
+        }
+        public TableModelMebelElementPozycjaRS(boolean qr) {
+            this.hideQR = qr;
         }
         
         @Override
@@ -61,9 +68,11 @@ public class TableModelMebelElementPozycjaRS extends javax.swing.table.AbstractT
                 }
                 case IDX_WYMIAR: return o.element.wym1+"x"+o.element.wym2+"x"+o.element.wym3;
                 case IDX_ILOSC: return o.ilosc;
+                case IDX_QR: return o.element.getQRImage();
+                case IDX_NOTATKI: return "";
 //                case IDX_ZADANIE_K: if(x == 2 | x == 4 | x==6) return IKS; return "";
-                case IDX_ZADANIE_P: if(x == 1 | x == 4 | x==5) return IKS; return "";
-                case IDX_ZADANIE_C: if(x == 1 | x == 2 | x==3) return IKS; return "";
+//                case IDX_ZADANIE_P: if(x == 1 | x == 4 | x==5) return IKS; return "";
+//                case IDX_ZADANIE_C: if(x == 1 | x == 2 | x==3) return IKS; return "";
                 default:
                     return o;
             }

@@ -4,9 +4,19 @@
  */
 package pl.isimon.drewdom;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  *
@@ -35,11 +45,76 @@ public class Element extends SQLiteConnection{
     private final static String COL_MEBEL_KOD = "mebel_numer";
     private final static String COL_MEBEL_NAZWA = "mebel_nazwa";
     
+    private String qrPattern;
+    private String qrSavePath;
+    private int qrSize;
+    
     public Element(){
 //        if(mebel == null) mebel = new Mebel();
+        this.qrData();
     }
     public Element(Mebel mebel){
         this.mebel = mebel;
+        this.qrData();
+    }
+    
+    private void qrData(){
+        Properties prop = getP().getProperties();
+        this.qrPattern = prop.getProperty("qr_pattern");
+        this.qrSize = Integer.parseInt(prop.getProperty("qr_image_size"));
+        this.qrSavePath = prop.getProperty("qr_path");
+    }
+    
+    private String qrResolvePattern(){
+        String[] keys = {COL_WYM1, COL_WYM2, COL_WYM3, COL_ID, COL_NAZWA};
+        String pattern = this.qrPattern;
+        String replace = "";
+        for (String key: keys){
+            switch (key) {
+                case COL_WYM1:  {replace = String.valueOf(this.wym1); break;}
+                case COL_WYM2:  {replace = String.valueOf(this.wym2); break;}
+                case COL_WYM3:  {replace = String.valueOf(this.wym3); break;}
+                case COL_ID:    {replace = String.valueOf(this.id); break;}
+                case COL_NAZWA: {replace = this.nazwa; break;}
+            }
+            pattern = pattern.replaceAll("%"+key+"%", replace);
+        }
+        return pattern;
+    }
+    
+    private static void qrCodeImageGenerate(String text, int width, int height, String filePath) {
+        try {
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+            Path path = FileSystems.getDefault().getPath(filePath);
+            MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
+        } catch (WriterException e) {
+            System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
+        }
+    }
+    
+    private void qrImageGenerate(Element e, boolean skipCheck){
+        if (skipCheck) {
+            this.qrCodeImageGenerate(e.qrResolvePattern(), e.qrSize, e.qrSize, qrSavePath+e.id+".png");
+            System.out.println("INFO: QR image generated: " + qrSavePath+e.id+".png");
+        }
+    }
+    
+    private void qrImageGenerate(Element e){
+        File image = new File(qrSavePath+e.id+".png");
+        if (!image.exists()) {
+            qrImageGenerate(e,true);
+        } else {
+            System.out.println("INFO: QR image exists: " + qrSavePath+e.id+".png");
+        }
+    }
+    
+    public String getQRImage() {
+        qrImageGenerate(this);
+        return qrSavePath+this.id+".png";
     }
     
     public Element getElement(int id){
@@ -212,6 +287,8 @@ public class Element extends SQLiteConnection{
         } catch (SQLException ex) {
             printSqlErr(sql, ex);
         } finally {
+            e.id = last_id;
+            this.qrImageGenerate(e, true);
             disconnect();
         }
         
@@ -235,6 +312,7 @@ public class Element extends SQLiteConnection{
         } catch (SQLException ex) {
             printSqlErr(sql);
         } finally {
+            qrImageGenerate(e,true);
             disconnect();
         }
     }

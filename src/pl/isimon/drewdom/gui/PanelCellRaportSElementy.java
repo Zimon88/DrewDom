@@ -7,13 +7,12 @@ package pl.isimon.drewdom.gui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Properties;
-import javax.swing.table.TableColumn;
 import pl.isimon.drewdom.ElementPozycja;
 import pl.isimon.drewdom.gui.models.TableModelMebelElementPozycjaRS;
+import pl.isimon.drewdom.gui.utils.ImageRenderer;
 import pl.isimon.drewdom.gui.utils.TableColumnAdjuster;
 import pl.isimon.utils.PropertiesU;
 
@@ -28,6 +27,7 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
     TableColumnAdjuster tca;
     Properties properties;
     boolean resized = false;
+    boolean renderqr = false;
     /**
      * Creates new form PanelCellRaportSElementy
      */
@@ -39,24 +39,48 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
         prop.loadProperties();
         properties = prop.getProperties();
     }
-
     public void setLista(ArrayList<ElementPozycja> lista) {
+        this.setLista(lista, false);
+    }
+
+    public void setLista(ArrayList<ElementPozycja> lista, boolean renderQR) {
         this.lista = lista;
+        this.renderqr = renderQR;
         Collections.sort(this.lista, new ElementComparator());
         model.setModelData(lista);
         updateRowHeights();
-        updateColumWidth();
+        updateColumWidth(renderQR);
     }
     
     public void sortByName(){
         tableElementy.getRowSorter().toggleSortOrder(0);
     }
     
-    private void updateColumWidth(){
+    private void updateColumWidth(boolean renderQR){
 //        tableElementy.getColumnModel().getColumn(2).setMinWidth(10);
+        tableElementy.getColumnModel().getColumn(0).setMinWidth(100);
+        tableElementy.getColumnModel().getColumn(0).setMaxWidth(250);
         tableElementy.getColumnModel().getColumn(0).setPreferredWidth(Integer.parseInt(properties.getProperty("column1")));
+        tableElementy.getColumnModel().getColumn(1).setMinWidth(100);
+        tableElementy.getColumnModel().getColumn(1).setMaxWidth(250);        
         tableElementy.getColumnModel().getColumn(1).setPreferredWidth(Integer.parseInt(properties.getProperty("column2")));
+        tableElementy.getColumnModel().getColumn(2).setMinWidth(50);
+        tableElementy.getColumnModel().getColumn(2).setMaxWidth(100);
         tableElementy.getColumnModel().getColumn(2).setPreferredWidth(Integer.parseInt(properties.getProperty("column3")));
+        tableElementy.getColumnModel().getColumn(4).setMinWidth(400);
+        tableElementy.getColumnModel().getColumn(2).setPreferredWidth(500);
+        int qrW = 0;
+        if (renderQR) {
+            tableElementy.getColumnModel().getColumn(3).setCellRenderer(new ImageRenderer());
+            tableElementy.getColumnModel().getColumn(3).setMinWidth(120);
+            tableElementy.getColumnModel().getColumn(3).setMaxWidth(180);
+            qrW = Integer.parseInt(properties.getProperty("column_qr"));
+        } else {
+            tableElementy.getColumnModel().getColumn(3).setMaxWidth(0);
+            tableElementy.getColumnModel().getColumn(3).setMinWidth(0);
+        }
+        System.out.println("DEBUG: setting qr width to: " + qrW);
+        tableElementy.getColumnModel().getColumn(3).setPreferredWidth(qrW);
     }
     
     private void updateRowHeights()
@@ -69,8 +93,10 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
             {
                 
                 int rowHeight = Integer.parseInt(properties.getProperty("height"));
+                rowHeight = renderqr ? Integer.parseInt(properties.getProperty("qr_image_size")) : rowHeight;
                 if(!resized) {
                     rowHeight = Integer.parseInt(properties.getProperty("height"));
+                    rowHeight = renderqr ? Integer.parseInt(properties.getProperty("qr_image_size")) : rowHeight;
                 }
                 for (int column = 0; column < tableElementy.getColumnCount(); column++)
                 {
