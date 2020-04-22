@@ -28,6 +28,8 @@ public class ElementPozycja extends SQLiteConnection{
     private final static String COL_WYM1            = "wymiar_x";
     private final static String COL_WYM2            = "wymiar_y";
     private final static String COL_WYM3            = "wymiar_z";
+    private final static String COL_OB_WYM1         = "obrobka_x";
+    private final static String COL_OB_WYM2         = "obrobka_y";
     private final static String COL_ZADANIE         = "zadanie";
     private final static String COL_WYDAJNOSC       = "wydajnosc";
     private final static String COL_ILOSC           = "ilosc";
@@ -89,6 +91,8 @@ public class ElementPozycja extends SQLiteConnection{
                 + "element.wymiar_x,"
                 + "element.wymiar_y,"
                 + "element.wymiar_z,"
+                + "element.obrobka_x,"
+                + "element.obrobka_y," 
                 + "element.zadanie,"
                 + "element.wydajnosc,"
                 + "mebel_elementy.ilosc"
@@ -120,6 +124,9 @@ public class ElementPozycja extends SQLiteConnection{
                 e.element.wym3 = w.getInt(COL_WYM3);
                 e.element.zadanie = w.getInt(COL_ZADANIE);
                 e.element.wydajnosc = w.getInt(COL_WYDAJNOSC);
+                e.element.programs = (ArrayList<Program>) new Program().getProgramsByElementId(e.element.id);
+                e.element.obrobka_wym1 = w.getInt(COL_OB_WYM1);
+                e.element.obrobka_wym2 = w.getInt(COL_OB_WYM2);
                 
                 int ei = w.getInt(COL_ILOSC)*iloscMebli;
                 int ew = e.element.wydajnosc;
@@ -157,6 +164,8 @@ public class ElementPozycja extends SQLiteConnection{
                 + "element.wymiar_y,"
                 + "element.wymiar_z,"
                 + "element.zadanie,"
+                + "element.obrobka_x,"
+                + "element.obrobka_y," 
                 + "element.wydajnosc,"
                 + "mebel_elementy.ilosc"
                 + " FROM "
@@ -190,6 +199,9 @@ public class ElementPozycja extends SQLiteConnection{
                 e.element.wym3 = w.getInt(COL_WYM3);
                 e.element.zadanie = w.getInt(COL_ZADANIE);
                 e.element.wydajnosc = w.getInt(COL_WYDAJNOSC);
+                e.element.programs = (ArrayList<Program>) new Program().getProgramsByElementId(e.element.id);
+                e.element.obrobka_wym1 = w.getInt(COL_OB_WYM1);
+                e.element.obrobka_wym2 = w.getInt(COL_OB_WYM2);
                 
                 e.ilosc = w.getInt(COL_ILOSC);
                 
@@ -344,6 +356,8 @@ public class ElementPozycja extends SQLiteConnection{
                 + "element.wymiar_y,"
                 + "element.wymiar_z,"
                 + "element.zadanie,"
+                + "element.obrobka_x,"
+                + "element.obrobka_y," 
                 + "element.wydajnosc,"
                 + "mebel_elementy.ilosc"
                 + " FROM "
@@ -378,6 +392,9 @@ public class ElementPozycja extends SQLiteConnection{
                 e.element.zadanie = w.getInt(COL_ZADANIE);
                 e.element.wydajnosc = w.getInt(COL_WYDAJNOSC);
                 e.ilosc  = w.getInt(COL_ILOSC)*ilosc;
+                e.element.obrobka_wym1 = w.getInt(COL_OB_WYM1);
+                e.element.obrobka_wym2 = w.getInt(COL_OB_WYM2);
+                e.element.programs = (ArrayList<Program>) new Program().getProgramsByElementId(e.element.id);
                 lista.add(e);
             }
             printSelect(sql, wynik);

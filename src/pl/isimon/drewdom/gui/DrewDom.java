@@ -4,6 +4,7 @@
  */
 package pl.isimon.drewdom.gui;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -61,6 +62,8 @@ public class DrewDom extends javax.swing.JFrame {
 //        listaOkuc = okucie.getData();
 //        listaZamowien = zamowienie.getData();
         initComponents();
+        nowyMebel.setMinimumSize(new Dimension(900,720));
+        this.setMinimumSize(new Dimension(900,720));
     }
 
     /**

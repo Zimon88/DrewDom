@@ -255,7 +255,7 @@ public class GRaporty extends javax.swing.JPanel {
         usunPrioCB = new javax.swing.JCheckBox();
         qrCheckBox = new javax.swing.JCheckBox();
 
-        frameRaportSzczegolowy.setMinimumSize(new java.awt.Dimension(1024, 800));
+        frameRaportSzczegolowy.setMinimumSize(new java.awt.Dimension(1400, 800));
 
         tableRaportSzczegolwy.setModel(new TableModelRaportSzczegolwy());
         jScrollPane1.setViewportView(tableRaportSzczegolwy);

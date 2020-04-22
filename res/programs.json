@@ -1,0 +1,21 @@
+{
+    "programs": [
+        {
+            "name": "FREZ1"
+        },
+        {
+            "name": "FREZ2",
+            "pattern": "1"
+        }
+    ],
+    "patterns": [
+        {
+            "id": "default",
+            "pattern": "%wymiar_x%%wymiar_y%%wymiar_z%%prog%"
+        },
+        {
+            "id": "1",
+            "pattern": "%wymiar_y%%wymiar_z%%wymiar_z%%prog%"
+        }
+    ]
+}

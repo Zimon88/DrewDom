@@ -5,7 +5,7 @@
     <Container class="javax.swing.JFrame" name="frameRaportSzczegolowy">
       <Properties>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[1024, 800]"/>
+          <Dimension value="[1400, 800]"/>
         </Property>
       </Properties>
 

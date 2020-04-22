@@ -68,7 +68,7 @@ public class TableModelMebelElementPozycjaRS extends javax.swing.table.AbstractT
                 }
                 case IDX_WYMIAR: return o.element.wym1+"x"+o.element.wym2+"x"+o.element.wym3;
                 case IDX_ILOSC: return o.ilosc;
-                case IDX_QR: return o.element.getQRImage();
+                case IDX_QR: return o.element.getQRImagesPaths();
                 case IDX_NOTATKI: return "";
 //                case IDX_ZADANIE_K: if(x == 2 | x == 4 | x==6) return IKS; return "";
 //                case IDX_ZADANIE_P: if(x == 1 | x == 4 | x==5) return IKS; return "";

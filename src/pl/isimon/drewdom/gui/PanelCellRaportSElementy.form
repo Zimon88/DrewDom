@@ -42,6 +42,9 @@
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="PanelCellRaportSElementy_tableElementy"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

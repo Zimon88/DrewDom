@@ -4,6 +4,7 @@
  */
 package pl.isimon.drewdom.gui;
 
+import java.awt.Dimension;
 import pl.isimon.drewdom.gui.models.TableModelMebleLista;
 import java.util.ArrayList;
 import pl.isimon.drewdom.Mebel;
@@ -32,6 +33,8 @@ public class GMebleLista extends javax.swing.JPanel {
     public GMebleLista(ArrayList<Mebel> lista) {
         initComponents();
         ((TableModelMebleLista)tabelaMeble.getModel()).setModelData(lista);
+        previewMebel.setMinimumSize(new Dimension(900,720));
+        gMebelNowy1.setMinimumSize(new Dimension(880,700));
     }
     
     public void loadData(){
@@ -252,6 +255,7 @@ public class GMebleLista extends javax.swing.JPanel {
         gMebelNowy1.setPreview(false);
         if(selection!=-1){
             Mebel m = tableModelMebleLista.getMebel(selection);
+            previewMebel.setMinimumSize(new Dimension(900,720));
             previewMebel.setVisible(true);
             gMebelNowy1.edycja = true;
             gMebelNowy1.loadData(m);

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Properties;
+import javax.swing.JTable;
 import pl.isimon.drewdom.ElementPozycja;
 import pl.isimon.drewdom.gui.models.TableModelMebelElementPozycjaRS;
 import pl.isimon.drewdom.gui.utils.ImageRenderer;
@@ -38,6 +39,7 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
         PropertiesU prop = new PropertiesU();
         prop.loadProperties();
         properties = prop.getProperties();
+        
     }
     public void setLista(ArrayList<ElementPozycja> lista) {
         this.setLista(lista, false);
@@ -48,8 +50,10 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
         this.renderqr = renderQR;
         Collections.sort(this.lista, new ElementComparator());
         model.setModelData(lista);
-        updateRowHeights();
         updateColumWidth(renderQR);
+        updateRowHeights();
+//        updateColumWidth(renderQR);
+
     }
     
     public void sortByName(){
@@ -72,15 +76,32 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
         int qrW = 0;
         if (renderQR) {
             tableElementy.getColumnModel().getColumn(3).setCellRenderer(new ImageRenderer());
-            tableElementy.getColumnModel().getColumn(3).setMinWidth(120);
-            tableElementy.getColumnModel().getColumn(3).setMaxWidth(180);
-            qrW = Integer.parseInt(properties.getProperty("column_qr"));
+//            tableElementy.getColumnModel().getColumn(3).setMinWidth(120);
+//           tableElementy.getColumnModel().getColumn(3).setMaxWidth(360);
+            //qrW = Integer.parseInt(properties.getProperty("column_qr"));
+            
         } else {
             tableElementy.getColumnModel().getColumn(3).setMaxWidth(0);
             tableElementy.getColumnModel().getColumn(3).setMinWidth(0);
         }
-        System.out.println("DEBUG: setting qr width to: " + qrW);
-        tableElementy.getColumnModel().getColumn(3).setPreferredWidth(qrW);
+        //System.out.println("DEBUG: setting qr width to: " + qrW);
+        //tableElementy.getColumnModel().getColumn(3).setPreferredWidth(qrW);
+    }
+    
+    private void updateRowHeights2()
+    {
+        for (int row = 0; row < tableElementy.getRowCount(); row++)
+        {
+            int rowHeight = tableElementy.getRowHeight();
+
+            for (int column = 0; column < tableElementy.getColumnCount(); column++)
+            {
+                Component comp = tableElementy.prepareRenderer(tableElementy.getCellRenderer(row, column), row, column);
+                rowHeight = Math.max(rowHeight, comp.getPreferredSize().height);
+            }
+
+            tableElementy.setRowHeight(row, rowHeight);
+        }
     }
     
     private void updateRowHeights()
@@ -89,25 +110,31 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
         {
             int totalHeight = 18;
             tableElementy.getTableHeader().setPreferredSize(new Dimension(tableElementy.getColumnModel().getTotalColumnWidth(), totalHeight));
+            int colW = 0;
             for (int row = 0; row < tableElementy.getRowCount(); row++)
             {
                 
                 int rowHeight = Integer.parseInt(properties.getProperty("height"));
-                rowHeight = renderqr ? Integer.parseInt(properties.getProperty("qr_image_size")) : rowHeight;
+                //rowHeight = renderqr ? Integer.parseInt(properties.getProperty("qr_image_size")) : rowHeight;
                 if(!resized) {
                     rowHeight = Integer.parseInt(properties.getProperty("height"));
-                    rowHeight = renderqr ? Integer.parseInt(properties.getProperty("qr_image_size")) : rowHeight;
+                    //rowHeight = renderqr ? Integer.parseInt(properties.getProperty("qr_image_size")) : rowHeight;
                 }
                 for (int column = 0; column < tableElementy.getColumnCount(); column++)
                 {
                     int rowH = rowHeight;
+                    
                     Component comp = tableElementy.prepareRenderer(tableElementy.getCellRenderer(row, column), row, column);
-                   
                     rowHeight = Math.max(rowH, comp.getPreferredSize().height);
+                    if (column==3 && renderqr) {
+                        colW = Math.max(colW,comp.getPreferredSize().width);
+                    }
                 }
                 totalHeight +=(rowHeight+0);
                 tableElementy.setRowHeight(row, rowHeight);
             }
+            tableElementy.getColumnModel().getColumn(3).setMinWidth(colW);
+            tableElementy.getColumnModel().getColumn(3).setMaxWidth(colW);
             this.setPreferredSize(new Dimension(this.getWidth(), totalHeight));
             jScrollPane1.setPreferredSize(new Dimension(this.getWidth(), totalHeight));
             jScrollPane1.setViewportView(tableElementy);
@@ -129,9 +156,8 @@ public class PanelCellRaportSElementy extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableElementy = new javax.swing.JTable();
 
-        setLayout(new java.awt.GridLayout());
+        setLayout(new java.awt.GridLayout(1, 0));
 
-        jScrollPane1.setBorder(null);
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 

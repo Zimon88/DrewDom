@@ -83,6 +83,7 @@ public class PanelCellZadania extends javax.swing.JPanel {
                 .addComponent(cb3))
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox cb1;
     private javax.swing.JCheckBox cb2;
